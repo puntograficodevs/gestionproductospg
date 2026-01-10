@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SublimacionController {
-
+/*
     private final SublimacionService sublimacionService;
     private final MedioPagoService medioPagoService;
     private final OpcionesSublimacionService opcionesSublimacionService;
@@ -116,4 +116,6 @@ public class SublimacionController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         sublimacionService.eliminar(idSublimacion);
     }
+
+ */
 }

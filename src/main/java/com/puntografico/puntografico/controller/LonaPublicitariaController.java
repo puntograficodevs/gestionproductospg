@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class LonaPublicitariaController {
-
+/*
     private final OpcionesLonaPublicitariaService opcionesLonaPublicitariaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -122,4 +122,5 @@ public class LonaPublicitariaController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         lonaPublicitariaService.eliminar(idLonaPublicitaria);
     }
+ */
 }

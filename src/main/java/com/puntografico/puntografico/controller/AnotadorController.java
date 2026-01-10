@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class AnotadorController {
-
+/*
     private final MedioPagoService medioPagoService;
     private final OrdenAnotadorService ordenAnotadorService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -113,5 +113,5 @@ public class AnotadorController {
         ordenAnotadorService.eliminar(idOrdenAnotador);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         anotadorService.eliminar(idAnotador);
-    }
+    }*/
 }

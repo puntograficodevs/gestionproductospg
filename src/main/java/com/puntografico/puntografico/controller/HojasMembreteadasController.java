@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class HojasMembreteadasController {
-
+/*
     private final OpcionesHojasMembreteadasService opcionesHojasMembreteadasService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -122,5 +122,5 @@ public class HojasMembreteadasController {
         ordenHojasMembreteadasService.eliminar(idOrdenHojasMembreteadas);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         hojasMembreteadasService.eliminar(idHojasMembreteadas);
-    }
+    }*/
 }

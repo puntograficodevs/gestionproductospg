@@ -22,15 +22,19 @@ public class OrdenTrabajoService {
     private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final EstadoPagoRepository estadoPagoRepository;
-    private final MedioPagoRepository medioPagoRepository;
     private final EmpleadoService empleadoService;
     private final PagoService pagoService;
+
+    public OrdenTrabajo buscarPorId(Long id) {
+        return ordenTrabajoRepository.findById(id).get();
+    }
 
     public OrdenTrabajo guardar(HttpServletRequest request, Long idOrdenTrabajo) {
         OrdenTrabajo ordenTrabajo = new OrdenTrabajo();
 
         if (idOrdenTrabajo != null) {
-            ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+            ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo)
+                    .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));
         }
 
         boolean necesitaFactura = request.getParameter("necesitaFactura") != null;

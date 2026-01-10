@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SelloMaderaController {
-
+/*
     private final OpcionesSelloMaderaService opcionesSelloMaderaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -117,4 +117,6 @@ public class SelloMaderaController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         selloMaderaService.eliminar(idSelloMadera);
     }
+
+ */
 }

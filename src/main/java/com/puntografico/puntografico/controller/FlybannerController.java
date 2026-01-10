@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class FlybannerController {
-
+/*
     private final OpcionesFlybannerService opcionesFlybannerService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -121,5 +121,5 @@ public class FlybannerController {
         ordenFlybannerService.eliminar(idOrdenFlybanner);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         flybannerService.eliminar(idFlybanner);
-    }
+    }*/
 }

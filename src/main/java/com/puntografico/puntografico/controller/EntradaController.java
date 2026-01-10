@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class EntradaController {
-
+/*
     private final OpcionesEntradaService opcionesEntradaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -131,5 +131,5 @@ public class EntradaController {
         ordenEntradaService.eliminar(idOrdenEntrada);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         entradaService.eliminar(idEntrada);
-    }
+    }*/
 }

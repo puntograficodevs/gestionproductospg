@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class FolletoController {
-
+/*
     private final OpcionesFolletoService opcionesFolletoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -128,5 +128,5 @@ public class FolletoController {
         ordenFolletoService.eliminar(idOrdenFolleto);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         folletoService.eliminar(idFolleto);
-    }
+    }*/
 }

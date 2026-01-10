@@ -37,4 +37,8 @@ public class Agenda {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_color_agenda")
     private TipoColorAgenda tipoColorAgenda;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

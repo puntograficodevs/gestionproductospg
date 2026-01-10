@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SelloAutomaticoController {
-
+/*
     private final OpcionesSelloAutomaticoService opcionesSelloAutomaticoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -119,4 +119,6 @@ public class SelloAutomaticoController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         selloAutomaticoService.eliminar(idSelloAutomatico);
     }
+
+ */
 }

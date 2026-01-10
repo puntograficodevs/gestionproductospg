@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class StickerController {
-
+/*
     private final StickerService stickerService;
     private final MedioPagoService medioPagoService;
     private final OpcionesStickerService opcionesStickerService;
@@ -120,4 +120,6 @@ public class StickerController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         stickerService.eliminar(idSticker);
     }
+
+ */
 }

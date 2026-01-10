@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class RifasBonosContribucionController {
-
+/*
     private final OpcionesRifasContribucionService opcionesRifasContribucionService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -123,4 +123,6 @@ public class RifasBonosContribucionController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         rifasBonosContribucionService.eliminar(idRifasBonosContribucion);
     }
+
+ */
 }

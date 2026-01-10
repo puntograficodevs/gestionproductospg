@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ViniloDeCorteController {
-
+/*
     private final OpcionesViniloDeCorteService opcionesViniloDeCorteService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -118,4 +118,6 @@ public class ViniloDeCorteController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         viniloDeCorteService.eliminar(idViniloDeCorte);
     }
+
+ */
 }

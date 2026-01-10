@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ComboController {
-
+/*
     private final MedioPagoService medioPagoService;
     private final OrdenComboService ordenComboService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -112,5 +112,5 @@ public class ComboController {
         ordenComboService.eliminar(idOrdenCombo);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         comboService.eliminar(idCombo);
-    }
+    }*/
 }

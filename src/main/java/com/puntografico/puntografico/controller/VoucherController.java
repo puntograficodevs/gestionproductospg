@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class VoucherController {
-
+/*
     private final OpcionesVoucherService opcionesVoucherService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -124,4 +124,6 @@ public class VoucherController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         voucherService.eliminar(idVoucher);
     }
+
+ */
 }

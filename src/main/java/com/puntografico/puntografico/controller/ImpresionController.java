@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ImpresionController {
-
+/*
     private final OpcionesImpresionService opcionesImpresionService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -128,4 +128,5 @@ public class ImpresionController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         impresionService.eliminar(idImpresion);
     }
+    */
 }

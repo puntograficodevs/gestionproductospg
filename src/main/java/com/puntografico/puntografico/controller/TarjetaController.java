@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class TarjetaController {
-
+/*
     private final TarjetaService tarjetaService;
     private final MedioPagoService medioPagoService;
     private final OpcionesTarjetaService opcionesTarjetaService;
@@ -129,4 +129,6 @@ public class TarjetaController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         tarjetaService.eliminar(idTarjeta);
     }
+
+ */
 }

@@ -1,31 +1,34 @@
 package com.puntografico.puntografico.service;
 
 import com.puntografico.puntografico.domain.Agenda;
+import com.puntografico.puntografico.domain.OrdenTrabajo;
 import com.puntografico.puntografico.domain.TipoColorAgenda;
 import com.puntografico.puntografico.domain.TipoTapaAgenda;
 import com.puntografico.puntografico.dto.AgendaDTO;
 import com.puntografico.puntografico.repository.AgendaRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional @AllArgsConstructor
 public class AgendaService {
 
     private final AgendaRepository agendaRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesAgendaService opcionesAgendaService;
 
-    public Agenda guardar(AgendaDTO agendaDTO, Long idAgenda) {
+    public Agenda guardar(AgendaDTO agendaDTO, Long idOrdenTrabajo) {
         validarAgendaDTO(agendaDTO);
-
+        Agenda agenda = devolverAgendaCorrespondiente(idOrdenTrabajo);
+        System.out.println("Se está creando la agenda " + agenda.getId());
         TipoColorAgenda tipoColorAgenda = opcionesAgendaService.buscarTipoColorAgendaPorId(agendaDTO.getTipoColorAgendaId());
         TipoTapaAgenda tipoTapaAgenda = opcionesAgendaService.buscarTipoTapaAgendaPorId(agendaDTO.getTipoTapaAgendaId());
 
-        Agenda agenda = (idAgenda != null) ? agendaRepository.findById(idAgenda).get() : new Agenda();
         boolean adicionalDisenio = agendaDTO.getConAdicionalDisenio();
 
         agenda.setCantidadHojas(agendaDTO.getCantidadHojas());
@@ -53,8 +56,25 @@ public class AgendaService {
         Assert.notNull(agendaDTO.getCantidad(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        agendaRepository.deleteById(id);
+    private Agenda devolverAgendaCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+        System.out.println("Llega al service la odt " + ordenTrabajo.getId());
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Agenda agendaNueva = new Agenda();
+                    agendaNueva.setOrdenTrabajo(ordenTrabajo);
+                    return agendaNueva;
+                });
+    }
+
+    public Optional<Agenda> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return agendaRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Agenda agenda = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Agenda inexistente"));
+
+        agendaRepository.deleteById(agenda.getId());
     }
 }

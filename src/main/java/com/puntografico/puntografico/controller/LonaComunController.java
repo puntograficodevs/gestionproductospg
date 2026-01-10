@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class LonaComunController {
-
+/*
     private final OpcionesLonaComunService opcionesLonaComunService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -122,4 +122,5 @@ public class LonaComunController {
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         lonaComunService.eliminar(idLonaComun);
     }
+ */
 }

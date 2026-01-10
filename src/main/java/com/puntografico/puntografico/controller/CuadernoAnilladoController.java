@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CuadernoAnilladoController {
-
+/*
     private final OpcionesCuadernoAnilladoService opcionesCuadernoAnilladoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -118,5 +118,5 @@ public class CuadernoAnilladoController {
         ordenCuadernoAnilladoService.eliminar(idOrdenCuadernoAnillado);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         cuadernoAnilladoService.eliminar(idCuadernoAnillado);
-    }
+    }*/
 }

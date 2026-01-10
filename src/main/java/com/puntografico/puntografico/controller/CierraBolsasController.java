@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CierraBolsasController {
-
+/*
     private final OpcionesCierraBolsasService opcionesCierraBolsasService;
     private final MedioPagoService medioPagoService;
     private final OrdenCierraBolsasService ordenCierraBolsasService;
@@ -119,5 +119,5 @@ public class CierraBolsasController {
         ordenCierraBolsasService.eliminar(idOrdenCierraBolsas);
         ordenTrabajoService.eliminar(idOrdenTrabajo);
         cierraBolsasService.eliminar(idCierraBolsas);
-    }
+    }*/
 }
