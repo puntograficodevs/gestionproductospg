@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mostrar-productos.css}"/>
+    <title>Combos - Punto Gráfico</title>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="card mb-3 border contenedor-orden-impresion">
+    <div class="row align-items-center">
+        <!-- Ícono + texto -->
+        <div class="col d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e83e8c" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <h4 class="mb-0">Orden #<span th:text="${ordenCombo.ordenTrabajo.id}"></span> - <span th:text="${ordenCombo.ordenTrabajo.tipoProducto}"></span></h4>
+        </div>
+
+        <!-- Imagen -->
+        <div class="col-3 text-end">
+            <img th:src="@{/img/logotipo-color.png}" class="img-fluid" style="max-height: 60px;" />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-6">
+            <div class="card mb-3 border contenedor-datos-orden-impresion ">
+                <h6>Datos del cliente</h6>
+                <hr class="divider">
+                <p><strong>Cliente: </strong><span th:text="${ordenCombo.ordenTrabajo.nombreCliente}"></span></p>
+                <p><strong>Teléfono: </strong><span th:text="${ordenCombo.ordenTrabajo.telefonoCliente}"></span></p>
+                <p><strong>Cuenta corriente: </strong><span th:text="${ordenCombo.ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
+            </div>
+            <div class="card mb-3 border contenedor-datos-orden-impresion ">
+                <h6>Datos del pago</h6>
+                <hr class="divider">
+                <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
+                <p><strong>Total: </strong>$<span th:text="${ordenCombo.ordenTrabajo.total}"></span></p>
+                <p><strong>Entrega: </strong>$<span th:text="${ordenCombo.ordenTrabajo.abonado}"></span></p>
+                <p><strong>Necesita factura: </strong><span th:text="${ordenCombo.ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Vendedor/a: </strong><span th:text="${ordenCombo.ordenTrabajo.empleado.nombre}"></span></p>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mb-3 border contenedor-datos-orden-impresion ">
+                <h6>Datos del producto</h6>
+                <hr class="divider">
+                <p><strong>Tipo de combo: </strong><span th:text="${ordenCombo.combo.tipoCombo.tipo}"></span></p>
+                <p><strong>Descripción del combo:</strong>
+                    <span th:if="${ordenCombo.combo.tipoCombo.tipo} == 'OFICINA'">
+                        100 tarjetas simple faz, 100 sobres oficio inglés, 1 talonario A4 a color con membrete
+                    </span>
+                    <span th:if="${ordenCombo.combo.tipoCombo.tipo} == 'PROFESIONAL'">
+                        100 tarjetas simple faz, 100 sobres oficio inglés, 2 talonarios RP blanco y negro (13x18 cm)
+                    </span>
+                    <span th:if="${ordenCombo.combo.tipoCombo.tipo} == 'EMPRENDEDOR X100'">
+                        100 cierra bolsas (8x4 cm), 100 etiquetas colgantes (7x5 cm), 100 circulares troqueladas (5 cm)
+                    </span>
+                    <span th:if="${ordenCombo.combo.tipoCombo.tipo} == 'EMPRENDEDOR X200'">
+                        200 cierra bolsas (8x4 cm), 200 etiquetas colgantes (7x5 cm), 200 circulares troqueladas (5 cm)
+                    </span>
+                    <span th:if="${ordenCombo.combo.tipoCombo.tipo} == 'EMPRENDEDOR X500'">
+                        500 cierra bolsas (8x4 cm), 500 etiquetas colgamtes (7x5 cm), 500 circulares troqueladas (5 cm)
+                    </span>
+                </p>
+                <p><strong>Adicional diseño: </strong><span th:text="${ordenCombo.combo.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Enlace al archivo: </strong>
+                    <span th:if="${ordenCombo.combo.enlaceArchivo == ''}"> - </span>
+                    <a th:unless="${ordenCombo.combo.enlaceArchivo == ''}"
+                       th:href="${ordenCombo.combo.enlaceArchivo}"
+                       th:text="${ordenCombo.combo.enlaceArchivo}"
+                       target="_blank"></a>
+                </p>
+                <p><strong>Información adicional: </strong><span th:text="${ordenCombo.combo.informacionAdicional} == '' ? ' - ' : ${ordenCombo.combo.informacionAdicional}"></span></p>
+                <hr class="divider">
+                <p><strong>Fecha de entrega: </strong><span th:text="${fechaEntrega}"></span>
+                <p th:if="${ordenCombo.ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenCombo.ordenTrabajo.horaEntrega}"></span> hs.</p>
+                <p th:if="${ordenCombo.ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
+                <p><strong>Cantidad de productos: </strong><span th:text="${ordenCombo.combo.cantidad}"></span></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-precio-restante-orden-impresion">
+            <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenCombo.ordenTrabajo.resta}"></span></p>
+        </div>
+    </div>
+    <div th:replace="fragments/footer-odt :: footer-odt"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('../fonts/LEMONMILK-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Nanum';
+  src: url('../fonts/NanumPenScript-Regular.ttf') format('truetype');
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat';
+    font-size: 1.05rem;
+}
+
+body {
+    padding-top: 6%;
+}
+
+.navbar {
+    padding: 0.15em 0.25em;
+    background-color: #E52987 !important;
+}
+
+.palabra-menu {
+    color: #ffffff;
+}
+
+.nav-nombre-usuario {
+    font-family: 'Nanum';
+    color: #efcf00;
+    font-size: 2rem;
+}
+
+.nav-nombre-usuario:hover {
+    color: #ffffff;
+}
+
+.bi-house-fill {
+    margin-top: -3px;
+}
+
+img.isologotipo {
+    width: 100px;
+}
+
+.navbar p {
+    margin-bottom: 0;
+}
+
+.custom-gap {
+  gap: 6px; /* Bootstrap gap-1 = 4px, gap-2 = 8px → este es intermedio */
+}
+
+.custom-nav .nav-item + .nav-item {
+  margin-left: 16px;
+}
+
+.contenedor-home {
+    width: 80%;
+    height: 90vh;
+}
+
+img.foco {
+    width: 60%;
+}
+
+.boton-home {
+    cursor: pointer;
+    width: 80%;
+    padding: 16px 0;
+    border-radius: 60px;
+    background-color: #009FE3;
+    color: #ffffff;
+    font-family: 'Lemon Milk';
+    font-size: 1.5em;
+}
+
+.boton-home:hover {
+    color: #1d1d1b;
+    background-color: #efcf00;
+}

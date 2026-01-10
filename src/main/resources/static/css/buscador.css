@@ -1,0 +1,44 @@
+.titulo-tabla-ordenes {
+    font-family: 'Lemon Milk';
+}
+
+.contenedor-pagina-en-proceso {
+    width: 95%;
+    height: 95%;
+}
+
+.pagina-en-proceso {
+    width: 100%;
+}
+
+.capitalize:first-letter {
+    text-transform: uppercase;
+}
+
+.btn-buscador {
+    border: none;
+}
+
+.ver-btn {
+    background-color: #009FE3;
+}
+
+.ver-btn:hover {
+    background-color: #0186BF;
+}
+
+.editar-btn {
+    background-color: #EFCF00;
+}
+
+.editar-btn:hover {
+    background-color: #D4B803;
+}
+
+.eliminar-btn {
+    background-color: #E52987;
+}
+
+.eliminar-btn:hover {
+    background-color: #B41C68;
+}

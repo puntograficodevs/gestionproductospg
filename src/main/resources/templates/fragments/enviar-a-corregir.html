@@ -1,0 +1,39 @@
+<div th:fragment="enviar-a-corregir(idOrden)" xmlns:th="http://www.thymeleaf.org">
+  <div class="modal fade"
+       th:id="'modalEnviarACorregir-' + ${idOrden}"
+       th:attr="aria-labelledby='modalEnviarACorregirLabel-' + ${idOrden}"
+       tabindex="-1"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"
+              th:id="'modalEnviarACorregirLabel-' + ${idOrden}">
+            CORREGIR ORDEN
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <form th:action="@{/api/orden/pedir-correccion}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="idOrden" th:value="${idOrden}"/>
+            <input type="hidden" name="empleadoLogueado" th:value="${empleadoLogueado}"/>
+
+            <div class="mb-3">
+              <label th:for="'correccion-' + ${idOrden}" class="form-label">¿Qué modificación debe hacerse?</label>
+              <textarea type="text" class="form-control"
+                     th:id="'correccion-' + ${idOrden}"
+                     name="correccion"
+                        placeholder="" required style="height: 150px;"></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

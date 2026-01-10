@@ -1,0 +1,224 @@
+.uppercase {
+    text-transform: uppercase;
+}
+
+body {
+    font-size: 0.85rem;
+}
+
+.falta-abonar {
+    color: #e52987;
+    font-family: 'Lemon Milk';
+    margin: 8px;
+    text-align: center;
+}
+
+p {
+    margin-bottom: 0;
+}
+.card-body {
+    line-height: 1.6em;
+    padding: 0.8em 1.3em !important;
+}
+
+.card-body li {
+    margin-left: 24px;
+}
+
+.ver-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  text-align: center;
+  line-height: 40px;
+  background-color: #e52987;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.ver-btn:hover {
+    background-color: #C22171;
+}
+
+.modal-title {
+    font-size: 1.6em;
+    font-family: 'Lemon Milk';
+    color: #009fe3;
+}
+
+.contenedor-kanban-ordenes {
+    width: 95%;
+}
+
+.titulo-columna {
+    padding: 0.8em;
+    color: #1d1d1b;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1em;
+    border-radius: 20px;
+}
+
+.columna-sin-hacer .titulo-columna {
+    background-color: #F4CFFF;
+}
+
+.columna-corregir .titulo-columna {
+    background-color: #ff8f8f;
+}
+
+.columna-en-proceso .titulo-columna {
+    background-color: #ffef8b;
+}
+
+.columna-listas-para-retirar .titulo-columna  {
+    background-color: #abf28c;
+}
+
+.card {
+    margin-top: 1em;
+    border-radius: 20px;
+}
+
+.columna-sin-hacer .card {
+    border: 3px solid #F4CFFF;
+}
+
+.columna-corregir .card {
+    border: 3px solid #ff8f8f;
+}
+
+.columna-en-proceso .card {
+    border: 3px solid #ffef8b;
+}
+
+.columna-listas-para-retirar .card {
+    border: 3px solid #abf28c;
+}
+
+.btn-cambio-estado {
+    font-size: 1em;
+    color: #1d1d1b;
+    border: none;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.btn-cambio-estado:hover {
+    color: #000000;
+}
+
+.corregir-btn,
+.pasar-en-proceso-btn {
+    background-color: #F4CFFF;
+}
+
+.corregir-btn:hover,
+.pasar-en-proceso-btn:hover {
+    background-color: #C79BD4;
+}
+
+.pasar-lista-para-retirar-btn {
+    background-color: #ffef8b;
+}
+
+.pasar-lista-para-retirar-btn:hover {
+    background-color: #F6E15D;
+}
+
+.pasar-retirada-btn {
+    background-color: #abf28c;
+}
+
+.pasar-retirada-btn:hover {
+    background-color: #81C862;
+}
+
+.pasar-corregido-btn {
+    background-color: #ff8f8f;
+}
+
+.pasar-corregido-btn:hover {
+    background-color: #CF4B4B;
+}
+
+.volver-sin-hacer-btn {
+    background-color: #ffef8b;
+}
+
+.volver-sin-hacer-btn:hover {
+    background-color: #F6E15D;
+}
+
+.volver-en-proceso-btn {
+    background-color: #abf28c;
+}
+
+.volver-en-proceso-btn:hover {
+    background-color: #81C862;
+}
+
+.columna-sin-hacer .btn-marcar-abonado {
+    background-color: #ffffff;
+    border: 3px solid #f4cfff;
+}
+
+.columna-sin-hacer .btn-marcar-abonado:hover {
+    background-color: #f4cfff;
+}
+
+.columna-corregir .btn-marcar-abonado {
+    background-color: #ffffff;
+    border: 3px solid #ff8f8f;
+}
+
+.columna-corregir .btn-marcar-abonado:hover {
+    background-color: #ff8f8f;
+}
+
+.columna-en-proceso .btn-marcar-abonado {
+    background-color: #ffffff;
+    border: 3px solid #ffef8b;
+}
+
+.columna-en-proceso .btn-marcar-abonado:hover {
+    background-color: #ffef8b;
+}
+
+.columna-listas-para-retirar .btn-marcar-abonado {
+    background-color: #ffffff;
+    border: 3px solid #abf28c;
+}
+
+.columna-listas-para-retirar .btn-marcar-abonado:hover {
+    background-color: #abf28c;
+}
+
+.contenedor-selector-producto {
+    width: 75%;
+    margin: 1em auto;
+}
+
+.contenedor-selector-producto .titulo-filtro {
+    font-size: 1.2em;
+    color: #E52987;
+    font-family: 'Lemon Milk';
+}
+
+.contenedor-selector-producto select {
+    font-size: 1em;
+    margin-top: 8px;
+    border: 1px solid #e52987;
+}
+
+.divider-listado {
+    border: 1px solid #a7a7a7;
+    margin: 1em 3em 2em 3em;
+}

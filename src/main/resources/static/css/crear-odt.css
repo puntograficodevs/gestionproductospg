@@ -1,0 +1,58 @@
+h2 {
+    font-family: 'Lemon Milk';
+    text-align: center;
+    font-weight: bold;
+    color: #009fe3;
+}
+
+h5 {
+    font-family: 'Lemon Milk';
+    margin-bottom: 16px;
+}
+
+.contenedor-datos-odt {
+    padding: 12px 36px 24px 36px;
+    border-radius: 10px;
+    border: solid 1px #d7d7d7;
+    margin-top: 36px;
+}
+
+.datos-del-cliente {
+    color: #e52987;
+}
+
+.datos-del-producto {
+    color: #efcf00;
+}
+
+.datos-de-pago {
+    color: #009fe3;
+}
+
+.btn-crear-odt {
+    background-color: #e52987;
+    font-family: 'Lemon Milk';
+    margin-bottom: 36px;
+    background-color: #e83e8c;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.btn-crear-odt:hover {
+    background-color: #e52987;
+}
+
+.container form {
+    width: 85%;
+    margin: 0 auto;
+}
+
+
+.col-md-12 .form-label {
+    margin-bottom: 1em !important;
+}
+
+.is-invalid {
+  border: 2px solid #dc3545 !important; /* rojo Bootstrap */
+  background-color: #ffe6e6;
+}

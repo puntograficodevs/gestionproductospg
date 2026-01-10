@@ -1,0 +1,33 @@
+.contenedor-botones-creacion {
+    width: 95%;
+    margin-top: 1em;
+}
+
+.fila-botones-creacion {
+    padding: 0.5em 1em;
+}
+
+.boton-creacion {
+    background-color: #009fe3;
+    color: #ffffff;
+    font-family: 'Lemon Milk';
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.boton-creacion:hover {
+    color: #1d1d1b;
+    background-color: #efcf00;
+}
+
+.columna-otro-producto {
+    width: 20%;
+}
+
+.boton-otro-producto {
+    flex-direction: row;
+    gap: 18px;
+}

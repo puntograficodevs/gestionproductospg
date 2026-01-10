@@ -1,0 +1,51 @@
+<div th:fragment="cargar-pago(idOrden)" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal fade"
+         th:id="'modalCargarPago-' + ${idOrden}"
+         th:attr="aria-labelledby='modalCargarPagoLabel-' + ${idOrden}"
+         tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        th:id="'modalCargarPagoLabel-' + ${idOrden}">
+                        Cargar Pago - Orden #[[${idOrden}]]
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <form th:action="@{/api/pago/guardar}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="idOrden" th:value="${idOrden}"/>
+                        <input type="hidden" name="empleadoLogueado" th:value="${empleadoLogueado}"/>
+
+                        <div class="mb-3">
+                            <label th:for="'abonado-' + ${idOrden}" class="form-label">Importe *</label>
+                            <input type="number" class="form-control"
+                                   th:id="'abonado-' + ${idOrden}"
+                                   name="abonado"
+                                   placeholder="0" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label th:for="'medioPagoId-' + ${idOrden}" class="form-label">Medio de pago *</label>
+                            <select class="form-select"
+                                    th:id="'medioPagoId-' + ${idOrden}"
+                                    name="medioPago.id" required>
+                                <option value="" selected disabled>Seleccionar...</option>
+                                <option th:each="medioPago : ${listaMediosDePago}"
+                                        th:value="${medioPago.id}"
+                                        th:text="${medioPago.medioDePago}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Pago</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

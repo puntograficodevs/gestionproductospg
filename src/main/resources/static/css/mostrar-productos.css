@@ -1,0 +1,64 @@
+.texto-footer {
+    font-family: 'Montserrat';
+}
+
+h4, h6, .texto-footer span {
+    font-family: 'Lemon Milk';
+}
+
+.texto-footer span,
+.pago-restante {
+    color: #E52987;
+}
+
+.pago-restante {
+    font-size: 22px;
+}
+
+.pago-restante, .texto-footer {
+    font-weight: bold;
+}
+
+.texto-footer {
+    margin-bottom: 16px;
+}
+
+.contenedor-orden-impresion {
+    margin: 36px;
+    padding: 18px 36px;
+}
+
+.contenedor-datos-orden-impresion,
+.contenedor-footer-odt {
+    padding: 18px;
+}
+
+.border.contenedor-precio-restante-orden-impresion {
+    border: 3px solid #E52987 !important;
+}
+
+.divider {
+    border: none;
+    border: 1px solid #d7d7d7;
+    margin: 8px 0;
+}
+
+.datos-empresa-footer {
+    font-size: 14px;
+}
+
+@media print {
+    nav {
+        display: none !important;
+    }
+
+    body {
+        font-size: 0.8em;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.capitalize::first-letter {
+    text-transform: uppercase;
+}
