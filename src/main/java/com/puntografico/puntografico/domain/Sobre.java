@@ -36,4 +36,8 @@ public class Sobre {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_sobre")
     private CantidadSobre cantidadSobre;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

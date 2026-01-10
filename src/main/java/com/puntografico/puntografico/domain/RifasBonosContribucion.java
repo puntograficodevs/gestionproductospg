@@ -42,4 +42,8 @@ public class RifasBonosContribucion {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_color_rifa")
     private TipoColorRifa tipoColorRifa;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

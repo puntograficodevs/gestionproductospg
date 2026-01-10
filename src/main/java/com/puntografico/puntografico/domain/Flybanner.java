@@ -39,4 +39,8 @@ public class Flybanner {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_base_flybanner")
     private TipoBaseFlybanner tipoBaseFlybanner;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

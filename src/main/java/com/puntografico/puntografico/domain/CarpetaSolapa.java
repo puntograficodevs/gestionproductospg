@@ -33,4 +33,8 @@ public class CarpetaSolapa {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_faz_carpeta_solapa")
     private TipoFazCarpetaSolapa tipoFazCarpetaSolapa;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

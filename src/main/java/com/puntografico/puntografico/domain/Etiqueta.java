@@ -52,4 +52,8 @@ public class Etiqueta {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_medida_etiqueta")
     private MedidaEtiqueta medidaEtiqueta;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

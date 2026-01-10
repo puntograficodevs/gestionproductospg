@@ -39,4 +39,8 @@ public class HojasMembreteadas {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_hojas_membreteadas")
     private CantidadHojasMembreteadas cantidadHojasMembreteadas;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

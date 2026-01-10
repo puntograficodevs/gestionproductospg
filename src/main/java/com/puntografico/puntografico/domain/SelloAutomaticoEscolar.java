@@ -39,4 +39,8 @@ public class SelloAutomaticoEscolar {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_modelo_sello_automatico_escolar")
     private ModeloSelloAutomaticoEscolar modeloSelloAutomaticoEscolar;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

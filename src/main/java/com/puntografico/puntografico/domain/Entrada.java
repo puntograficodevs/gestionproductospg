@@ -52,4 +52,8 @@ public class Entrada {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_terminacion_entrada")
     private TerminacionEntrada terminacionEntrada;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

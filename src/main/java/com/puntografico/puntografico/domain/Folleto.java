@@ -47,4 +47,8 @@ public class Folleto {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_folleto")
     private CantidadFolleto cantidadFolleto;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

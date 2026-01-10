@@ -27,4 +27,8 @@ public class Otro {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_color_otro")
     private TipoColorOtro tipoColorOtro;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

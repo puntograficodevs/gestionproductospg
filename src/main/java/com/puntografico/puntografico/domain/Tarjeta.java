@@ -48,4 +48,8 @@ public class Tarjeta {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_tarjeta")
     private CantidadTarjeta cantidadTarjeta;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

@@ -36,4 +36,8 @@ public class ViniloDeCorte {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_trae_material_vinilo")
     private TraeMaterialVinilo traeMaterialVinilo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

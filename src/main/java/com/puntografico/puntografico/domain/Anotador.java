@@ -30,4 +30,8 @@ public class Anotador {
     private String informacionAdicional;
 
     private int cantidad;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

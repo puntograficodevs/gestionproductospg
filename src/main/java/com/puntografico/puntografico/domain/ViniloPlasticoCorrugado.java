@@ -30,4 +30,8 @@ public class ViniloPlasticoCorrugado {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_medida_vinilo_plastico_corrugado")
     private MedidaViniloPlasticoCorrugado medidaViniloPlasticoCorrugado;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

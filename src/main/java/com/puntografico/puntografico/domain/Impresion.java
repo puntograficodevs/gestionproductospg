@@ -47,4 +47,8 @@ public class Impresion {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_impresion")
     private TipoImpresion tipoImpresion;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

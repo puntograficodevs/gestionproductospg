@@ -30,4 +30,8 @@ public class Sublimacion {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_sublimacion")
     private CantidadSublimacion cantidadSublimacion;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

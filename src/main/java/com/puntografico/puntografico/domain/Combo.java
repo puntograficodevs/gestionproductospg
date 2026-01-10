@@ -26,4 +26,8 @@ public class Combo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_combo")
     private TipoCombo tipoCombo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

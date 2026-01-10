@@ -17,13 +17,10 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class AnotadorController {
-/*
+
     private final MedioPagoService medioPagoService;
-    private final OrdenAnotadorService ordenAnotadorService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final AnotadorService anotadorService;
-    private final ProductoService productoService;
-    private final PagoService pagoService;
 
 
     @GetMapping({"/crear-odt-anotador", "/crear-odt-anotador/{idOrden}"})
@@ -34,9 +31,9 @@ public class AnotadorController {
             return "redirect:/"; // Si no hay sesión, lo manda al login
         }
 
-        OrdenAnotador ordenAnotador = (idOrden != null) ? ordenAnotadorService.buscarPorOrdenId(idOrden) : null;
-        OrdenTrabajo ordenTrabajo = (ordenAnotador != null) ? ordenAnotador.getOrdenTrabajo() : new OrdenTrabajo();
-        Anotador anotador = (ordenAnotador != null) ? ordenAnotador.getAnotador() : new Anotador();
+        OrdenTrabajo ordenTrabajo  = (idOrden != null) ? ordenTrabajoService.buscarPorId(idOrden) : new OrdenTrabajo();
+        Anotador anotador = anotadorService.buscarPorOrdenTrabajoId(idOrden)
+                .orElseGet(Anotador::new);
 
         List<MedioPago> listaMediosDePago = medioPagoService.buscarTodos();
 
@@ -47,71 +44,4 @@ public class AnotadorController {
 
         return "crear-odt-anotador";
     }
-
-    @GetMapping("/mostrar-odt-anotador/{ordenAnotadorId}")
-    public String verOrdenAnotador(@PathVariable("ordenAnotadorId") Long ordenAnotadorId, Model model, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-
-        if (empleado == null) {
-            return "redirect:/"; // Si no hay sesión, lo manda al login
-        }
-
-        OrdenAnotador ordenAnotador = ordenAnotadorService.buscarPorId(ordenAnotadorId);
-        String fechaEntrega = ordenTrabajoService.formatearFecha(ordenAnotador.getOrdenTrabajo().getFechaEntrega());
-        String fechaMuestra = ordenTrabajoService.formatearFecha(ordenAnotador.getOrdenTrabajo().getFechaMuestra());
-        String fechaPedido = ordenTrabajoService.formatearFecha(ordenAnotador.getOrdenTrabajo().getFechaPedido());
-
-        model.addAttribute("empleado", empleado);
-        model.addAttribute("ordenAnotador", ordenAnotador);
-        model.addAttribute("fechaEntrega", fechaEntrega);
-        model.addAttribute("fechaMuestra", fechaMuestra);
-        model.addAttribute("fechaPedido", fechaPedido);
-
-        return "mostrar-odt-anotador";
-    }
-
-    @PostMapping("/api/creacion-anotador")
-    public String creacionAnotador(HttpServletRequest request) {
-        Long idOrden = productoService.buscarOrdenIdSiExiste(request.getParameter("idOrden"));
-
-        OrdenAnotador ordenAnotadorExistente = (idOrden != null) ? ordenAnotadorService.buscarPorOrdenId(idOrden) : null;
-        Long idOrdenTrabajo = (ordenAnotadorExistente != null) ? ordenAnotadorExistente.getOrdenTrabajo().getId() : null;
-        Long idAnotador = (ordenAnotadorExistente != null) ? ordenAnotadorExistente.getAnotador().getId() : null;
-        Long idOrdenAnotador = (ordenAnotadorExistente != null) ? ordenAnotadorExistente.getId() : null;
-
-        AnotadorDTO anotadorDTO = armarAnotadorDTO(request);
-
-        OrdenTrabajo ordenTrabajo = ordenTrabajoService.guardar(request, idOrdenTrabajo);
-        pagoService.guardar(request, ordenTrabajo.getId());
-        Anotador anotador = anotadorService.guardar(anotadorDTO, idAnotador);
-        OrdenAnotador ordenAnotador = ordenAnotadorService.guardar(ordenTrabajo, anotador, idOrdenAnotador);
-
-        return "redirect:/mostrar-odt-anotador/" + ordenAnotador.getId();
-    }
-
-    private AnotadorDTO armarAnotadorDTO(HttpServletRequest request) {
-        AnotadorDTO anotadorDTO = new AnotadorDTO();
-
-        anotadorDTO.setMedida(request.getParameter("medida"));
-        anotadorDTO.setCantidadHojas(Integer.parseInt(request.getParameter("cantidadHojas")));
-        anotadorDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
-        anotadorDTO.setEnlaceArchivo(request.getParameter("enlaceArchivo"));
-        anotadorDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
-        anotadorDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
-        anotadorDTO.setTipoTapa(request.getParameter("tipoTapa"));
-
-        return anotadorDTO;
-    }
-
-    @DeleteMapping("/api/eliminar-orden-anotador/{idOrden}")
-    public void eliminarOrdenAnotador(Model model, HttpSession session, @PathVariable Long idOrden) {
-        OrdenAnotador ordenAnotador = ordenAnotadorService.buscarPorOrdenId(idOrden);
-        Long idOrdenAnotador = ordenAnotador.getId();
-        Long idOrdenTrabajo = ordenAnotador.getOrdenTrabajo().getId();
-        Long idAnotador = ordenAnotador.getAnotador().getId();
-
-        ordenAnotadorService.eliminar(idOrdenAnotador);
-        ordenTrabajoService.eliminar(idOrdenTrabajo);
-        anotadorService.eliminar(idAnotador);
-    }*/
 }

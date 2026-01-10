@@ -42,4 +42,8 @@ public class LonaComun {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_lona_comun")
     private TipoLonaComun tipoLonaComun;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

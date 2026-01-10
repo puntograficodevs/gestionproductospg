@@ -41,4 +41,8 @@ public class LonaPublicitaria {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_lona_publicitaria")
     private TipoLonaPublicitaria tipoLonaPublicitaria;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

@@ -34,4 +34,8 @@ public class SelloMadera {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tamanio_sello_madera")
     private TamanioSelloMadera tamanioSelloMadera;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

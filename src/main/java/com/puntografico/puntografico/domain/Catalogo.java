@@ -33,4 +33,8 @@ public class Catalogo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_faz_catalogo")
     private TipoFazCatalogo tipoFazCatalogo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

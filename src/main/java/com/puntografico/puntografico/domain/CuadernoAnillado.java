@@ -37,4 +37,8 @@ public class CuadernoAnillado {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_medida_cuaderno_anillado")
     private MedidaCuadernoAnillado medidaCuadernoAnillado;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

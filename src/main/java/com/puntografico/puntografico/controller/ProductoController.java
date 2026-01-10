@@ -1,14 +1,12 @@
 package com.puntografico.puntografico.controller;
 
 import com.puntografico.puntografico.domain.Agenda;
+import com.puntografico.puntografico.domain.Anotador;
 import com.puntografico.puntografico.domain.Empleado;
-import com.puntografico.puntografico.domain.OrdenAgenda;
 import com.puntografico.puntografico.domain.OrdenTrabajo;
 import com.puntografico.puntografico.dto.AgendaDTO;
-import com.puntografico.puntografico.service.AgendaService;
-import com.puntografico.puntografico.service.OrdenTrabajoService;
-import com.puntografico.puntografico.service.PagoService;
-import com.puntografico.puntografico.service.ProductoService;
+import com.puntografico.puntografico.dto.AnotadorDTO;
+import com.puntografico.puntografico.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,16 +22,15 @@ public class ProductoController {
     private final ProductoService productoService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final AgendaService agendaService;
+    private final AnotadorService anotadorService;
     private final PagoService pagoService;
 
     @PostMapping("/api/creacion-producto")
     public String creacionProducto(HttpServletRequest request) {
-        System.out.println("///////////////////////////// ESTA ENTRANDO AL ENDPOINT");
         Long idOrden = productoService.buscarOrdenIdSiExiste(request.getParameter("idOrden"));
         String tipoProducto = request.getParameter("tipoProducto");
 
         OrdenTrabajo ordenTrabajo = ordenTrabajoService.guardar(request, idOrden);
-        System.out.println("Se guardó la orden de trabajo " + ordenTrabajo.getId());
         pagoService.guardar(request, ordenTrabajo.getId());
         crearProductoCorrespondiente(request, tipoProducto, ordenTrabajo.getId());
 
@@ -48,26 +45,13 @@ public class ProductoController {
                 AgendaDTO agendaDTO = armarAgendaDTO(request);
                 agendaService.guardar(agendaDTO, idOrden);
                 break;
+            case "anotador":
+                AnotadorDTO anotadorDTO = armarAnotadorDTO(request);
+                anotadorService.guardar(anotadorDTO, idOrden);
+                break;
             default:
                 throw new IllegalStateException("Tipo de producto inesperado: " + tipoProducto);
         }
-    }
-
-    private AgendaDTO armarAgendaDTO(HttpServletRequest request) {
-        System.out.println("//////////////////////");
-        System.out.println("la medida es " + request.getParameter("medida"));
-        AgendaDTO agendaDTO = new AgendaDTO();
-        agendaDTO.setCantidadHojas(Integer.parseInt(request.getParameter("cantidadHojas")));
-        agendaDTO.setTipoTapaAgendaId(Long.parseLong(request.getParameter("tipoTapaAgenda.id")));
-        agendaDTO.setTipoColorAgendaId(Long.parseLong(request.getParameter("tipoColorAgenda.id")));
-        agendaDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
-        agendaDTO.setMedida(request.getParameter("medida"));
-        agendaDTO.setTipoTapaPersonalizada(request.getParameter("tipoTapaPersonalizada"));
-        agendaDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
-        agendaDTO.setEnlaceArchivo(request.getParameter("enlaceArchivo"));
-        agendaDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
-
-        return agendaDTO;
     }
 
     @GetMapping("/mostrar-odt-producto/{ordenTrabajoId}")
@@ -94,9 +78,15 @@ public class ProductoController {
         switch(tipoProducto) {
             case "agenda":
                 Agenda agenda = agendaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
-                        .orElseThrow(() -> new RuntimeException("Agenda no encontrada para la orden"));
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("agenda", agenda);
                 htmlRedireccion = "mostrar-odt-agenda";
+                break;
+            case "anotador":
+                Anotador anotador = anotadorService.buscarPorOrdenTrabajoId(ordenTrabajoId)
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
+                model.addAttribute("anotador", anotador);
+                htmlRedireccion = "mostrar-odt-anotador";
                 break;
             default:
                 throw new IllegalStateException("Tipo de producto inesperado: " + tipoProducto);
@@ -115,10 +105,41 @@ public class ProductoController {
             case "agenda":
                 agendaService.eliminar(ordenTrabajo.getId());
                 break;
+            case "anotador":
+                anotadorService.eliminar(ordenTrabajo.getId());
+                break;
             default:
                 throw new IllegalStateException("Tipo de producto inesperado: " + tipoProducto);
         }
 
         ordenTrabajoService.eliminar(ordenTrabajo.getId());
+    }
+
+    private AgendaDTO armarAgendaDTO(HttpServletRequest request) {
+        AgendaDTO agendaDTO = new AgendaDTO();
+        agendaDTO.setCantidadHojas(Integer.parseInt(request.getParameter("cantidadHojas")));
+        agendaDTO.setTipoTapaAgendaId(Long.parseLong(request.getParameter("tipoTapaAgenda.id")));
+        agendaDTO.setTipoColorAgendaId(Long.parseLong(request.getParameter("tipoColorAgenda.id")));
+        agendaDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
+        agendaDTO.setMedida(request.getParameter("medida"));
+        agendaDTO.setTipoTapaPersonalizada(request.getParameter("tipoTapaPersonalizada"));
+        agendaDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
+        agendaDTO.setEnlaceArchivo(request.getParameter("enlaceArchivo"));
+        agendaDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
+
+        return agendaDTO;
+    }
+
+    private AnotadorDTO armarAnotadorDTO(HttpServletRequest request) {
+        AnotadorDTO anotadorDTO = new AnotadorDTO();
+        anotadorDTO.setMedida(request.getParameter("medida"));
+        anotadorDTO.setCantidadHojas(Integer.parseInt(request.getParameter("cantidadHojas")));
+        anotadorDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
+        anotadorDTO.setEnlaceArchivo(request.getParameter("enlaceArchivo"));
+        anotadorDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
+        anotadorDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
+        anotadorDTO.setTipoTapa(request.getParameter("tipoTapa"));
+
+        return anotadorDTO;
     }
 }

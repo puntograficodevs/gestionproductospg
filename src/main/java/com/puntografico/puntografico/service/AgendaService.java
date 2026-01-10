@@ -25,7 +25,7 @@ public class AgendaService {
     public Agenda guardar(AgendaDTO agendaDTO, Long idOrdenTrabajo) {
         validarAgendaDTO(agendaDTO);
         Agenda agenda = devolverAgendaCorrespondiente(idOrdenTrabajo);
-        System.out.println("Se está creando la agenda " + agenda.getId());
+
         TipoColorAgenda tipoColorAgenda = opcionesAgendaService.buscarTipoColorAgendaPorId(agendaDTO.getTipoColorAgendaId());
         TipoTapaAgenda tipoTapaAgenda = opcionesAgendaService.buscarTipoTapaAgendaPorId(agendaDTO.getTipoTapaAgendaId());
 
@@ -58,7 +58,7 @@ public class AgendaService {
 
     private Agenda devolverAgendaCorrespondiente(Long idOrdenTrabajo) {
         OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
-        System.out.println("Llega al service la odt " + ordenTrabajo.getId());
+
         return buscarPorOrdenTrabajoId(idOrdenTrabajo)
                 .orElseGet(() -> {
                     Agenda agendaNueva = new Agenda();

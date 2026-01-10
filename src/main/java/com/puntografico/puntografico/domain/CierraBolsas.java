@@ -36,4 +36,8 @@ public class CierraBolsas {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cantidad_cierra_bolsas")
     private CantidadCierraBolsas cantidadCierraBolsas;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

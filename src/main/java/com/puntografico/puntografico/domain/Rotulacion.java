@@ -37,4 +37,8 @@ public class Rotulacion {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_corte_rotulacion")
     private TipoCorteRotulacion tipoCorteRotulacion;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

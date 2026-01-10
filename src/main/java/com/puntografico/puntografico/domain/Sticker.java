@@ -36,4 +36,8 @@ public class Sticker {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_medida_sticker")
     private MedidaSticker medidaSticker;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }

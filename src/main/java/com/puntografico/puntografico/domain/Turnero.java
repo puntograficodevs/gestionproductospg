@@ -39,4 +39,8 @@ public class Turnero {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_medida_turnero")
     private MedidaTurnero medidaTurnero;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_orden_trabajo")
+    private OrdenTrabajo ordenTrabajo;
 }
