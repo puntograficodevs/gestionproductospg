@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class VoucherService {
 
     private final VoucherRepository voucherRepository;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesVoucherService opcionesVoucherService;
 
-    public Voucher guardar(VoucherDTO voucherDTO, Long idVoucher) {
+    public Voucher guardar(VoucherDTO voucherDTO, Long idOrdenTrabajo) {
         validarVoucherDTO(voucherDTO);
+        Voucher voucher = devolverVoucherCorrespondiente(idOrdenTrabajo);
 
         MedidaVoucher medidaVoucher = opcionesVoucherService.buscarMedidaVoucherPorId(voucherDTO.getMedidaVoucherId());
         TipoPapelVoucher tipoPapelVoucher = opcionesVoucherService.buscarTipoPapelVoucherPorId(voucherDTO.getTipoPapelVoucherId());
@@ -28,7 +31,6 @@ public class VoucherService {
             cantidad = Integer.valueOf(cantidadVoucher.getCantidad());
         }
 
-        Voucher voucher = (idVoucher != null) ? voucherRepository.findById(idVoucher).get() : new Voucher();
         boolean adicionalDisenio = voucherDTO.getConAdicionalDisenio();
 
         voucher.setEnlaceArchivo(voucherDTO.getEnlaceArchivo());
@@ -62,8 +64,25 @@ public class VoucherService {
         Assert.notNull(voucherDTO.getCantidadVoucherId(), "cantidadVoucherString es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        voucherRepository.deleteById(id);
+    private Voucher devolverVoucherCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Voucher voucherNuevo = new Voucher();
+                    voucherNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return voucherNuevo;
+                });
+    }
+
+    public Optional<Voucher> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return voucherRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Voucher voucher = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        voucherRepository.deleteById(voucher.getId());
     }
 }

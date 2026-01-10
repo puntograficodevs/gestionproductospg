@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional @AllArgsConstructor
@@ -15,16 +16,17 @@ public class FlybannerService {
 
     private final FlybannerRepository flybannerRepository;
     private final OpcionesFlybannerService opcionesFlybannerService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
 
-    public Flybanner guardar(FlybannerDTO flybannerDTO, Long idFlybanner) {
+    public Flybanner guardar(FlybannerDTO flybannerDTO, Long idOrdenTrabajo) {
         validarFlybannerDTO(flybannerDTO);
+        Flybanner flybanner = devolverFlybannerCorrespondiente(idOrdenTrabajo);
 
         TipoFazFlybanner tipoFazFlybanner = opcionesFlybannerService.buscarTipoFazFlybannerPorId(flybannerDTO.getTipoFazFlybannerId());
         AlturaFlybanner alturaFlybanner = opcionesFlybannerService.buscarAlturaFlybannerPorId(flybannerDTO.getAlturaFlybannerId());
         BanderaFlybanner banderaFlybanner = opcionesFlybannerService.buscarBanderaFlybannerPorId(flybannerDTO.getBanderaFlybannerId());
         TipoBaseFlybanner tipoBaseFlybanner = opcionesFlybannerService.buscarTipoBaseFlybannerPorId(flybannerDTO.getTipoBaseFlybannerId());
 
-        Flybanner flybanner = (idFlybanner != null) ? flybannerRepository.findById(idFlybanner).get() : new Flybanner();
         boolean adicionalDisenio = flybannerDTO.getConAdicionalDisenio();
 
         flybanner.setTipoFazFlybanner(tipoFazFlybanner);
@@ -47,8 +49,25 @@ public class FlybannerService {
         Assert.notNull(flybannerDTO.getCantidad(), "cantidadString es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        flybannerRepository.deleteById(id);
+    private Flybanner devolverFlybannerCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Flybanner flybannerNuevo = new Flybanner();
+                    flybannerNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return flybannerNuevo;
+                });
+    }
+
+    public Optional<Flybanner> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return flybannerRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Flybanner flybanner = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        flybannerRepository.deleteById(flybanner.getId());
     }
 }

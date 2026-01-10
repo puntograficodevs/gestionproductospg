@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class TarjetaService {
 
     private final TarjetaRepository tarjetaRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesTarjetaService opcionesTarjetaService;
 
-    public Tarjeta guardar(TarjetaDTO tarjetaDTO, Long idTarjeta) {
+    public Tarjeta guardar(TarjetaDTO tarjetaDTO, Long idOrdenTrabajo) {
         validarTarjetaDTO(tarjetaDTO);
+        Tarjeta tarjeta = devolverTarjetaCorrespondiente(idOrdenTrabajo);
 
         TipoPapelTarjeta tipoPapelTarjeta = opcionesTarjetaService.buscarTipoPapelTarjetaPorId(tarjetaDTO.getTipoPapelTarjetaId());
         TipoColorTarjeta tipoColorTarjeta = opcionesTarjetaService.buscarTipoColorTarjetaPorId(tarjetaDTO.getTipoColorTarjetaId());
@@ -32,7 +34,6 @@ public class TarjetaService {
             cantidad = Integer.valueOf(cantidadTarjeta.getCantidad());
         }
 
-        Tarjeta tarjeta = (idTarjeta != null) ? tarjetaRepository.findById(idTarjeta).get() : new Tarjeta();
         boolean adicionalDisenio = tarjetaDTO.getConAdicionalDisenio();
 
         tarjeta.setEnlaceArchivo(tarjetaDTO.getEnlaceArchivo());
@@ -64,8 +65,25 @@ public class TarjetaService {
         Assert.notNull(tarjetaDTO.getCantidadTarjetaId(), "cantidadTarjetaString es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        tarjetaRepository.deleteById(id);
+    private Tarjeta devolverTarjetaCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Tarjeta tarjetaNueva = new Tarjeta();
+                    tarjetaNueva.setOrdenTrabajo(ordenTrabajo);
+                    return tarjetaNueva;
+                });
+    }
+
+    public Optional<Tarjeta> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return tarjetaRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Tarjeta tarjeta = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        tarjetaRepository.deleteById(tarjeta.getId());
     }
 }

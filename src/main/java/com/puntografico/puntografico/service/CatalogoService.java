@@ -1,30 +1,30 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.Catalogo;
-import com.puntografico.puntografico.domain.TipoFazCatalogo;
-import com.puntografico.puntografico.domain.TipoLaminadoCatalogo;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.CatalogoDTO;
 import com.puntografico.puntografico.repository.CatalogoRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class CatalogoService {
 
     private final CatalogoRepository catalogoRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesCatalogoService opcionesCatalogoService;
 
-    public Catalogo guardar(CatalogoDTO catalogoDTO, Long idCatalogo) {
+    public Catalogo guardar(CatalogoDTO catalogoDTO, Long idOrdenTrabajo) {
         validarCatalogoDTO(catalogoDTO);
+        Catalogo catalogo = devolverCatalogoCorrespondiente(idOrdenTrabajo);
 
         TipoFazCatalogo tipoFazCatalogo = opcionesCatalogoService.buscarTipoFazCatalogoPorId(catalogoDTO.getTipoFazCatalogoId());
         TipoLaminadoCatalogo tipoLaminadoCatalogo = opcionesCatalogoService.buscarTipoLaminadoCatalogoPorId(catalogoDTO.getTipoLaminadoCatalogoId());
 
-        Catalogo catalogo = (idCatalogo != null) ? catalogoRepository.findById(idCatalogo).get() : new Catalogo();
         boolean adicionalDisenio = catalogoDTO.getConAdicionalDisenio();
 
         catalogo.setTipoPapel(catalogoDTO.getTipoPapel());
@@ -45,8 +45,25 @@ public class CatalogoService {
         Assert.notNull(catalogoDTO.getCantidad(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        catalogoRepository.deleteById(id);
+    private Catalogo devolverCatalogoCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Catalogo catalogoNuevo = new Catalogo();
+                    catalogoNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return catalogoNuevo;
+                });
+    }
+
+    public Optional<Catalogo> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return catalogoRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Catalogo catalogo = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        catalogoRepository.deleteById(catalogo.getId());
     }
 }

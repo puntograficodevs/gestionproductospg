@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class ImpresionService {
 
     private final ImpresionRepository impresionRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesImpresionService opcionesImpresionService;
 
-    public Impresion guardar(ImpresionDTO impresionDTO, Long idImpresion) {
+    public Impresion guardar(ImpresionDTO impresionDTO, Long idOrdenTrabajo) {
         validarImpresionDTO(impresionDTO);
+        Impresion impresion = devolverImpresionCorrespondiente(idOrdenTrabajo);
 
         TipoColorImpresion tipoColorImpresion = opcionesImpresionService.buscarTipoColorImpresionPorId(impresionDTO.getTipoColorImpresionId());
         TamanioHojaImpresion tamanioHojaImpresion = opcionesImpresionService.buscarTamanioHojaImpresionPorId(impresionDTO.getTamanioHojaImpresionId());
@@ -26,7 +28,6 @@ public class ImpresionService {
         TipoImpresion tipoImpresion = opcionesImpresionService.buscarTipoImpresionPorId(impresionDTO.getTipoImpresionId());
         CantidadImpresion cantidadImpresion = opcionesImpresionService.buscarCantidadImpresionPorId(impresionDTO.getCantidadImpresionId());
 
-        Impresion impresion = (idImpresion != null) ? impresionRepository.findById(idImpresion).get() : new Impresion();
         boolean esAnillado = impresionDTO.getEsAnillado();
 
         impresion.setEsAnillado(esAnillado);
@@ -53,9 +54,26 @@ public class ImpresionService {
         Assert.notNull(impresionDTO.getCantidadImpresionId(), "cantidadImpresionString es un campo obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        impresionRepository.deleteById(id);
+    private Impresion devolverImpresionCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Impresion impresionNueva = new Impresion();
+                    impresionNueva.setOrdenTrabajo(ordenTrabajo);
+                    return impresionNueva;
+                });
+    }
+
+    public Optional<Impresion> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return impresionRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Impresion impresion = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        impresionRepository.deleteById(impresion.getId());
     }
 }
 

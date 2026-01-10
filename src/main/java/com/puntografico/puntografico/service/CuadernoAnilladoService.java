@@ -1,30 +1,30 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.CuadernoAnillado;
-import com.puntografico.puntografico.domain.MedidaCuadernoAnillado;
-import com.puntografico.puntografico.domain.TipoTapaCuadernoAnillado;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.CuadernoAnilladoDTO;
 import com.puntografico.puntografico.repository.CuadernoAnilladoRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class CuadernoAnilladoService {
 
     private final CuadernoAnilladoRepository cuadernoAnilladoRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesCuadernoAnilladoService opcionesCuadernoAnilladoService;
 
-    public CuadernoAnillado guardar(CuadernoAnilladoDTO cuadernoAnilladoDTO, Long idCuadernoAnillado) {
+    public CuadernoAnillado guardar(CuadernoAnilladoDTO cuadernoAnilladoDTO, Long idOrdenTrabajo) {
         validarCuadernoAnilladoDTO(cuadernoAnilladoDTO);
+        CuadernoAnillado cuadernoAnillado = devolverCuadernoAnilladoCorrespondiente(idOrdenTrabajo);
 
         TipoTapaCuadernoAnillado tipoTapaCuadernoAnillado = opcionesCuadernoAnilladoService.buscarTipoTapaCuadernoAnilladoPorId(cuadernoAnilladoDTO.getTipoTapaCuadernoAnilladoId());
         MedidaCuadernoAnillado medidaCuadernoAnillado = opcionesCuadernoAnilladoService.buscarMedidaCuadernoAnilladoPorId(cuadernoAnilladoDTO.getMedidaCuadernoAnilladoId());
 
-        CuadernoAnillado cuadernoAnillado = (idCuadernoAnillado != null) ? cuadernoAnilladoRepository.findById(idCuadernoAnillado).get() : new CuadernoAnillado();
         boolean adicionalDisenio = cuadernoAnilladoDTO.getConAdicionalDisenio();
 
         cuadernoAnillado.setCantidadHojas(cuadernoAnilladoDTO.getCantidadHojas());
@@ -57,8 +57,25 @@ public class CuadernoAnilladoService {
         Assert.notNull(cuadernoAnilladoDTO.getMedidaCuadernoAnilladoId(), "La medida del cuaderno es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        cuadernoAnilladoRepository.deleteById(id);
+    private CuadernoAnillado devolverCuadernoAnilladoCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    CuadernoAnillado cuadernoAnilladoNuevo = new CuadernoAnillado();
+                    cuadernoAnilladoNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return cuadernoAnilladoNuevo;
+                });
+    }
+
+    public Optional<CuadernoAnillado> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return cuadernoAnilladoRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        CuadernoAnillado cuadernoAnillado = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        cuadernoAnilladoRepository.deleteById(cuadernoAnillado.getId());
     }
 }

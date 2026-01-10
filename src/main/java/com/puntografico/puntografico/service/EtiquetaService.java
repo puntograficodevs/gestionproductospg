@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class EtiquetaService {
 
     private final EtiquetaRepository etiquetaRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesEtiquetaService opcionesEtiquetaService;
 
-    public Etiqueta guardar(EtiquetaDTO etiquetaDTO, Long idEtiqueta) {
+    public Etiqueta guardar(EtiquetaDTO etiquetaDTO, Long idOrdenTrabajo) {
         validarEtiquetaDTO(etiquetaDTO);
+        Etiqueta etiqueta = devolverEtiquetaCorrespondiente(idOrdenTrabajo);
 
         TipoPapelEtiqueta tipoPapelEtiqueta = opcionesEtiquetaService.buscarTipoPapelEtiquetaPorId(etiquetaDTO.getTipoPapelEtiquetaId());
         TipoLaminadoEtiqueta tipoLaminadoEtiqueta = opcionesEtiquetaService.buscarTipoLaminadoEtiquetaPorId(etiquetaDTO.getTipoLaminadoEtiquetaId());
@@ -31,7 +33,6 @@ public class EtiquetaService {
             cantidad = Integer.valueOf(cantidadEtiqueta.getCantidad());
         }
 
-        Etiqueta etiqueta = (idEtiqueta != null) ? etiquetaRepository.findById(idEtiqueta).get() : new Etiqueta();
         boolean conPerforacionAdicional = etiquetaDTO.getConPerforacionAdicional();
         boolean conMarcaAdicional = etiquetaDTO.getConMarcaAdicional();
         boolean adicionalDisenio = etiquetaDTO.getConAdicionalDisenio();
@@ -67,8 +68,25 @@ public class EtiquetaService {
         Assert.notNull(etiquetaDTO.getCantidadEtiquetaId(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        etiquetaRepository.deleteById(id);
+    private Etiqueta devolverEtiquetaCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Etiqueta etiquetaNueva = new Etiqueta();
+                    etiquetaNueva.setOrdenTrabajo(ordenTrabajo);
+                    return etiquetaNueva;
+                });
+    }
+
+    public Optional<Etiqueta> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return etiquetaRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Etiqueta etiqueta = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        etiquetaRepository.deleteById(etiqueta.getId());
     }
 }

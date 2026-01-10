@@ -73,7 +73,7 @@ public class AgendaService {
 
     public void eliminar(Long idOrdenTrabajo) {
         Agenda agenda = buscarPorOrdenTrabajoId(idOrdenTrabajo)
-                .orElseThrow(() -> new RuntimeException("Agenda inexistente"));
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
 
         agendaRepository.deleteById(agenda.getId());
     }

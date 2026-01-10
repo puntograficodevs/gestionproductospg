@@ -4,6 +4,9 @@ import com.puntografico.puntografico.domain.HojasMembreteadas;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface HojasMembreteadasRepository extends JpaRepository<HojasMembreteadas, Long> {
+    Optional<HojasMembreteadas> findByOrdenTrabajo_Id(Long id);
 }

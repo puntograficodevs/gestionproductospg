@@ -8,17 +8,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional @AllArgsConstructor
 public class ViniloService {
 
     private final ViniloRepository viniloRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesViniloService opcionesViniloService;
 
-    public Vinilo guardar(ViniloDTO viniloDTO, Long idVinilo) {
+    public Vinilo guardar(ViniloDTO viniloDTO, Long idOrdenTrabajo) {
         validarViniloDTO(viniloDTO);
+        Vinilo vinilo = devolverViniloCorrespondiente(idOrdenTrabajo);
 
         TipoVinilo tipoVinilo = opcionesViniloService.buscarTipoViniloPorId(viniloDTO.getTipoViniloId());
         TipoAdicionalVinilo tipoAdicionalVinilo = opcionesViniloService.buscarTipoAdicionalViniloPorId(viniloDTO.getTipoAdicionalViniloId());
@@ -31,7 +33,6 @@ public class ViniloService {
             cantidad = Integer.valueOf(cantidadVinilo.getCantidad());
         }
 
-        Vinilo vinilo = (idVinilo != null) ? viniloRepository.findById(idVinilo).get() : new Vinilo();
         boolean adicionalDisenio = viniloDTO.getConAdicionalDisenio();
 
         vinilo.setEnlaceArchivo(viniloDTO.getEnlaceArchivo());
@@ -61,8 +62,25 @@ public class ViniloService {
         Assert.notNull(viniloDTO.getCantidadViniloId(), "cantidadViniloString es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        viniloRepository.deleteById(id);
+    private Vinilo devolverViniloCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Vinilo viniloNuevo = new Vinilo();
+                    viniloNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return viniloNuevo;
+                });
+    }
+
+    public Optional<Vinilo> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return viniloRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Vinilo vinilo = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        viniloRepository.deleteById(vinilo.getId());
     }
 }

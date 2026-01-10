@@ -1,30 +1,30 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.LonaComun;
-import com.puntografico.puntografico.domain.MedidaLonaComun;
-import com.puntografico.puntografico.domain.TipoLonaComun;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.LonaComunDTO;
 import com.puntografico.puntografico.repository.LonaComunRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class LonaComunService {
 
     private final LonaComunRepository lonaComunRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesLonaComunService opcionesLonaComunService;
 
-    public LonaComun guardar(LonaComunDTO lonaComunDTO, Long idLonaComun) {
+    public LonaComun guardar(LonaComunDTO lonaComunDTO, Long idOrdenTrabajo) {
         validarLonaComunDTO(lonaComunDTO);
+        LonaComun lonaComun = devolverLonaComunCorrespondiente(idOrdenTrabajo);
 
         MedidaLonaComun medidaLonaComun = opcionesLonaComunService.buscarMedidaLonaComunPorId(lonaComunDTO.getMedidaLonaComunId());
         TipoLonaComun tipoLonaComun = opcionesLonaComunService.buscarTipoLonaComunPorId(lonaComunDTO.getTipoLonaComunId());
 
-        LonaComun lonaComun = (idLonaComun != null) ? lonaComunRepository.findById(idLonaComun).get() :  new LonaComun();
         boolean conOjales = lonaComunDTO.getConOjales();
         boolean conOjalesConRefuerzo = lonaComunDTO.getConOjalesConRefuerzo();
         boolean conBolsillos =  lonaComunDTO.getConBolsillos();
@@ -59,8 +59,25 @@ public class LonaComunService {
         Assert.notNull(lonaComunDTO.getCantidad(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        lonaComunRepository.deleteById(id);
+    private LonaComun devolverLonaComunCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    LonaComun lonaComunNueva = new LonaComun();
+                    lonaComunNueva.setOrdenTrabajo(ordenTrabajo);
+                    return lonaComunNueva;
+                });
+    }
+
+    public Optional<LonaComun> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return lonaComunRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        LonaComun lonaComun = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        lonaComunRepository.deleteById(lonaComun.getId());
     }
 }

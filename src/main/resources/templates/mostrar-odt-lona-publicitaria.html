@@ -18,7 +18,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e83e8c" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
             </svg>
-            <h4 class="mb-0">Orden #<span th:text="${ordenLonaPublicitaria.ordenTrabajo.id}"></span> - <span th:text="${ordenLonaPublicitaria.ordenTrabajo.tipoProducto}"></span></h4>
+            <h4 class="mb-0">Orden #<span th:text="${ordenTrabajo.id}"></span> - <span th:text="${ordenTrabajo.tipoProducto}"></span></h4>
         </div>
 
         <!-- Imagen -->
@@ -32,52 +32,52 @@
             <div class="card mb-3 border contenedor-datos-orden-impresion ">
                 <h6>Datos del cliente</h6>
                 <hr class="divider">
-                <p><strong>Cliente: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.nombreCliente}"></span></p>
-                <p><strong>Teléfono: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.telefonoCliente}"></span></p>
-                <p><strong>Cuenta corriente: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Cliente: </strong><span th:text="${ordenTrabajo.nombreCliente}"></span></p>
+                <p><strong>Teléfono: </strong><span th:text="${ordenTrabajo.telefonoCliente}"></span></p>
+                <p><strong>Cuenta corriente: </strong><span th:text="${ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
             </div>
             <div class="card mb-3 border contenedor-datos-orden-impresion ">
                 <h6>Datos del pago</h6>
                 <hr class="divider">
                 <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
-                <p><strong>Total: </strong>$<span th:text="${ordenLonaPublicitaria.ordenTrabajo.total}"></span></p>
-                <p><strong>Entrega: </strong>$<span th:text="${ordenLonaPublicitaria.ordenTrabajo.abonado}"></span></p>
-                <p><strong>Necesita factura: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Vendedor/a: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.empleado.nombre}"></span></p>
+                <p><strong>Total: </strong>$<span th:text="${ordenTrabajo.total}"></span></p>
+                <p><strong>Entrega: </strong>$<span th:text="${ordenTrabajo.abonado}"></span></p>
+                <p><strong>Necesita factura: </strong><span th:text="${ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Vendedor/a: </strong><span th:text="${ordenTrabajo.empleado.nombre}"></span></p>
             </div>
         </div>
         <div class="col-6">
             <div class="card mb-3 border contenedor-datos-orden-impresion">
                 <h6>Datos del producto</h6>
                 <hr class="divider">
-                <p><strong>Tipo de lona: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.tipoLonaPublicitaria.tipo}"></span></p>
-                <p><strong>Medida de lona: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.medidaLonaPublicitaria.medida}"></span></p>
-                <p><strong>Adicional portabanner: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conAdicionalPortabanner} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con ojales comunes: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conOjales} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con ojales reforzados: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conOjalesConRefuerzo} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con bolsillos: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conBolsillos} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con demasía para tensado: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conDemasiaParaTensado} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con solapado: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conSolapado} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con adicional diseño: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Tipo de lona: </strong><span th:text="${lonaPublicitaria.tipoLonaPublicitaria.tipo}"></span></p>
+                <p><strong>Medida de lona: </strong><span th:text="${lonaPublicitaria.medidaLonaPublicitaria.medida}"></span></p>
+                <p><strong>Adicional portabanner: </strong><span th:text="${lonaPublicitaria.conAdicionalPortabanner} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con ojales comunes: </strong><span th:text="${lonaPublicitaria.conOjales} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con ojales reforzados: </strong><span th:text="${lonaPublicitaria.conOjalesConRefuerzo} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con bolsillos: </strong><span th:text="${lonaPublicitaria.conBolsillos} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con demasía para tensado: </strong><span th:text="${lonaPublicitaria.conDemasiaParaTensado} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con solapado: </strong><span th:text="${lonaPublicitaria.conSolapado} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con adicional diseño: </strong><span th:text="${lonaPublicitaria.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
                 <p><strong>Enlace al archivo: </strong>
-                    <span th:if="${ordenLonaPublicitaria.lonaPublicitaria.enlaceArchivo == ''}"> - </span>
-                    <a th:unless="${ordenLonaPublicitaria.lonaPublicitaria.enlaceArchivo == ''}"
-                       th:href="${ordenLonaPublicitaria.lonaPublicitaria.enlaceArchivo}"
-                       th:text="${ordenLonaPublicitaria.lonaPublicitaria.enlaceArchivo}"
+                    <span th:if="${lonaPublicitaria.enlaceArchivo == ''}"> - </span>
+                    <a th:unless="${lonaPublicitaria.enlaceArchivo == ''}"
+                       th:href="${lonaPublicitaria.enlaceArchivo}"
+                       th:text="${lonaPublicitaria.enlaceArchivo}"
                        target="_blank"></a>
                 </p>
-                <p><strong>Información adicional: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.informacionAdicional} == '' ? ' - ' : ${ordenLonaPublicitaria.lonaPublicitaria.informacionAdicional}"></span></p>
+                <p><strong>Información adicional: </strong><span th:text="${lonaPublicitaria.informacionAdicional} == '' ? ' - ' : ${lonaPublicitaria.informacionAdicional}"></span></p>
                 <hr class="divider">
                 <p><strong>Fecha de entrega: </strong><span th:text="${fechaEntrega}"></span>
-                <p th:if="${ordenLonaPublicitaria.ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenLonaPublicitaria.ordenTrabajo.horaEntrega}"></span> hs.</p>
-                <p th:if="${ordenLonaPublicitaria.ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
-                <p><strong>Cantidad: </strong><span th:text="${ordenLonaPublicitaria.lonaPublicitaria.cantidad}"></span></p>
+                <p th:if="${ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenTrabajo.horaEntrega}"></span> hs.</p>
+                <p th:if="${ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
+                <p><strong>Cantidad: </strong><span th:text="${lonaPublicitaria.cantidad}"></span></p>
             </div>
         </div>
     </div>
     <div class="col-12">
         <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-precio-restante-orden-impresion">
-            <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenLonaPublicitaria.ordenTrabajo.resta}"></span></p>
+            <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenTrabajo.resta}"></span></p>
         </div>
     </div>
     <div th:replace="fragments/footer-odt :: footer-odt"></div>

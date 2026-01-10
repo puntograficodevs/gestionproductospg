@@ -1,27 +1,28 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.Otro;
-import com.puntografico.puntografico.domain.TipoColorOtro;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.OtroDTO;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import com.puntografico.puntografico.repository.OtroRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class OtroService {
 
     private final OtroRepository otroRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesOtroService opcionesOtroService;
 
-    public Otro guardar(OtroDTO otroDTO, Long idOtro) {
+    public Otro guardar(OtroDTO otroDTO, Long idOrdenTrabajo) {
         validarOtroDTO(otroDTO);
+        Otro otro = devolverOtroCorrespondiente(idOrdenTrabajo);
 
         TipoColorOtro tipoColorOtro = opcionesOtroService.buscarTipoColorOtroPorId(otroDTO.getTipoColorOtroId());
 
-        Otro otro = (idOtro != null) ? otroRepository.findById(idOtro).get() : new Otro();
         boolean adicionalDisenio = otroDTO.getConAdicionalDisenio();
 
         otro.setMedida(otroDTO.getMedida());
@@ -39,8 +40,25 @@ public class OtroService {
         Assert.notNull(otroDTO.getCantidad(), "cantidadString es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        otroRepository.deleteById(id);
+    private Otro devolverOtroCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Otro otroNuevo = new Otro();
+                    otroNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return otroNuevo;
+                });
+    }
+
+    public Optional<Otro> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return otroRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Otro otro = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        otroRepository.deleteById(otro.getId());
     }
 }

@@ -1,25 +1,25 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.CantidadHojasMembreteadas;
-import com.puntografico.puntografico.domain.HojasMembreteadas;
-import com.puntografico.puntografico.domain.MedidaHojasMembreteadas;
-import com.puntografico.puntografico.domain.TipoColorHojasMembreteadas;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.HojasMembreteadasDTO;
 import com.puntografico.puntografico.repository.HojasMembreteadasRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class HojasMembreteadasService {
 
     private final OpcionesHojasMembreteadasService opcionesHojasMembreteadasService;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final HojasMembreteadasRepository hojasMembreteadasRepository;
 
-    public HojasMembreteadas guardar(HojasMembreteadasDTO hojasMembreteadasDTO, Long idHojasMembreteadas) {
+    public HojasMembreteadas guardar(HojasMembreteadasDTO hojasMembreteadasDTO, Long idOrdenTrabajo) {
         validarHojasMembreteadasDTO(hojasMembreteadasDTO);
+        HojasMembreteadas hojasMembreteadas = devolverHojasMembreteadasCorrespondiente(idOrdenTrabajo);
 
         MedidaHojasMembreteadas medidaHojasMembreteadas = opcionesHojasMembreteadasService.buscarMedidaHojasMembreteadasPorId(hojasMembreteadasDTO.getMedidaHojasMembreteadasId());
         TipoColorHojasMembreteadas tipoColorHojasMembreteadas = opcionesHojasMembreteadasService.buscarTipoColorHojasMembreteadasPorId(hojasMembreteadasDTO.getTipoColorHojasMembreteadasId());
@@ -30,7 +30,6 @@ public class HojasMembreteadasService {
             cantidad = Integer.valueOf(cantidadHojasMembreteadas.getCantidad());
         }
 
-        HojasMembreteadas hojasMembreteadas = (idHojasMembreteadas != null) ? hojasMembreteadasRepository.findById(idHojasMembreteadas).get() : new HojasMembreteadas();
         boolean adicionalDisenio = hojasMembreteadasDTO.getConAdicionalDisenio();
 
         hojasMembreteadas.setCantidadHojas(hojasMembreteadasDTO.getCantidadHojas());
@@ -58,8 +57,25 @@ public class HojasMembreteadasService {
         Assert.notNull(hojasMembreteadasDTO.getCantidadHojas(), "cantidadHojas es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        hojasMembreteadasRepository.deleteById(id);
+    private HojasMembreteadas devolverHojasMembreteadasCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    HojasMembreteadas hojasMembreteadasNueva = new HojasMembreteadas();
+                    hojasMembreteadasNueva.setOrdenTrabajo(ordenTrabajo);
+                    return hojasMembreteadasNueva;
+                });
+    }
+
+    public Optional<HojasMembreteadas> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return hojasMembreteadasRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        HojasMembreteadas hojasMembreteadas = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        hojasMembreteadasRepository.deleteById(hojasMembreteadas.getId());
     }
 }

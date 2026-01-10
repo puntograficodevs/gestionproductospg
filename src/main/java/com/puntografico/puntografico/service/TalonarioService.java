@@ -8,16 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class TalonarioService {
 
     private final OpcionesTalonarioService opcionesTalonarioService;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final TalonarioRepository talonarioRepository;
 
-    public Talonario guardar(TalonarioDTO talonarioDTO, Long idTalonario) {
+    public Talonario guardar(TalonarioDTO talonarioDTO, Long idOrdenTrabajo) {
         validarTalonarioDTO(talonarioDTO);
+        Talonario talonario = devolverTalonarioCorrespondiente(idOrdenTrabajo);
 
         TipoTalonario tipoTalonario = opcionesTalonarioService.buscarTipoTalonarioPorId(talonarioDTO.getTipoTalonarioId());
         TipoTroqueladoTalonario tipoTroqueladoTalonario = opcionesTalonarioService.buscarTipoTroqueladoTalonarioPorId(talonarioDTO.getTipoTroqueladoTalonarioId());
@@ -33,7 +35,6 @@ public class TalonarioService {
             cantidad = Integer.valueOf(cantidadTalonario.getCantidad());
         }
 
-        Talonario talonario = (idTalonario != null) ? talonarioRepository.findById(idTalonario).get() : new Talonario();
         boolean adicionalDisenio = talonarioDTO.getConAdicionalDisenio();
         boolean conNumerado = talonarioDTO.getConNumerado();
         boolean esEncolado = talonarioDTO.getEsEncolado();
@@ -73,8 +74,25 @@ public class TalonarioService {
         Assert.notNull(talonarioDTO.getCantidadTalonarioId(), " es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        talonarioRepository.deleteById(id);
+    private Talonario devolverTalonarioCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Talonario talonarioNuevo = new Talonario();
+                    talonarioNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return talonarioNuevo;
+                });
+    }
+
+    public Optional<Talonario> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return talonarioRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Talonario talonario = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        talonarioRepository.deleteById(talonario.getId());
     }
 }

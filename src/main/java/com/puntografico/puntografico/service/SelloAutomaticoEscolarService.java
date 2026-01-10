@@ -1,29 +1,30 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.ModeloSelloAutomaticoEscolar;
-import com.puntografico.puntografico.domain.SelloAutomaticoEscolar;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.SelloAutomaticoEscolarDTO;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import com.puntografico.puntografico.repository.SelloAutomaticoEscolarRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional @AllArgsConstructor
 public class SelloAutomaticoEscolarService {
 
     private final SelloAutomaticoEscolarRepository selloAutomaticoEscolarRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesSelloAutomaticoEscolarService opcionesSelloAutomaticoEscolarService;
 
-    public SelloAutomaticoEscolar guardar(SelloAutomaticoEscolarDTO selloAutomaticoEscolarDTO, Long idSelloAutomaticoEscolar) {
+    public SelloAutomaticoEscolar guardar(SelloAutomaticoEscolarDTO selloAutomaticoEscolarDTO, Long idOrdenTrabajo) {
         validarSelloAutomaticoEscolarDTO(selloAutomaticoEscolarDTO);
+        SelloAutomaticoEscolar selloAutomaticoEscolar = devolverSelloAutomaticoEscolarCorrespondiente(idOrdenTrabajo);
 
         ModeloSelloAutomaticoEscolar modeloSelloAutomaticoEscolar = opcionesSelloAutomaticoEscolarService.buscarModeloSelloAutomaticoEscolarPorId(selloAutomaticoEscolarDTO.getModeloSelloAutomaticoEscolarId());
 
-        SelloAutomaticoEscolar selloAutomaticoEscolar = (idSelloAutomaticoEscolar != null) ? selloAutomaticoEscolarRepository.findById(idSelloAutomaticoEscolar).get() : new SelloAutomaticoEscolar();
         boolean adicionalDisenio = selloAutomaticoEscolarDTO.getConAdicionalDisenio();
 
         selloAutomaticoEscolar.setTextoLineaUno(selloAutomaticoEscolarDTO.getTextoLineaUno());
@@ -48,8 +49,25 @@ public class SelloAutomaticoEscolarService {
         Assert.notNull(selloAutomaticoEscolarDTO.getCantidad(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        selloAutomaticoEscolarRepository.deleteById(id);
+    private SelloAutomaticoEscolar devolverSelloAutomaticoEscolarCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    SelloAutomaticoEscolar selloAutomaticoEscolarNuevo = new SelloAutomaticoEscolar();
+                    selloAutomaticoEscolarNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return selloAutomaticoEscolarNuevo;
+                });
+    }
+
+    public Optional<SelloAutomaticoEscolar> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return selloAutomaticoEscolarRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        SelloAutomaticoEscolar selloAutomaticoEscolar = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        selloAutomaticoEscolarRepository.deleteById(selloAutomaticoEscolar.getId());
     }
 }

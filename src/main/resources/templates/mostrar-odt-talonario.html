@@ -18,7 +18,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e83e8c" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
       </svg>
-      <h4 class="mb-0">Orden #<span th:text="${ordenTalonario.ordenTrabajo.id}"></span> - <span th:text="${ordenTalonario.ordenTrabajo.tipoProducto}"></span></h4>
+      <h4 class="mb-0">Orden #<span th:text="${ordenTrabajo.id}"></span> - <span th:text="${ordenTrabajo.tipoProducto}"></span></h4>
     </div>
 
     <!-- Imagen -->
@@ -32,58 +32,58 @@
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del cliente</h6>
         <hr class="divider">
-        <p><strong>Cliente: </strong><span th:text="${ordenTalonario.ordenTrabajo.nombreCliente}"></span></p>
-        <p><strong>Teléfono: </strong><span th:text="${ordenTalonario.ordenTrabajo.telefonoCliente}"></span></p>
-        <p><strong>Cuenta corriente: </strong><span th:text="${ordenTalonario.ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Cliente: </strong><span th:text="${ordenTrabajo.nombreCliente}"></span></p>
+        <p><strong>Teléfono: </strong><span th:text="${ordenTrabajo.telefonoCliente}"></span></p>
+        <p><strong>Cuenta corriente: </strong><span th:text="${ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
       </div>
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del pago</h6>
         <hr class="divider">
         <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
-        <p><strong>Total: </strong>$<span th:text="${ordenTalonario.ordenTrabajo.total}"></span></p>
-        <p><strong>Entrega: </strong>$<span th:text="${ordenTalonario.ordenTrabajo.abonado}"></span></p>
-        <p><strong>Necesita factura: </strong><span th:text="${ordenTalonario.ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
-        <p><strong>Vendedor/a: </strong><span th:text="${ordenTalonario.ordenTrabajo.empleado.nombre}"></span></p>
+        <p><strong>Total: </strong>$<span th:text="${ordenTrabajo.total}"></span></p>
+        <p><strong>Entrega: </strong>$<span th:text="${ordenTrabajo.abonado}"></span></p>
+        <p><strong>Necesita factura: </strong><span th:text="${ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Vendedor/a: </strong><span th:text="${ordenTrabajo.empleado.nombre}"></span></p>
       </div>
     </div>
     <div class="col-6">
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del producto</h6>
         <hr class="divider">
-        <p><strong>Tipo de talonario: </strong><span th:text="${ordenTalonario.talonario.tipoTalonario.tipo}"></span></p>
-        <p><strong>Tipo de troquelado: </strong><span th:text="${ordenTalonario.talonario.tipoTroqueladoTalonario.tipo}"></span></p>
-        <p><strong>Modo del talonario: </strong><span th:text="${ordenTalonario.talonario.modoTalonario.modo}"></span></p>
-        <p><strong>Tipo de color: </strong><span th:text="${ordenTalonario.talonario.tipoColorTalonario.tipo}"></span></p>
-        <p><strong>Tipo de papel: </strong><span th:text="${ordenTalonario.talonario.tipoPapelTalonario.tipo}"></span></p>
-        <p><strong>Cantidad de hojas: </strong><span th:text="${ordenTalonario.talonario.cantidadHojas}"></span></p>
+        <p><strong>Tipo de talonario: </strong><span th:text="${talonario.tipoTalonario.tipo}"></span></p>
+        <p><strong>Tipo de troquelado: </strong><span th:text="${talonario.tipoTroqueladoTalonario.tipo}"></span></p>
+        <p><strong>Modo del talonario: </strong><span th:text="${talonario.modoTalonario.modo}"></span></p>
+        <p><strong>Tipo de color: </strong><span th:text="${talonario.tipoColorTalonario.tipo}"></span></p>
+        <p><strong>Tipo de papel: </strong><span th:text="${talonario.tipoPapelTalonario.tipo}"></span></p>
+        <p><strong>Cantidad de hojas: </strong><span th:text="${talonario.cantidadHojas}"></span></p>
         <p><strong>Medida: </strong>
-          <span th:text="${ordenTalonario.talonario.medidaTalonario.medida} == 'OTRA'
-                        ? ${ordenTalonario.talonario.medidaPersonalizada}
-                        : ${ordenTalonario.talonario.medidaTalonario.medida}">
+          <span th:text="${talonario.medidaTalonario.medida} == 'OTRA'
+                        ? ${talonario.medidaPersonalizada}
+                        : ${talonario.medidaTalonario.medida}">
                       </span>
         </p>
-        <p><strong>Adicional diseño: </strong><span th:text="${ordenTalonario.talonario.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
-        <p><strong>Con numerado: </strong><span th:text="${ordenTalonario.talonario.conNumerado} ? 'Sí' : 'No'"></span></p>
-        <p><strong>Es encolado: </strong><span th:text="${ordenTalonario.talonario.esEncolado} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Adicional diseño: </strong><span th:text="${talonario.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Con numerado: </strong><span th:text="${talonario.conNumerado} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Es encolado: </strong><span th:text="${talonario.esEncolado} ? 'Sí' : 'No'"></span></p>
         <p><strong>Enlace al archivo: </strong>
-          <span th:if="${ordenTalonario.talonario.enlaceArchivo == ''}"> - </span>
-          <a th:unless="${ordenTalonario.talonario.enlaceArchivo == ''}"
-             th:href="${ordenTalonario.talonario.enlaceArchivo}"
-             th:text="${ordenTalonario.talonario.enlaceArchivo}"
+          <span th:if="${talonario.enlaceArchivo == ''}"> - </span>
+          <a th:unless="${talonario.enlaceArchivo == ''}"
+             th:href="${talonario.enlaceArchivo}"
+             th:text="${talonario.enlaceArchivo}"
              target="_blank"></a>
         </p>
-        <p><strong>Información adicional: </strong><span th:text="${ordenTalonario.talonario.informacionAdicional} == '' ? ' - ' : ${ordenTalonario.talonario.informacionAdicional}"></span></p>
+        <p><strong>Información adicional: </strong><span th:text="${talonario.informacionAdicional} == '' ? ' - ' : ${talonario.informacionAdicional}"></span></p>
         <hr class="divider">
         <p><strong>Fecha de entrega: </strong><span th:text="${fechaEntrega}"></span>
-        <p th:if="${ordenTalonario.ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenTalonario.ordenTrabajo.horaEntrega}"></span> hs.</p>
-        <p th:if="${ordenTalonario.ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
-        <p><strong>Cantidad de productos: </strong><span th:text="${ordenTalonario.talonario.cantidad}"></span></p>
+        <p th:if="${ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenTrabajo.horaEntrega}"></span> hs.</p>
+        <p th:if="${ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
+        <p><strong>Cantidad de productos: </strong><span th:text="${talonario.cantidad}"></span></p>
       </div>
     </div>
   </div>
   <div class="col-12">
     <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-precio-restante-orden-impresion">
-      <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenTalonario.ordenTrabajo.resta}"></span></p>
+      <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenTrabajo.resta}"></span></p>
     </div>
   </div>
   <div th:replace="fragments/footer-odt :: footer-odt"></div>

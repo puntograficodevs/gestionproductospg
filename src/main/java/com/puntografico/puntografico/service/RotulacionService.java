@@ -1,28 +1,29 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.Rotulacion;
-import com.puntografico.puntografico.domain.TipoCorteRotulacion;
-import com.puntografico.puntografico.domain.TipoRotulacion;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.RotulacionDTO;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import com.puntografico.puntografico.repository.RotulacionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class RotulacionService {
 
     private final RotulacionRepository rotulacionRepository;
     private final OpcionesRotulacionService opcionesRotulacionService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
 
-    public Rotulacion guardar(RotulacionDTO rotulacionDTO, Long idRotulacion) {
+    public Rotulacion guardar(RotulacionDTO rotulacionDTO, Long idOrdenTrabajo) {
         validarRotulacionDTO(rotulacionDTO);
+        Rotulacion rotulacion = devolverRotulacionCorrespondiente(idOrdenTrabajo);
 
         TipoRotulacion tipoRotulacion = opcionesRotulacionService.buscarTipoRotulacionPorId(rotulacionDTO.getTipoRotulacionId());
         TipoCorteRotulacion tipoCorteRotulacion = opcionesRotulacionService.buscarTipoCorteRotulacionPorId(rotulacionDTO.getTipoCorteRotulacionId());
 
-        Rotulacion rotulacion = (idRotulacion != null) ? rotulacionRepository.findById(idRotulacion).get() : new Rotulacion();
         boolean esLaminado = rotulacionDTO.getEsLaminado();
         boolean adicionalDisenio = rotulacionDTO.getConAdicionalDisenio();
 
@@ -49,8 +50,25 @@ public class RotulacionService {
         Assert.notNull(rotulacionDTO.getTipoRotulacionId(), "El tipo de rotulación es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        rotulacionRepository.deleteById(id);
+    private Rotulacion devolverRotulacionCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Rotulacion rotulacionNueva = new Rotulacion();
+                    rotulacionNueva.setOrdenTrabajo(ordenTrabajo);
+                    return rotulacionNueva;
+                });
+    }
+
+    public Optional<Rotulacion> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return rotulacionRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Rotulacion rotulacion = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        rotulacionRepository.deleteById(rotulacion.getId());
     }
 }

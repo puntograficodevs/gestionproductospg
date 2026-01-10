@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class EntradaService {
 
     private final EntradaRepository entradaRepository;
     private final OpcionesEntradaService opcionesEntradaService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
 
-    public Entrada guardar(EntradaDTO entradaDTO, Long idEntrada) {
+    public Entrada guardar(EntradaDTO entradaDTO, Long idOrdenTrabajo) {
         validarEntradaDTO(entradaDTO);
+        Entrada entrada = devolverEntradaCorrespondiente(idOrdenTrabajo);
 
         TipoPapelEntrada tipoPapelEntrada = opcionesEntradaService.buscarTipoPapelEntradaPorId(entradaDTO.getTipoPapelEntradaId());
         TipoColorEntrada tipoColorEntrada = opcionesEntradaService.buscarTipoColorEntradaPorId(entradaDTO.getTipoColorEntradaId());
@@ -31,7 +34,6 @@ public class EntradaService {
             cantidad = Integer.valueOf(cantidadEntrada.getCantidad());
         }
 
-        Entrada entrada = (idEntrada != null) ? entradaRepository.findById(idEntrada).get() : new Entrada();
         boolean adicionalDisenio = entradaDTO.getConAdicionalDisenio();
 
         entrada.setEnlaceArchivo(entradaDTO.getEnlaceArchivo());
@@ -65,8 +67,25 @@ public class EntradaService {
         Assert.notNull(entradaDTO.getCantidadEntradaId(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        entradaRepository.deleteById(id);
+    private Entrada devolverEntradaCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Entrada entradaNueva = new Entrada();
+                    entradaNueva.setOrdenTrabajo(ordenTrabajo);
+                    return entradaNueva;
+                });
+    }
+
+    public Optional<Entrada> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return entradaRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Entrada entrada = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        entradaRepository.deleteById(entrada.getId());
     }
 }

@@ -59,7 +59,7 @@ public class AnotadorService {
 
     public void eliminar(Long idOrdenTrabajo) {
         Anotador anotador = buscarPorOrdenTrabajoId(idOrdenTrabajo)
-                .orElseThrow(() -> new RuntimeException("Anotador inexistente"));
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
 
         anotadorRepository.deleteById(anotador.getId());
     }

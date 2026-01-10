@@ -8,21 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class LonaPublicitariaService {
 
     private final LonaPublicitariaRepository lonaPublicitariaRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesLonaPublicitariaService opcionesLonaPublicitariaService;
 
-    public LonaPublicitaria guardar(LonaPublicitariaDTO lonaPublicitariaDTO, Long idLonaPublicitaria) {
+    public LonaPublicitaria guardar(LonaPublicitariaDTO lonaPublicitariaDTO, Long idOrdenTrabajo) {
         validarLonaPublicitariaDTO(lonaPublicitariaDTO);
+        LonaPublicitaria lonaPublicitaria = devolverLonaPublicitariaCorrespondiente(idOrdenTrabajo);
 
         MedidaLonaPublicitaria medidaLonaPublicitaria = opcionesLonaPublicitariaService.buscarMedidaLonaPublicitariaPorId(lonaPublicitariaDTO.getMedidaLonaPublicitariaId());
         TipoLonaPublicitaria tipoLonaPublicitaria = opcionesLonaPublicitariaService.buscarTipoLonaPublicitariaPorId(lonaPublicitariaDTO.getTipoLonaPublicitariaId());
 
-        LonaPublicitaria lonaPublicitaria = (idLonaPublicitaria != null) ? lonaPublicitariaRepository.findById(idLonaPublicitaria).get() : new LonaPublicitaria();
         boolean conAdicionalPortabanner = lonaPublicitariaDTO.getConAdicionalPortabanner();
         boolean conOjales = lonaPublicitariaDTO.getConOjales();
         boolean conOjalesConRefuerzo = lonaPublicitariaDTO.getConOjalesConRefuerzo();
@@ -54,8 +55,25 @@ public class LonaPublicitariaService {
         Assert.notNull(lonaPublicitariaDTO.getCantidad(), "La cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        lonaPublicitariaRepository.deleteById(id);
+    private LonaPublicitaria devolverLonaPublicitariaCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    LonaPublicitaria lonaPublicitariaNueva = new LonaPublicitaria();
+                    lonaPublicitariaNueva.setOrdenTrabajo(ordenTrabajo);
+                    return lonaPublicitariaNueva;
+                });
+    }
+
+    public Optional<LonaPublicitaria> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return lonaPublicitariaRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        LonaPublicitaria lonaPublicitaria = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        lonaPublicitariaRepository.deleteById(lonaPublicitaria.getId());
     }
 }

@@ -1,31 +1,31 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.RifasBonosContribucion;
-import com.puntografico.puntografico.domain.TipoColorRifa;
-import com.puntografico.puntografico.domain.TipoPapelRifa;
-import com.puntografico.puntografico.domain.TipoTroqueladoRifa;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.RifasBonosContribucionDTO;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import com.puntografico.puntografico.repository.RifasBonosContribucionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class RifasBonosContribucionService {
 
     private final RifasBonosContribucionRepository rifasBonosContribucionRepository;
     private final OpcionesRifasContribucionService opcionesRifasContribucionService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
 
-    public RifasBonosContribucion guardar(RifasBonosContribucionDTO rifasBonosContribucionDTO, Long idRifasBonosContribucion) {
+    public RifasBonosContribucion guardar(RifasBonosContribucionDTO rifasBonosContribucionDTO, Long idOrdenTrabajo) {
         validarRifasBonosContribucionDTO(rifasBonosContribucionDTO);
+        RifasBonosContribucion rifasBonosContribucion = devolverRifasBonosContribucionCorrespondiente(idOrdenTrabajo);
 
         TipoPapelRifa tipoPapelRifa = opcionesRifasContribucionService.buscarTipoPapelRifaPorId(rifasBonosContribucionDTO.getTipoPapelRifaId());
         TipoTroqueladoRifa tipoTroqueladoRifa = opcionesRifasContribucionService.buscarTipoTroqueladoRifaPorId(rifasBonosContribucionDTO.getTipoTroqueladoRifaId());
         TipoColorRifa tipoColorRifa = opcionesRifasContribucionService.buscarTipoColorRifaPorId(rifasBonosContribucionDTO.getTipoColorRifaId());
 
-        RifasBonosContribucion rifasBonosContribucion = (idRifasBonosContribucion != null) ? rifasBonosContribucionRepository.findById(idRifasBonosContribucion).get() : new RifasBonosContribucion();
         boolean adicionalDisenio = rifasBonosContribucionDTO.getConAdicionalDisenio();
         boolean conNumerado = rifasBonosContribucionDTO.getConNumerado();
         boolean conEncolado = rifasBonosContribucionDTO.getConEncolado();
@@ -53,8 +53,25 @@ public class RifasBonosContribucionService {
         Assert.notNull(rifasBonosContribucionDTO.getTipoColorRifaId(), "El tipo de color es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        rifasBonosContribucionRepository.deleteById(id);
+    private RifasBonosContribucion devolverRifasBonosContribucionCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    RifasBonosContribucion rifasBonosContribucionNueva = new RifasBonosContribucion();
+                    rifasBonosContribucionNueva.setOrdenTrabajo(ordenTrabajo);
+                    return rifasBonosContribucionNueva;
+                });
+    }
+
+    public Optional<RifasBonosContribucion> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return rifasBonosContribucionRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        RifasBonosContribucion rifasBonosContribucion = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        rifasBonosContribucionRepository.deleteById(rifasBonosContribucion.getId());
     }
 }

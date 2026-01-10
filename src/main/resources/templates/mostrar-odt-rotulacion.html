@@ -18,7 +18,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e83e8c" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
             </svg>
-            <h4 class="mb-0">Orden #<span th:text="${ordenRotulacion.ordenTrabajo.id}"></span> - <span th:text="${ordenRotulacion.ordenTrabajo.tipoProducto}"></span></h4>
+            <h4 class="mb-0">Orden #<span th:text="${ordenTrabajo.id}"></span> - <span th:text="${ordenTrabajo.tipoProducto}"></span></h4>
         </div>
 
         <!-- Imagen -->
@@ -32,48 +32,48 @@
             <div class="card mb-3 border contenedor-datos-orden-impresion ">
                 <h6>Datos del cliente</h6>
                 <hr class="divider">
-                <p><strong>Cliente: </strong><span th:text="${ordenRotulacion.ordenTrabajo.nombreCliente}"></span></p>
-                <p><strong>Teléfono: </strong><span th:text="${ordenRotulacion.ordenTrabajo.telefonoCliente}"></span></p>
-                <p><strong>Cuenta corriente: </strong><span th:text="${ordenRotulacion.ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Cliente: </strong><span th:text="${ordenTrabajo.nombreCliente}"></span></p>
+                <p><strong>Teléfono: </strong><span th:text="${ordenTrabajo.telefonoCliente}"></span></p>
+                <p><strong>Cuenta corriente: </strong><span th:text="${ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
             </div>
             <div class="card mb-3 border contenedor-datos-orden-impresion ">
                 <h6>Datos del pago</h6>
                 <hr class="divider">
                 <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
-                <p><strong>Total: </strong>$<span th:text="${ordenRotulacion.ordenTrabajo.total}"></span></p>
-                <p><strong>Entrega: </strong>$<span th:text="${ordenRotulacion.ordenTrabajo.abonado}"></span></p>
-                <p><strong>Necesita factura: </strong><span th:text="${ordenRotulacion.ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Vendedor/a: </strong><span th:text="${ordenRotulacion.ordenTrabajo.empleado.nombre}"></span></p>
+                <p><strong>Total: </strong>$<span th:text="${ordenTrabajo.total}"></span></p>
+                <p><strong>Entrega: </strong>$<span th:text="${ordenTrabajo.abonado}"></span></p>
+                <p><strong>Necesita factura: </strong><span th:text="${ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Vendedor/a: </strong><span th:text="${ordenTrabajo.empleado.nombre}"></span></p>
             </div>
         </div>
         <div class="col-6">
             <div class="card mb-3 border contenedor-datos-orden-impresion">
                 <h6>Datos del producto</h6>
                 <hr class="divider">
-                <p><strong>Tipo de rotulación: </strong><span th:text="${ordenRotulacion.rotulacion.tipoRotulacion.tipo}"></span></p>
-                <p><strong>Tipo de corte: </strong><span th:text="${ordenRotulacion.rotulacion.tipoCorteRotulacion.tipo}"></span></p>
-                <p><strong>Medida: </strong><span th:text="${ordenRotulacion.rotulacion.medida}"></span></p>
-                <p><strong>Laminado: </strong><span th:text="${ordenRotulacion.rotulacion.esLaminado} ? 'Sí' : 'No'"></span></p>
-                <p><strong>Con adicional diseño: </strong><span th:text="${ordenRotulacion.rotulacion.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Tipo de rotulación: </strong><span th:text="${rotulacion.tipoRotulacion.tipo}"></span></p>
+                <p><strong>Tipo de corte: </strong><span th:text="${rotulacion.tipoCorteRotulacion.tipo}"></span></p>
+                <p><strong>Medida: </strong><span th:text="${rotulacion.medida}"></span></p>
+                <p><strong>Laminado: </strong><span th:text="${rotulacion.esLaminado} ? 'Sí' : 'No'"></span></p>
+                <p><strong>Con adicional diseño: </strong><span th:text="${rotulacion.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
                 <p><strong>Enlace al archivo: </strong>
-                    <span th:if="${ordenRotulacion.rotulacion.enlaceArchivo == ''}"> - </span>
-                    <a th:unless="${ordenRotulacion.rotulacion.enlaceArchivo == ''}"
-                       th:href="${ordenRotulacion.rotulacion.enlaceArchivo}"
-                       th:text="${ordenRotulacion.rotulacion.enlaceArchivo}"
+                    <span th:if="${rotulacion.enlaceArchivo == ''}"> - </span>
+                    <a th:unless="${rotulacion.enlaceArchivo == ''}"
+                       th:href="${rotulacion.enlaceArchivo}"
+                       th:text="${rotulacion.enlaceArchivo}"
                        target="_blank"></a>
                 </p>
-                <p><strong>Información adicional: </strong><span th:text="${ordenRotulacion.rotulacion.informacionAdicional} == '' ? ' - ' : ${ordenRotulacion.rotulacion.informacionAdicional}"></span></p>
+                <p><strong>Información adicional: </strong><span th:text="${rotulacion.informacionAdicional} == '' ? ' - ' : ${rotulacion.informacionAdicional}"></span></p>
                 <hr class="divider">
-                <p><strong>Fecha de colocación: </strong><span th:text="${ordenRotulacion.rotulacion.horarioRotulacion}"></span>
-                <p><strong>Dirección de colocación: </strong><span th:text="${ordenRotulacion.rotulacion.direccionRotulacion}"></span>
-                <p th:if="${ordenRotulacion.ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
-                <p><strong>Cantidad: </strong><span th:text="${ordenRotulacion.rotulacion.cantidad}"></span></p>
+                <p><strong>Fecha de colocación: </strong><span th:text="${rotulacion.horarioRotulacion}"></span>
+                <p><strong>Dirección de colocación: </strong><span th:text="${rotulacion.direccionRotulacion}"></span>
+                <p th:if="${ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
+                <p><strong>Cantidad: </strong><span th:text="${rotulacion.cantidad}"></span></p>
             </div>
         </div>
     </div>
     <div class="col-12">
         <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-precio-restante-orden-impresion">
-            <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenRotulacion.ordenTrabajo.resta}"></span></p>
+            <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenTrabajo.resta}"></span></p>
         </div>
     </div>
     <div th:replace="fragments/footer-odt :: footer-odt"></div>

@@ -18,7 +18,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e83e8c" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
       </svg>
-      <h4 class="mb-0">Orden #<span th:text="${ordenHojasMembreteadas.ordenTrabajo.id}"></span> - <span th:text="${ordenHojasMembreteadas.ordenTrabajo.tipoProducto}"></span></h4>
+      <h4 class="mb-0">Orden #<span th:text="${ordenTrabajo.id}"></span> - <span th:text="${ordenTrabajo.tipoProducto}"></span></h4>
     </div>
 
     <!-- Imagen -->
@@ -32,52 +32,52 @@
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del cliente</h6>
         <hr class="divider">
-        <p><strong>Cliente: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.nombreCliente}"></span></p>
-        <p><strong>Teléfono: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.telefonoCliente}"></span></p>
-        <p><strong>Cuenta corriente: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Cliente: </strong><span th:text="${ordenTrabajo.nombreCliente}"></span></p>
+        <p><strong>Teléfono: </strong><span th:text="${ordenTrabajo.telefonoCliente}"></span></p>
+        <p><strong>Cuenta corriente: </strong><span th:text="${ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
       </div>
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del pago</h6>
         <hr class="divider">
         <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
-        <p><strong>Total: </strong>$<span th:text="${ordenHojasMembreteadas.ordenTrabajo.total}"></span></p>
-        <p><strong>Entrega: </strong>$<span th:text="${ordenHojasMembreteadas.ordenTrabajo.abonado}"></span></p>
-        <p><strong>Necesita factura: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
-        <p><strong>Vendedor/a: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.empleado.nombre}"></span></p>
+        <p><strong>Total: </strong>$<span th:text="${ordenTrabajo.total}"></span></p>
+        <p><strong>Entrega: </strong>$<span th:text="${ordenTrabajo.abonado}"></span></p>
+        <p><strong>Necesita factura: </strong><span th:text="${ordenTrabajo.necesitaFactura} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Vendedor/a: </strong><span th:text="${ordenTrabajo.empleado.nombre}"></span></p>
       </div>
     </div>
     <div class="col-6">
       <div class="card mb-3 border contenedor-datos-orden-impresion ">
         <h6>Datos del producto</h6>
         <hr class="divider">
-        <p><strong>Tipo de color: </strong><span th:text="${ordenHojasMembreteadas.hojasMembreteadas.tipoColorHojasMembreteadas.tipo}"></span></p>
-        <p><strong>Cantidad de hojas: </strong><span th:text="${ordenHojasMembreteadas.hojasMembreteadas.cantidadHojas}"></span></p>
+        <p><strong>Tipo de color: </strong><span th:text="${hojasMembreteadas.tipoColorHojasMembreteadas.tipo}"></span></p>
+        <p><strong>Cantidad de hojas: </strong><span th:text="${hojasMembreteadas.cantidadHojas}"></span></p>
         <p><strong>Medida: </strong>
-          <span th:text="${ordenHojasMembreteadas.hojasMembreteadas.medidaHojasMembreteadas.medida} == 'OTRA'
-            ? ${ordenHojasMembreteadas.hojasMembreteadas.medidaPersonalizada}
-            : ${ordenHojasMembreteadas.hojasMembreteadas.medidaHojasMembreteadas.medida}">
+          <span th:text="${hojasMembreteadas.medidaHojasMembreteadas.medida} == 'OTRA'
+            ? ${hojasMembreteadas.medidaPersonalizada}
+            : ${hojasMembreteadas.medidaHojasMembreteadas.medida}">
           </span>
         </p>
-        <p><strong>Adicional diseño: </strong><span th:text="${ordenHojasMembreteadas.hojasMembreteadas.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
+        <p><strong>Adicional diseño: </strong><span th:text="${hojasMembreteadas.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
         <p><strong>Enlace al archivo: </strong>
-          <span th:if="${ordenHojasMembreteadas.hojasMembreteadas.enlaceArchivo == ''}"> - </span>
-          <a th:unless="${ordenHojasMembreteadas.hojasMembreteadas.enlaceArchivo == ''}"
-             th:href="${ordenHojasMembreteadas.hojasMembreteadas.enlaceArchivo}"
-             th:text="${ordenHojasMembreteadas.hojasMembreteadas.enlaceArchivo}"
+          <span th:if="${hojasMembreteadas.enlaceArchivo == ''}"> - </span>
+          <a th:unless="${hojasMembreteadas.enlaceArchivo == ''}"
+             th:href="${hojasMembreteadas.enlaceArchivo}"
+             th:text="${hojasMembreteadas.enlaceArchivo}"
              target="_blank"></a>
         </p>
-        <p><strong>Información adicional: </strong><span th:text="${ordenHojasMembreteadas.hojasMembreteadas.informacionAdicional} == '' ? ' - ' : ${ordenHojasMembreteadas.hojasMembreteadas.informacionAdicional}"></span></p>
+        <p><strong>Información adicional: </strong><span th:text="${hojasMembreteadas.informacionAdicional} == '' ? ' - ' : ${hojasMembreteadas.informacionAdicional}"></span></p>
         <hr class="divider">
         <p><strong>Fecha de entrega: </strong><span th:text="${fechaEntrega}"></span>
-        <p th:if="${ordenHojasMembreteadas.ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenHojasMembreteadas.ordenTrabajo.horaEntrega}"></span> hs.</p>
-        <p th:if="${ordenHojasMembreteadas.ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
-        <p><strong>Cantidad de productos: </strong><span th:text="${ordenHojasMembreteadas.hojasMembreteadas.cantidad}"></span></p>
+        <p th:if="${ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenTrabajo.horaEntrega}"></span> hs.</p>
+        <p th:if="${ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
+        <p><strong>Cantidad de productos: </strong><span th:text="${hojasMembreteadas.cantidad}"></span></p>
       </div>
     </div>
   </div>
   <div class="col-12">
     <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-precio-restante-orden-impresion">
-      <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenHojasMembreteadas.ordenTrabajo.resta}"></span></p>
+      <p class="pago-restante d-flex justify-content-center align-items-center mb-0">Restante: $<span th:text="${ordenTrabajo.resta}"></span></p>
     </div>
   </div>
   <div th:replace="fragments/footer-odt :: footer-odt"></div>

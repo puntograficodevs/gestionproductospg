@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class FolletoService {
 
     private final FolletoRepository folletoRepository;
     private final OpcionesFolletoService opcionesFolletoService;
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
 
-    public Folleto guardar(FolletoDTO folletoDTO, Long idFolleto) {
+    public Folleto guardar(FolletoDTO folletoDTO, Long idOrdenTrabajo) {
         validarFolletoDTO(folletoDTO);
+        Folleto folleto = devolverFolletoCorrespondiente(idOrdenTrabajo);
 
         TipoPapelFolleto tipoPapelFolleto = opcionesFolletoService.buscarTipoPapelFolletoPorId(folletoDTO.getTipoPapelFolletoId());
         TipoColorFolleto tipoColorFolleto = opcionesFolletoService.buscarTipoColorFolletoPorId(folletoDTO.getTipoColorFolletoId());
@@ -31,7 +34,6 @@ public class FolletoService {
             cantidad = Integer.valueOf(cantidadFolleto.getCantidad());
         }
 
-        Folleto folleto = (idFolleto != null) ? folletoRepository.findById(idFolleto).get() : new Folleto();
         boolean adicionalDisenio = folletoDTO.getConAdicionalDisenio();
         boolean conPlegado = folletoDTO.getConPlegado();
 
@@ -59,8 +61,25 @@ public class FolletoService {
         Assert.notNull(folletoDTO.getCantidadFolletoId(), "cantidadFolletoString no puede venir vacío.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        folletoRepository.deleteById(id);
+    private Folleto devolverFolletoCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    Folleto folletoNuevo = new Folleto();
+                    folletoNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return folletoNuevo;
+                });
+    }
+
+    public Optional<Folleto> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return folletoRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        Folleto folleto = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        folletoRepository.deleteById(folleto.getId());
     }
 }

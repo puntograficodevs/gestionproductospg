@@ -1,28 +1,27 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.CantidadCierraBolsas;
-import com.puntografico.puntografico.domain.CierraBolsas;
-import com.puntografico.puntografico.domain.MedidaCierraBolsas;
-import com.puntografico.puntografico.domain.TipoTroqueladoCierraBolsas;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.dto.CierraBolsasDTO;
 import com.puntografico.puntografico.repository.CierraBolsasRepository;
+import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service @Transactional @AllArgsConstructor
 public class CierraBolsasService {
 
     private final CierraBolsasRepository cierraBolsasRepository;
-
+    private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final OpcionesCierraBolsasService opcionesCierraBolsasService;
 
-    public CierraBolsas guardar(CierraBolsasDTO cierraBolsasDTO, Long idCierraBolsas) {
+    public CierraBolsas guardar(CierraBolsasDTO cierraBolsasDTO, Long idOrdenTrabajo) {
         validarCierraBolsasDTO(cierraBolsasDTO);
+        CierraBolsas cierraBolsas = devolverCierraBolsasCorrespondiente(idOrdenTrabajo);
 
-        CierraBolsas cierraBolsas = new CierraBolsas();
         boolean adicionalDisenio = cierraBolsasDTO.getConAdicionalDisenio();
 
         TipoTroqueladoCierraBolsas tipoTroqueladoCierraBolsas = opcionesCierraBolsasService.buscarTipoTroqueladoCierraBolsasPorId(cierraBolsasDTO.getTipoTroqueladoCierraBolsasId());
@@ -57,8 +56,25 @@ public class CierraBolsasService {
         Assert.notNull(cierraBolsasDTO.getCantidadCierraBolsasId(), "La opción de cantidad es un dato obligatorio.");
     }
 
-    public void eliminar(Long id) {
-        Assert.notNull(id, "El id no puede ser nulo");
-        cierraBolsasRepository.deleteById(id);
+    private CierraBolsas devolverCierraBolsasCorrespondiente(Long idOrdenTrabajo) {
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+
+        return buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseGet(() -> {
+                    CierraBolsas cierraBolsasNuevo = new CierraBolsas();
+                    cierraBolsasNuevo.setOrdenTrabajo(ordenTrabajo);
+                    return cierraBolsasNuevo;
+                });
+    }
+
+    public Optional<CierraBolsas> buscarPorOrdenTrabajoId(Long idOrdenTrabajo) {
+        return cierraBolsasRepository.findByOrdenTrabajo_Id(idOrdenTrabajo);
+    }
+
+    public void eliminar(Long idOrdenTrabajo) {
+        CierraBolsas cierraBolsas = buscarPorOrdenTrabajoId(idOrdenTrabajo)
+                .orElseThrow(() -> new RuntimeException("Producto inexistente"));
+
+        cierraBolsasRepository.deleteById(cierraBolsas.getId());
     }
 }
