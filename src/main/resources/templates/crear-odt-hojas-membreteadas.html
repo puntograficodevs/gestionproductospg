@@ -159,7 +159,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${hojasMembreteadas.medidaHojasMembreteadas == null || hojasMembreteadas.medidaHojasMembreteadas.id != 2} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -180,7 +180,9 @@
           <input type="number"
                  name="cantidadHojas"
                  class="form-control"
-                 th:value="${hojasMembreteadas.cantidadHojas}"
+                 th:value="${hojasMembreteadas.cantidadHojas != null and hojasMembreteadas.cantidadHojas != 0
+                    ? hojasMembreteadas.cantidadHojas
+                    : 100}"
                  id="hojas-membreteadas-cantidad-hojas"
                  required
                  min="1"
@@ -233,14 +235,16 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${hojasMembreteadas.cantidadHojasMembreteadas == null || (hojasMembreteadas.cantidadHojasMembreteadas != null && hojasMembreteadas.cantidadHojasMembreteadas.id != 4)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
                    name="cantidad"
-                   th:value="${hojasMembreteadas.cantidad}"
+                   th:value="${hojasMembreteadas.cantidad != null and hojasMembreteadas.cantidad != 0
+                    ? hojasMembreteadas.cantidad
+                    : 66}"
                    id="cantidad"
                    placeholder="0">
           </div>

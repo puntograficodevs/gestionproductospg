@@ -261,7 +261,9 @@
           </label>
           <input type="number"
                  class="form-control"
-                 th:value="${rifasBonosContribucion.cantidad}"
+                 th:value="${rifasBonosContribucion.cantidad != null and rifasBonosContribucion.cantidad != 0
+                    ? rifasBonosContribucion.cantidad
+                    : 1}"
                  name="cantidad"
                  id="cantidad"
                  placeholder="0">

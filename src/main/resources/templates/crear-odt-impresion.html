@@ -252,7 +252,9 @@
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${impresion.cantidad}"
+                   th:value="${impresion.cantidad != null and impresion.cantidad != 0
+                    ? impresion.cantidad
+                    : 1}"
                    name="cantidad"
                    id="cantidad"
                    placeholder="0">
