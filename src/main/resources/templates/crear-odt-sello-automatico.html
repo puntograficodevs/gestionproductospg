@@ -268,7 +268,9 @@
           </label>
           <input type="number"
                  class="form-control"
-                 th:value="${selloAutomatico.cantidad}"
+                 th:value="${selloAutomatico.cantidad != null and selloAutomatico.cantidad != 0
+                    ? selloAutomatico.cantidad
+                    : 1}"
                  name="cantidad"
                  id="cantidad"
                  placeholder="0">

@@ -244,10 +244,11 @@
           </label>
           <input type="number"
                  class="form-control"
-                 th:value="${rotulacion.cantidad}"
+                 th:value="${rotulacion.cantidad != null and rotulacion.cantidad != 0
+                    ? rotulacion.cantidad
+                    : 1}"
                  name="cantidad"
-                 id="cantidad"
-                 placeholder="0">
+                 id="cantidad">
         </div>
       </div>
     </div>

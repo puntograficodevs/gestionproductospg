@@ -139,7 +139,7 @@
                     </div>
 
                     <!-- INPUT PERSONALIZADO -->
-                    <div class="mt-2 d-none" id="tamanioPersonalizadoGroup">
+                    <div class="mt-2" id="tamanioPersonalizadoGroup" th:classappend="${selloMadera.tamanioSelloMadera == null || selloMadera.tamanioSelloMadera.id != 24} ? 'd-none' : ''">
                         <label for="tamanioPersonalizado" class="form-label">
                             Tamaño personalizado
                         </label>
@@ -211,7 +211,9 @@
                     </label>
                     <input type="number"
                            class="form-control"
-                           th:value="${selloMadera.cantidad}"
+                           th:value="${selloMadera.cantidad != null and selloMadera.cantidad != 0
+                            ? selloMadera.cantidad
+                            : 1}"
                            name="cantidad"
                            id="cantidad"
                            placeholder="0">
