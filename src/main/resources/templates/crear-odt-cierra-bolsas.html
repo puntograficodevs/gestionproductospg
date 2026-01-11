@@ -184,7 +184,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2" id="cantidadManualGroup" th:classappend="${cierraBolsas.cantidad == null || cierraBolsas.cantidadCierraBolsas.id != 4} ? 'd-none' : ''">
+          <div class="mt-2" id="cantidadManualGroup" th:classappend="${cierraBolsas.cantidad == null || cierraBolsas.cantidad == 0} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada *
             </label>
