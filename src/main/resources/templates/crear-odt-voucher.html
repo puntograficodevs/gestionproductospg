@@ -139,7 +139,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="tipoPapelPersonalizadoGroup">
+          <div class="mt-2" id="tipoPapelPersonalizadoGroup" th:classappend="${voucher.tipoPapelPersonalizado == null || voucher.tipoPapelVoucher.id != 3} ? 'd-none' : ''">
             <label for="tipoPapelPersonalizado" class="form-label">
               Tipo de papel personalizado
             </label>
@@ -192,7 +192,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${voucher.medidaPersonalizada == null || voucher.medidaVoucher.id != 2} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -225,16 +225,17 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${voucher.cantidadVoucher == null || (voucher.cantidadVoucher != null && voucher.cantidadVoucher.id != 4)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${voucher.cantidad}"
+                   th:value="${voucher.cantidad != null and voucher.cantidad != 0
+                    ? voucher.cantidad
+                    : 1}"
                    name="cantidad"
-                   id="cantidad"
-                   placeholder="0">
+                   id="cantidad">
           </div>
         </div>
       </div>

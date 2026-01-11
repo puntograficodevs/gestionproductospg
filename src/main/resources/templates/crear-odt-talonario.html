@@ -239,7 +239,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${talonario.medidaTalonario == null || talonario.medidaTalonario.id != 6} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -259,13 +259,14 @@
             Cantidad de Hojas *
           </label>
           <input type="number"
-                 th:value="${talonario.cantidadHojas}"
+                 th:value="${talonario.cantidadHojas != null and talonario.cantidadHojas != 0
+                    ? talonario.cantidadHojas
+                    : 100}"
                  name="cantidadHojas"
                  class="form-control"
                  id="talonario-cantidad-hojas"
                  required
-                 min="1"
-                 placeholder="100">
+                 min="1">
         </div>
       </div>
       <div class="row mb-3">
@@ -350,16 +351,17 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${talonario.cantidadTalonario == null || (talonario.cantidadTalonario != null && talonario.cantidadTalonario.id != 5)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${talonario.cantidad}"
+                   th:value="${talonario.cantidad != null and talonario.cantidad != 0
+                    ? talonario.cantidad
+                    : 20}"
                    name="cantidad"
-                   id="cantidad"
-                   placeholder="0">
+                   id="cantidad">
           </div>
         </div>
       </div>

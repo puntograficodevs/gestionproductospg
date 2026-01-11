@@ -191,7 +191,7 @@
                  th:value="${viniloDeCorte.codigoColor}"
                  name="codigoColor"
                  id="codigo-color"
-                 placeholder="Código">
+                 placeholder="Ingresá el código">
         </div>
       </div>
       <div class="row mb-3">
@@ -217,10 +217,11 @@
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${viniloDeCorte.cantidad}"
+                   tth:value="${viniloDeCorte.cantidad != null and viniloDeCorte.cantidad != 0
+                    ? viniloDeCorte.cantidad
+                    : 1}"
                    name="cantidad"
-                   id="cantidad"
-                   placeholder="0">
+                   id="cantidad">
           </div>
         </div>
       </div>

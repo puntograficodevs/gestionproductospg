@@ -159,7 +159,7 @@
             </div>
           </div>
 
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${turnero.medidaPersonalizada == null || turnero.medidaTurnero.id != 4} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -178,12 +178,13 @@
             Cantidad de Hojas *
           </label>
           <input type="number"
-                 th:value="${turnero.cantidadHojas}"
+                 th:value="${turnero.cantidadHojas != null and turnero.cantidadHojas != 0
+                    ? turnero.cantidadHojas
+                    : 100}"
                  name="cantidadHojas"
                  class="form-control"
                  id="turnero-cantidad-hojas"
-                 required min="1"
-                 placeholder="100">
+                 required min="1">
         </div>
       </div>
       <div class="row mb-3">
@@ -232,16 +233,17 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${turnero.cantidadTurnero == null || (turnero.cantidadTurnero != null && turnero.cantidadTurnero.id != 5)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${turnero.cantidad}"
+                   th:value="${turnero.cantidad != null and turnero.cantidad != 0
+                    ? turnero.cantidad
+                    : 1}"
                    name="cantidad"
-                   id="cantidad"
-                   placeholder="0">
+                   id="cantidad">
           </div>
         </div>
       </div>

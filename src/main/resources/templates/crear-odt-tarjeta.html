@@ -218,7 +218,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${tarjeta.medidaPersonalizada == null || tarjeta.medidaTarjeta.id != 2} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -251,13 +251,15 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${tarjeta.cantidadTarjeta == null || (tarjeta.cantidadTarjeta != null && tarjeta.cantidadTarjeta.id != 9)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${tarjeta.cantidad}"
+                   th:value="${tarjeta.cantidad != null and tarjeta.cantidad != 0
+                    ? tarjeta.cantidad
+                    : 1}"
                    name="cantidad"
                    id="cantidad"
                    placeholder="0">

@@ -27,7 +27,7 @@ public class StickerService {
         MedidaSticker medidaSticker = opcionesStickerService.buscarMedidaStickerPorId(stickerDTO.getMedidaStickerId());
         Integer cantidad = stickerDTO.getCantidad();
 
-        if (cantidad == null || cantidad == 0) {
+        if (cantidad == null || cantidad == 0 || cantidadSticker.getId() != 4) {
             cantidad = Integer.valueOf(cantidadSticker.getCantidad());
         }
 

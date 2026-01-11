@@ -199,7 +199,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${vinilo.medidaPersonalizada == null || vinilo.medidaVinilo.id != 4} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -232,13 +232,15 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${vinilo.cantidadVinilo == null || (vinilo.cantidadVinilo != null && vinilo.cantidadVinilo.id != 3)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
                    class="form-control"
-                   th:value="${vinilo.cantidad}"
+                   th:value="${vinilo.cantidad != null and vinilo.cantidad != 0
+                    ? vinilo.cantidad
+                    : 1}"
                    name="cantidad"
                    id="cantidad"
                    placeholder="0">
