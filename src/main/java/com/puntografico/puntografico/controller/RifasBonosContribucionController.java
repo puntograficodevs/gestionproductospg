@@ -18,9 +18,6 @@ public class RifasBonosContribucionController {
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final RifasBonosContribucionService rifasBonosContribucionService;
-    private final OrdenRifasBonosContribucionService ordenRifasBonosContribucionService;
-    private final ProductoService productoService;
-    private final PagoService pagoService;
 
     @GetMapping({"/crear-odt-rifas-bonos-contribucion", "/crear-odt-rifas-bonos-contribucion/{idOrden}"})
     public String verCrearOdtRifasBonosContribucion(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
