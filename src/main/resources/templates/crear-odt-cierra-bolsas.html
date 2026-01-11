@@ -136,7 +136,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${cierraBolsas.medidaPersonalizada == null || cierraBolsas.medidaCierraBolsas.id != 2} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -184,7 +184,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadManualGroup">
+          <div class="mt-2" id="cantidadManualGroup" th:classappend="${cierraBolsas.cantidad == null || cierraBolsas.cantidadCierraBolsas.id != 4} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada *
             </label>

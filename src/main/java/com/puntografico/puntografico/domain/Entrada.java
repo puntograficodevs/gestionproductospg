@@ -22,7 +22,6 @@ public class Entrada {
 
     private String informacionAdicional;
 
-    @Column(nullable = false)
     private int cantidad;
 
     @ManyToOne(fetch = FetchType.EAGER)

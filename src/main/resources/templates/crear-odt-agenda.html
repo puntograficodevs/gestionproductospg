@@ -157,7 +157,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row mb-3" th:classappend="${agenda.tipoTapaPersonalizada == null} ? 'd-none' : ''" id="inputTapaPersonalizadaRow">
+            <div class="row mb-3" th:classappend="${agenda.tipoTapaPersonalizada == null || agenda.tipoTapaAgenda.id != 2} ? 'd-none' : ''" id="inputTapaPersonalizadaRow">
                 <div class="col-md-12">
                     <label for="agenda-tipo-tapa-personalizada" class="form-label">
                         Tipo de tapa personalizada

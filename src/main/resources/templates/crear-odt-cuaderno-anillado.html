@@ -136,7 +136,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${cuadernoAnillado.medidaPersonalizada == null || cuadernoAnillado.medidaCuadernoAnillado.id != 3} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -167,7 +167,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="tipoTapaPersonalizadaGroup">
+          <div class="mt-2" id="tipoTapaPersonalizadaGroup" th:classappend="${cuadernoAnillado.tipoTapaPersonalizada == null || cuadernoAnillado.tipoTapaCuadernoAnillado.id != 2} ? 'd-none' : ''">
             <label for="tipoTapaPersonalizada" class="form-label">
               Tipo de tapa personalizada
             </label>
