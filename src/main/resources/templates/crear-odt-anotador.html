@@ -138,7 +138,9 @@
                  name="cantidadHojas"
                  class="form-control"
                  id="anotador-cantidad-hojas"
-                 th:value="${anotador.cantidadHojas}"
+                 th:value="${anotador.cantidadHojas != null and anotador.cantidadHojas != 0
+                    ? anotador.cantidadHojas
+                    : 90}" 
                  required
                  min="1"
                  placeholder="0">
@@ -191,7 +193,9 @@
           <input type="number"
                  class="form-control"
                  id="anotador-cantidad"
-                 th:value="${anotador.cantidad}"
+                 th:value="${anotador.cantidad != null and anotador.cantidad != 0
+                    ? anotador.cantidad
+                    : 1}" 
                  name="cantidad"
                  required
                  placeholder="0">

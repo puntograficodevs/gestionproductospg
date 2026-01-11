@@ -135,9 +135,11 @@
                            name="cantidadHojas"
                            class="form-control"
                            id="agenda-cantidad-hojas"
-                           th:value="${agenda.cantidadHojas}" required
-                           in="1"
-                           placeholder="0">
+                           th:value="${agenda.cantidadHojas != null and agenda.cantidadHojas != 0
+                            ? agenda.cantidadHojas
+                            : 90}" 
+                           required
+                           in="1">
                 </div>
             </div>
             <div class="row mb-3">
@@ -219,7 +221,9 @@
                     </label>
                     <input type="number"
                            class="form-control"
-                           th:value="${agenda.cantidad}"
+                           th:value="${agenda.cantidad != null and agenda.cantidad != 0
+                            ? agenda.cantidad
+                            : 1}"
                            id="agenda-cantidad"
                            name="cantidad" required
                            placeholder="0">

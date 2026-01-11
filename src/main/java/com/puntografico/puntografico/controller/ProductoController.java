@@ -410,6 +410,12 @@ public class ProductoController {
         return htmlRedireccion;
     }
 
+    @GetMapping("/modal/mostrar-odt-producto/{ordenTrabajoId}")
+    public String verOrdenProductoModal(@PathVariable Long ordenTrabajoId, Model model, HttpSession session) {
+        String vista = verOrdenProducto(ordenTrabajoId, model, session);
+        return vista + " :: contenido";
+    }
+    
     @DeleteMapping("/api/eliminar-producto/{idOrden}")
     @ResponseBody
     public void eliminarProducto(Model model, HttpSession session, @PathVariable Long idOrden) {
@@ -516,6 +522,8 @@ public class ProductoController {
 
         ordenTrabajoService.eliminar(ordenTrabajo.getId());
     }
+
+    
 
     private AgendaDTO armarAgendaDTO(HttpServletRequest request) {
         AgendaDTO agendaDTO = new AgendaDTO();
