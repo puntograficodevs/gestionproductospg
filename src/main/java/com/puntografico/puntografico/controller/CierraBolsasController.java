@@ -19,7 +19,7 @@ public class CierraBolsasController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final CierraBolsasService cierraBolsasService;
 
-    @GetMapping({"/crear-odt-cierra-bolsas", "/crear-odt-cierra-bolsas/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-cierra-bolsas", "/crear-odts/crear-odt-cierra-bolsas/{idOrden}"})
     public String verCrearOdtCierraBolsas(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -44,7 +44,7 @@ public class CierraBolsasController {
         model.addAttribute("listaCantidadCierraBolsas", listaCantidadCierraBolsas);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-cierra-bolsas";
+        return "crear-odts/crear-odt-cierra-bolsas";
     }
 
 }

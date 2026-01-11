@@ -19,7 +19,7 @@ public class RifasBonosContribucionController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final RifasBonosContribucionService rifasBonosContribucionService;
 
-    @GetMapping({"/crear-odt-rifas-bonos-contribucion", "/crear-odt-rifas-bonos-contribucion/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-rifas-bonos-contribucion", "/crear-odts/crear-odt-rifas-bonos-contribucion/{idOrden}"})
     public String verCrearOdtRifasBonosContribucion(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -44,6 +44,6 @@ public class RifasBonosContribucionController {
         model.addAttribute("listaTipoColorRifa", listaTipoColorRifa);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-rifas-bonos-contribucion";
+        return "crear-odts/crear-odt-rifas-bonos-contribucion";
     }
 }

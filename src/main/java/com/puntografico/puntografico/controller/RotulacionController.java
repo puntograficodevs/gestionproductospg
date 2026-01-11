@@ -19,7 +19,7 @@ public class RotulacionController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final RotulacionService rotulacionService;
 
-    @GetMapping({"/crear-odt-rotulacion", "/crear-odt-rotulacion/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-rotulacion", "/crear-odts/crear-odt-rotulacion/{idOrden}"})
     public String verCrearOdtRotulacion(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class RotulacionController {
         model.addAttribute("listaTipoCorteRotulacion", listaTipoCorteRotulacion);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-rotulacion";
+        return "crear-odts/crear-odt-rotulacion";
     }
 }

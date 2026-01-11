@@ -19,7 +19,7 @@ public class TalonarioController {
     private final OpcionesTalonarioService opcionesTalonarioService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-talonario", "/crear-odt-talonario/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-talonario", "/crear-odts/crear-odt-talonario/{idOrden}"})
     public String verCrearOdtTalonario(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -52,6 +52,6 @@ public class TalonarioController {
         model.addAttribute("listaCantidadTalonario", listaCantidadTalonario);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-talonario";
+        return "crear-odts/crear-odt-talonario";
     }
 }

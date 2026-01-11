@@ -19,7 +19,7 @@ public class HojasMembreteadasController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final HojasMembreteadasService hojasMembreteadasService;
 
-    @GetMapping({"/crear-odt-hojas-membreteadas", "/crear-odt-hojas-membreteadas/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-hojas-membreteadas", "/crear-odts/crear-odt-hojas-membreteadas/{idOrden}"})
     public String verCreadOdtHojasMembreteadas(Model model,
                                                HttpSession session,
                                                @PathVariable(required = false) Long idOrden) {
@@ -46,6 +46,6 @@ public class HojasMembreteadasController {
         model.addAttribute("listaCantidadHojasMembreteadas", listaCantidadHojasMembreteadas);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-hojas-membreteadas";
+        return "crear-odts/crear-odt-hojas-membreteadas";
     }
 }

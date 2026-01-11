@@ -19,7 +19,7 @@ public class VoucherController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final VoucherService voucherService;
 
-    @GetMapping({"/crear-odt-voucher", "/crear-odt-voucher/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-voucher", "/crear-odts/crear-odt-voucher/{idOrden}"})
     public String verCrearOdtVoucher(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -46,6 +46,6 @@ public class VoucherController {
         model.addAttribute("listaCantidadVoucher", listaCantidadVoucher);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-voucher";
+        return "crear-odts/crear-odt-voucher";
     }
 }

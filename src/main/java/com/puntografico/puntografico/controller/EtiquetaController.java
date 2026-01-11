@@ -19,7 +19,7 @@ public class EtiquetaController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final EtiquetaService etiquetaService;
 
-    @GetMapping({"/crear-odt-etiqueta", "/crear-odt-etiqueta/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-etiqueta", "/crear-odts/crear-odt-etiqueta/{idOrden}"})
     public String verCrearOdtEtiqueta(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -50,6 +50,6 @@ public class EtiquetaController {
         model.addAttribute("listaMedidaEtiqueta", listaMedidaEtiqueta);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-etiqueta";
+        return "crear-odts/crear-odt-etiqueta";
     }
 }

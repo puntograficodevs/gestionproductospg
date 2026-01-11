@@ -19,7 +19,7 @@ public class EntradaController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final EntradaService entradaService;
 
-    @GetMapping({"/crear-odt-entrada", "/crear-odt-entrada/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-entrada", "/crear-odts/crear-odt-entrada/{idOrden}"})
     public String verCrearOdtEntrada(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -52,6 +52,6 @@ public class EntradaController {
         model.addAttribute("listaTerminacionEntrada", listaTerminacionEntrada);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-entrada";
+        return "crear-odts/crear-odt-entrada";
     }
 }

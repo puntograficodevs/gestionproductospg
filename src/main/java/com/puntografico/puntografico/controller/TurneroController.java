@@ -19,7 +19,7 @@ public class TurneroController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final TurneroService turneroService;
 
-    @GetMapping({"/crear-odt-turnero", "/crear-odt-turnero/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-turnero", "/crear-odts/crear-odt-turnero/{idOrden}"})
     public String verCreadOdtTurnero(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -44,6 +44,6 @@ public class TurneroController {
         model.addAttribute("listaCantidadTurnero", listaCantidadTurnero);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-turnero";
+        return "crear-odts/crear-odt-turnero";
     }
 }

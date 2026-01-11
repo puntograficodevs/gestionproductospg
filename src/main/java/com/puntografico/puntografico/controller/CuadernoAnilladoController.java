@@ -19,7 +19,7 @@ public class CuadernoAnilladoController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final CuadernoAnilladoService cuadernoAnilladoService;
 
-    @GetMapping({"/crear-odt-cuaderno-anillado", "/crear-odt-cuaderno-anillado/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-cuaderno-anillado", "/crear-odts/crear-odt-cuaderno-anillado/{idOrden}"})
     public String verCrearOdtCuadernoAnillado(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class CuadernoAnilladoController {
         model.addAttribute("listaMedidaCuadernoAnillado", listaMedidaCuadernoAnillado);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-cuaderno-anillado";
+        return "crear-odts/crear-odt-cuaderno-anillado";
     }
 }

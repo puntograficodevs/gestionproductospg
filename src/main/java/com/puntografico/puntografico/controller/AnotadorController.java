@@ -19,7 +19,7 @@ public class AnotadorController {
     private final AnotadorService anotadorService;
 
 
-    @GetMapping({"/crear-odt-anotador", "/crear-odt-anotador/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-anotador", "/crear-odts/crear-odt-anotador/{idOrden}"})
     public String verCrearOdtAnotador(HttpSession session, Model model, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -38,6 +38,6 @@ public class AnotadorController {
         model.addAttribute("ordenTrabajo", ordenTrabajo);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-anotador";
+        return "crear-odts/crear-odt-anotador";
     }
 }

@@ -19,7 +19,7 @@ public class CarpetaSolapaController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final CarpetaSolapaService carpetaSolapaService;
 
-    @GetMapping({"/crear-odt-carpeta-solapa", "/crear-odt-carpeta-solapa/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-carpeta-solapa", "/crear-odts/crear-odt-carpeta-solapa/{idOrden}"})
     public String verCrearOdtCarpetaSolapa(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class CarpetaSolapaController {
         model.addAttribute("listaTipoLaminadoCarpetaSolapa", listaTipoLaminadoCarpetaSolapa);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-carpeta-solapa";
+        return "crear-odts/crear-odt-carpeta-solapa";
     }
 }

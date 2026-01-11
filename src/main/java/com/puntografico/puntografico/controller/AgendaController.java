@@ -18,7 +18,7 @@ public class AgendaController {
     private final OpcionesAgendaService opcionesAgendaService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-agenda", "/crear-odt-agenda/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-agenda", "/crear-odts/crear-odt-agenda/{idOrden}"})
     public String verCrearOdtAgenda(
             HttpSession session,
             Model model,
@@ -45,6 +45,6 @@ public class AgendaController {
         model.addAttribute("listaTipoColorAgenda", listaTipoColorAgenda);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-agenda";
+        return "crear-odts/crear-odt-agenda";
     }
 }

@@ -19,7 +19,7 @@ public class SelloMaderaController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final SelloMaderaService selloMaderaService;
 
-    @GetMapping({"/crear-odt-sello-madera", "/crear-odt-sello-madera/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-sello-madera", "/crear-odts/crear-odt-sello-madera/{idOrden}"})
     public String verCrearOdtSelloMadera(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -40,6 +40,6 @@ public class SelloMaderaController {
         model.addAttribute("listaTamanioSelloMadera", listaTamanioSelloMadera);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-sello-madera";
+        return "crear-odts/crear-odt-sello-madera";
     }
 }

@@ -19,7 +19,7 @@ public class TarjetaController {
     private final OpcionesTarjetaService opcionesTarjetaService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-tarjeta", "/crear-odt-tarjeta/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-tarjeta", "/crear-odts/crear-odt-tarjeta/{idOrden}"})
     public String verCrearOdtTarjeta(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -50,6 +50,6 @@ public class TarjetaController {
         model.addAttribute("listaCantidadTarjeta", listaCantidadTarjeta);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-tarjeta";
+        return "crear-odts/crear-odt-tarjeta";
     }
 }

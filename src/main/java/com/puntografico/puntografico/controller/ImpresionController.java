@@ -19,7 +19,7 @@ public class ImpresionController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final ImpresionService impresionService;
 
-    @GetMapping({"/crear-odt-impresion", "/crear-odt-impresion/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-impresion", "/crear-odts/crear-odt-impresion/{idOrden}"})
     public String verCrearOdtImpresion(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -50,6 +50,6 @@ public class ImpresionController {
         model.addAttribute("listaTipoImpresion", listaTipoImpresion);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-impresion";
+        return "crear-odts/crear-odt-impresion";
     }
 }

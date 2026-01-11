@@ -19,7 +19,7 @@ public class CatalogoController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final CatalogoService catalogoService;
 
-    @GetMapping({"/crear-odt-catalogo", "/crear-odt-catalogo/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-catalogo", "/crear-odts/crear-odt-catalogo/{idOrden}"})
     public String verCrearOdtCatalogo(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -43,6 +43,6 @@ public class CatalogoController {
         model.addAttribute("listaTipoLaminadoCatalogo", listaTipoLaminadoCatalogo);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-catalogo";
+        return "crear-odts/crear-odt-catalogo";
     }
 }

@@ -19,7 +19,7 @@ public class OtroController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final OtroService otroService;
 
-    @GetMapping({"/crear-odt-otro", "/crear-odt-otro/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-otro", "/crear-odts/crear-odt-otro/{idOrden}"})
     public String verCrearOdtOtro(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -40,6 +40,6 @@ public class OtroController {
         model.addAttribute("listaTipoColorOtro", listaTipoColorOtro);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-otro";
+        return "crear-odts/crear-odt-otro";
     }
 }

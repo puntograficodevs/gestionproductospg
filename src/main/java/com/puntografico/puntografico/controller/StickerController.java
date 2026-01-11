@@ -19,7 +19,7 @@ public class StickerController {
     private final OpcionesStickerService opcionesStickerService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-sticker", "/crear-odt-sticker/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-sticker", "/crear-odts/crear-odt-sticker/{idOrden}"})
     public String verCrearOdtSticker(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -44,6 +44,6 @@ public class StickerController {
         model.addAttribute("listaMedidaSticker", listaMedidaSticker);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-sticker";
+        return "crear-odts/crear-odt-sticker";
     }
 }

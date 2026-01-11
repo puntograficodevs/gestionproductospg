@@ -19,7 +19,7 @@ public class SublimacionController {
     private final OpcionesSublimacionService opcionesSublimacionService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-sublimacion", "/crear-odt-sublimacion/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-sublimacion", "/crear-odts/crear-odt-sublimacion/{idOrden}"})
     public String verCrearOdtSublimacion(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class SublimacionController {
         model.addAttribute("listaCantidadSublimacion", listaCantidadSublimacion);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-sublimacion";
+        return "crear-odts/crear-odt-sublimacion";
     }
 }

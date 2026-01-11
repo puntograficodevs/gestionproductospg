@@ -19,7 +19,7 @@ public class SobreController {
     private final OpcionesSobreService opcionesSobreService;
     private final OrdenTrabajoService ordenTrabajoService;
 
-    @GetMapping({"/crear-odt-sobre", "/crear-odt-sobre/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-sobre", "/crear-odts/crear-odt-sobre/{idOrden}"})
     public String verCrearOdtSobre(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -44,6 +44,6 @@ public class SobreController {
         model.addAttribute("listaCantidadSobre", listaCantidadSobre);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-sobre";
+        return "crear-odts/crear-odt-sobre";
     }
 }

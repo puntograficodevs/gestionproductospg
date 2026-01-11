@@ -19,7 +19,7 @@ public class ComboController {
     private final OpcionesComboService opcionesComboService;
     private final ComboService comboService;
 
-    @GetMapping({"/crear-odt-combo", "/crear-odt-combo/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-combo", "/crear-odts/crear-odt-combo/{idOrden}"})
     public String verCrearOdtCombo(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -40,6 +40,6 @@ public class ComboController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
         model.addAttribute("listaTipoCombo", listaTipoCombo);
 
-        return "crear-odt-combo";
+        return "crear-odts/crear-odt-combo";
     }
 }

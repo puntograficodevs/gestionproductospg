@@ -19,7 +19,7 @@ public class FolletoController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final FolletoService folletoService;
 
-    @GetMapping({"/crear-odt-folleto", "/crear-odt-folleto/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-folleto", "/crear-odts/crear-odt-folleto/{idOrden}"})
     public String verCrearOdtFolleto(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -50,6 +50,6 @@ public class FolletoController {
         model.addAttribute("listaCantidadFolleto", listaCantidadFolleto);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-folleto";
+        return "crear-odts/crear-odt-folleto";
     }
 }

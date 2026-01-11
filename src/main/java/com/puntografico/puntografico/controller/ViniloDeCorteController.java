@@ -19,7 +19,7 @@ public class ViniloDeCorteController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final ViniloDeCorteService viniloDeCorteService;
 
-    @GetMapping({"/crear-odt-vinilo-de-corte", "/crear-odt-vinilo-de-corte/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-vinilo-de-corte", "/crear-odts/crear-odt-vinilo-de-corte/{idOrden}"})
     public String verCrearOdtViniloDeCorte(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -40,6 +40,6 @@ public class ViniloDeCorteController {
         model.addAttribute("listaTraeMaterialVinilo", listaTraeMaterialVinilo);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-vinilo-de-corte";
+        return "crear-odts/crear-odt-vinilo-de-corte";
     }
 }

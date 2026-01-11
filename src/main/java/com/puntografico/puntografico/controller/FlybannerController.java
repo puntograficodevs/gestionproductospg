@@ -19,7 +19,7 @@ public class FlybannerController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final FlybannerService flybannerService;
 
-    @GetMapping({"/crear-odt-flybanner", "/crear-odt-flybanner/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-flybanner", "/crear-odts/crear-odt-flybanner/{idOrden}"})
     public String verCrearOdtFlybanner(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -46,6 +46,6 @@ public class FlybannerController {
         model.addAttribute("listaTipoBaseFlybanner", listaTipoBaseFlybanner);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-flybanner";
+        return "crear-odts/crear-odt-flybanner";
     }
 }

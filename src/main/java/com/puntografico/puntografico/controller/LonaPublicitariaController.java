@@ -19,7 +19,7 @@ public class LonaPublicitariaController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final LonaPublicitariaService lonaPublicitariaService;
 
-    @GetMapping({"/crear-odt-lona-publicitaria", "/crear-odt-lona-publicitaria/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-lona-publicitaria", "/crear-odts/crear-odt-lona-publicitaria/{idOrden}"})
     public String verCrearOdtLonaPublicitaria(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class LonaPublicitariaController {
         model.addAttribute("listaTipoLonaPublicitaria", listaTipoLonaPublicitaria);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-lona-publicitaria";
+        return "crear-odts/crear-odt-lona-publicitaria";
     }
 }

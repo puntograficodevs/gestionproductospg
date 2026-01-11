@@ -221,187 +221,187 @@ public class ProductoController {
                 Agenda agenda = agendaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("agenda", agenda);
-                htmlRedireccion = "mostrar-odt-agenda";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-agenda";
                 break;
             case "anotador":
                 Anotador anotador = anotadorService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("anotador", anotador);
-                htmlRedireccion = "mostrar-odt-anotador";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-anotador";
                 break;
             case "carpeta con solapas":
                 CarpetaSolapa carpetaSolapa = carpetaSolapaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("carpetaSolapa", carpetaSolapa);
-                htmlRedireccion = "mostrar-odt-carpeta-solapa";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-carpeta-solapa";
                 break;
             case "catálogo":
                 Catalogo catalogo = catalogoService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("catalogo", catalogo);
-                htmlRedireccion = "mostrar-odt-catalogo";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-catalogo";
                 break;
             case "cierra bolsas":
                 CierraBolsas cierraBolsas = cierraBolsasService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("cierraBolsas", cierraBolsas);
-                htmlRedireccion = "mostrar-odt-cierra-bolsas";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-cierra-bolsas";
                 break;
             case "combo":
                 Combo combo = comboService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("combo", combo);
-                htmlRedireccion = "mostrar-odt-combo";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-combo";
                 break;
             case "cuaderno anillado":
                 CuadernoAnillado cuadernoAnillado = cuadernoAnilladoService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("cuadernoAnillado", cuadernoAnillado);
-                htmlRedireccion = "mostrar-odt-cuaderno-anillado";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-cuaderno-anillado";
                 break;
             case "entrada":
                 Entrada entrada = entradaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("entrada", entrada);
-                htmlRedireccion = "mostrar-odt-entrada";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-entrada";
                 break;
             case "etiqueta":
                 Etiqueta etiqueta = etiquetaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("etiqueta", etiqueta);
-                htmlRedireccion = "mostrar-odt-etiqueta";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-etiqueta";
                 break;
             case "flybanner":
                 Flybanner flybanner = flybannerService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("flybanner", flybanner);
-                htmlRedireccion = "mostrar-odt-flybanner";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-flybanner";
                 break;
             case "folleto":
                 Folleto folleto = folletoService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("folleto", folleto);
-                htmlRedireccion = "mostrar-odt-folleto";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-folleto";
                 break;
             case "hojas membretadas":
                 HojasMembreteadas hojasMembreteadas = hojasMembreteadasService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("hojasMembreteadas", hojasMembreteadas);
-                htmlRedireccion = "mostrar-odt-hojas-membreteadas";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-hojas-membreteadas";
                 break;
             case "impresion":
                 Impresion impresion = impresionService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("impresion", impresion);
-                htmlRedireccion = "mostrar-odt-impresion";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-impresion";
                 break;
             case "lona común":
                 LonaComun lonaComun = lonaComunService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("lonaComun", lonaComun);
-                htmlRedireccion = "mostrar-odt-lona-comun";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-lona-comun";
                 break;
             case "lona publicitaria":
                 LonaPublicitaria lonaPublicitaria = lonaPublicitariaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("lonaPublicitaria", lonaPublicitaria);
-                htmlRedireccion = "mostrar-odt-lona-publicitaria";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-lona-publicitaria";
                 break;
             case "sin categoría":
                 Otro otro = otroService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("otro", otro);
-                htmlRedireccion = "mostrar-odt-otro";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-otro";
                 break;
             case "rifa o bono":
                 RifasBonosContribucion rifasBonosContribucion = rifasBonosContribucionService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("rifasBonosContribucion", rifasBonosContribucion);
-                htmlRedireccion = "mostrar-odt-rifas-bonos-contribucion";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-rifas-bonos-contribucion";
                 break;
             case "rotulación":
                 Rotulacion rotulacion = rotulacionService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("rotulacion", rotulacion);
-                htmlRedireccion = "mostrar-odt-rotulacion";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-rotulacion";
                 break;
             case "sello automático":
                 SelloAutomatico selloAutomatico = selloAutomaticoService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("selloAutomatico", selloAutomatico);
-                htmlRedireccion = "mostrar-odt-sello-automatico";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sello-automatico";
                 break;
             case "sello automático escolar":
                 SelloAutomaticoEscolar selloAutomaticoEscolar = selloAutomaticoEscolarService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("selloAutomaticoEscolar", selloAutomaticoEscolar);
-                htmlRedireccion = "mostrar-odt-sello-automatico-escolar";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sello-automatico-escolar";
                 break;
             case "sello de madera":
                 SelloMadera selloMadera = selloMaderaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("selloMadera", selloMadera);
-                htmlRedireccion = "mostrar-odt-sello-madera";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sello-madera";
                 break;
             case "sobre":
                 Sobre sobre = sobreService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("sobre", sobre);
-                htmlRedireccion = "mostrar-odt-sobre";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sobre";
                 break;
             case "sticker":
                 Sticker sticker = stickerService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("sticker", sticker);
-                htmlRedireccion = "mostrar-odt-sticker";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sticker";
                 break;
             case "sublimación":
                 Sublimacion sublimacion = sublimacionService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("sublimacion", sublimacion);
-                htmlRedireccion = "mostrar-odt-sublimacion";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-sublimacion";
                 break;
             case "talonario":
                 Talonario talonario = talonarioService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("talonario", talonario);
-                htmlRedireccion = "mostrar-odt-talonario";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-talonario";
                 break;
             case "tarjeta":
                 Tarjeta tarjeta = tarjetaService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("tarjeta", tarjeta);
-                htmlRedireccion = "mostrar-odt-tarjeta";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-tarjeta";
                 break;
             case "turnero":
                 Turnero turnero = turneroService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("turnero", turnero);
-                htmlRedireccion = "mostrar-odt-turnero";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-turnero";
                 break;
             case "vinilo":
                 Vinilo vinilo = viniloService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("vinilo", vinilo);
-                htmlRedireccion = "mostrar-odt-vinilo";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-vinilo";
                 break;
             case "vinilo de corte":
                 ViniloDeCorte viniloDeCorte = viniloDeCorteService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("viniloDeCorte", viniloDeCorte);
-                htmlRedireccion = "mostrar-odt-vinilo-de-corte";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-vinilo-de-corte";
                 break;
             case "vinilo con plástico corrugado":
                 ViniloPlasticoCorrugado viniloPlasticoCorrugado = viniloPlasticoCorrugadoService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("viniloPlasticoCorrugado", viniloPlasticoCorrugado);
-                htmlRedireccion = "mostrar-odt-vinilo-plastico-corrugado";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-vinilo-plastico-corrugado";
                 break;
             case "voucher":
                 Voucher voucher = voucherService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
                 model.addAttribute("voucher", voucher);
-                htmlRedireccion = "mostrar-odt-voucher";
+                htmlRedireccion = "mostrar-odts/mostrar-odt-voucher";
                 break;
             default:
                 throw new IllegalStateException("Tipo de producto inesperado: " + tipoProducto);

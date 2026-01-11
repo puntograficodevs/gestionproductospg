@@ -19,7 +19,7 @@ public class LonaComunController {
     private final OrdenTrabajoService ordenTrabajoService;
     private final LonaComunService lonaComunService;
 
-    @GetMapping({"/crear-odt-lona-comun", "/crear-odt-lona-comun/{idOrden}"})
+    @GetMapping({"/crear-odts/crear-odt-lona-comun", "/crear-odts/crear-odt-lona-comun/{idOrden}"})
     public String verCrearOdtLonaComun(Model model, HttpSession session, @PathVariable(required = false) Long idOrden) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
@@ -42,6 +42,6 @@ public class LonaComunController {
         model.addAttribute("listaTipoLonaComun", listaTipoLonaComun);
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
-        return "crear-odt-lona-comun";
+        return "crear-odts/crear-odt-lona-comun";
     }
 }
