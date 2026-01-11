@@ -194,7 +194,9 @@
                 data-bs-target="#ordenModal"
                 data-bs-toggle="modal"
                 th:data-idorden="${orden.id}"
-                th:data-tipoproducto="${orden.tipoProducto}">
+                th:data-tipoproducto="${orden.tipoProducto}"
+                th:data-correccion="${orden.correccion != null}"
+                th:data-rolempleado="${empleado.rol.id}">
           VER
         </button>
 
@@ -206,14 +208,6 @@
           <li th:if="${orden.horaEntrega} != ''">Hora de entrega: <span th:text="${orden.horaEntrega}"></span></li>
           <b><p>Total: $<span th:text="${orden.total}"></span></p></b>
           <b th:if="${orden.resta != 0}"><p class="falta-abonar">Falta abonar: $<span th:text="${orden.resta}"></span></p></b>
-          <div class="row mt-2">
-              <div class="col-md-12 m-0">
-                <button class="btn btn-success pasar-corregido-btn btn-cambio-estado"
-                        th:data-idorden="${orden.id}">
-                  Corregido
-                </button>
-              </div>
-          </div>
           <button th:if="${orden.resta != 0}" type="button" class="btn btn-success btn-sm mt-2 btn-cambio-estado btn-marcar-abonado" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">
             Cargar Pago
           </button>
@@ -233,9 +227,7 @@
         </div>
         <div class="modal-body" id="modalBody">
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
+        <div class="modal-footer border-top-0 pt-0" id="modalFooter"></div>
       </div>
     </div>
   </div>

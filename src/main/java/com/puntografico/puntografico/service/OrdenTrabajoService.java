@@ -33,7 +33,7 @@ public class OrdenTrabajoService {
 
         if (idOrdenTrabajo != null) {
             ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo)
-                    .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));;
         }
 
         boolean necesitaFactura = request.getParameter("necesitaFactura") != null;
@@ -49,6 +49,7 @@ public class OrdenTrabajoService {
         ordenTrabajo.setEsCuentaCorriente(esCuentaCorriente);
         ordenTrabajo.setNecesitaFactura(necesitaFactura);
         ordenTrabajo.setTipoProducto(request.getParameter("tipoProducto"));
+        ordenTrabajo.setCorreccion(null);
 
         String fechaMuestraStr = request.getParameter("fechaMuestra");
         String toggleFechaMuestra = request.getParameter("toggleFechaMuestra"); // el checkbox

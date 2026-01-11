@@ -56,3 +56,10 @@ h5 {
   border: 2px solid #dc3545 !important; /* rojo Bootstrap */
   background-color: #ffe6e6;
 }
+
+.contenedor-correccion-odt.border {
+    border: 2px solid #E52987 !important;
+    background-color: lightgoldenrodyellow;
+    color: #E52987;
+    padding: 18px;
+}

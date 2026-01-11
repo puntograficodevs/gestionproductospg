@@ -12,10 +12,19 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="container mt-5">
-  <h2 th:text="${ordenTrabajo.id} != null ? 'Editar orden - Hojas membreteadas' : 'Crear orden - Hojas membreteadas'"></h2>
-
+  <h2 th:text="${ordenTrabajo.correccion != null}
+          ? 'Corregir orden - Hojas membreteadas'
+          : (${ordenTrabajo.id} != null
+              ? 'Editar orden - Hojas membreteadas'
+              : 'Crear orden - Hojas membreteadas')">
+  </h2>
 
   <form method="post" action="/api/creacion-producto">
+    <!-- DATOS DE CORRECCIÓN -->
+    <div class="border contenedor-datos-odt contenedor-correccion-odt" th:if="${ordenTrabajo.correccion}">
+        <h5 class="titulo-correccion">Correcci&oacute;n pendiente</h5>
+        <p class="texto-correccion" th:text="${ordenTrabajo.correccion}"></p>
+    </div>
     <!-- DATOS DEL CLIENTE -->
     <div class="contenedor-datos-odt">
       <h5 class="mt-4 datos-del-cliente">
@@ -376,8 +385,11 @@
       </div>
     </div>
     <div class="d-flex justify-content-center mt-4">
-      <button type="submit" class="btn btn-crear-odt text-white px-4 py-2"
-              th:text="${ordenTrabajo.id} != null ? 'Editar orden' : 'Crear orden'">
+      <button type="submit"
+              class="btn btn-crear-odt text-white px-4 py-2"
+              th:text="${ordenTrabajo.correccion != null}
+                      ? 'Corregir orden'
+                      : (${ordenTrabajo.id} != null ? 'Editar orden' : 'Crear orden')">
       </button>
     </div>
   </form>

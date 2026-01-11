@@ -47,6 +47,12 @@ h4, h6, .texto-footer span {
     font-size: 14px;
 }
 
+.contenedor-correccion-odt.border {
+    border: 2px solid #E52987 !important;
+    background-color: lightgoldenrodyellow;
+    color: #E52987;
+}
+
 @media print {
     nav {
         display: none !important;

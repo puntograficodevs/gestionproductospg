@@ -26,17 +26,25 @@
       <img th:src="@{/img/logotipo-color.png}" class="img-fluid" style="max-height: 60px;" />
     </div>
   </div>
-
-  <div class="row mt-4">
+  <div class="row" th:if="${ordenTrabajo.correccion}">
+    <div class="col-12">
+      <div class="card mb-3 border contenedor-datos-orden-impresion contenedor-correccion-odt">
+        <h6 class="titulo-correccion">Correcci&oacute;n pendiente</h6>
+        <hr class="divider">
+        <p class="texto-correccion" th:text="${ordenTrabajo.correccion}"></p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-6">
-      <div class="card mb-3 border contenedor-datos-orden-impresion ">
+      <div class="card mb-3 border contenedor-datos-orden-impresion">
         <h6>Datos del cliente</h6>
         <hr class="divider">
         <p><strong>Cliente: </strong><span th:text="${ordenTrabajo.nombreCliente}"></span></p>
         <p><strong>Teléfono: </strong><span th:text="${ordenTrabajo.telefonoCliente}"></span></p>
         <p><strong>Cuenta corriente: </strong><span th:text="${ordenTrabajo.esCuentaCorriente} ? 'Sí' : 'No'"></span></p>
       </div>
-      <div class="card mb-3 border contenedor-datos-orden-impresion ">
+      <div class="card mb-3 border contenedor-datos-orden-impresion">
         <h6>Datos del pago</h6>
         <hr class="divider">
         <p><strong>Pedido: </strong><span th:text="${fechaPedido}"></span></p>
