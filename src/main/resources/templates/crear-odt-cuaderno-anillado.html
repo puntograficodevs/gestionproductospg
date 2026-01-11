@@ -187,12 +187,13 @@
           </label>
           <input type="number"
                  name="cantidadHojas"
-                 th:value="${cuadernoAnillado.cantidadHojas}"
+                 th:value="${cuadernoAnillado.cantidadHojas != null and cuadernoAnillado.cantidadHojas != 0
+                  ? cuadernoAnillado.cantidadHojas
+                  : 100}"
                  class="form-control"
                  id="cuaderno-anillado-cantidad-hojas"
                  required
-                 min="1"
-                 placeholder="0">
+                 min="1">
         </div>
       </div>
       <div class="row mb-3">
@@ -227,10 +228,11 @@
             Cantidad *
           </label>
           <input type="number"
-                 value="1"
                  class="form-control"
                  id="cuaderno-anillado-cantidad"
-                 th:value="${cuadernoAnillado.cantidad}"
+                 th:value="${cuadernoAnillado.cantidad != null and cuadernoAnillado.cantidad != 0
+                  ? cuadernoAnillado.cantidad
+                  : 1}"
                  name="cantidad"
                  required
                  placeholder="0">
