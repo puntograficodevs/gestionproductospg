@@ -198,7 +198,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="medidaPersonalizadaGroup">
+          <div class="mt-2" id="medidaPersonalizadaGroup" th:classappend="${etiqueta.medidaPersonalizada == null || etiqueta.medidaEtiqueta.id != 2} ? 'd-none' : ''">
             <label for="medidaPersonalizada" class="form-label">
               Medida personalizada
             </label>
@@ -207,7 +207,7 @@
                    name="medidaPersonalizada"
                    th:value="${etiqueta.medidaPersonalizada}"
                    id="medidaPersonalizada"
-                   placeholder="Ej: 900">
+                   placeholder="Ej: 7x10 cm">
           </div>
         </div>
       </div>
@@ -251,7 +251,7 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${etiqueta.cantidadEtiqueta == null || (etiqueta.cantidadEtiqueta != null && etiqueta.cantidadEtiqueta.id != 5)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
@@ -259,7 +259,9 @@
                    class="form-control"
                    name="cantidad"
                    id="cantidad"
-                   th:value="${etiqueta.cantidad}"
+                   th:value="${etiqueta.cantidad != null and etiqueta.cantidad != 0
+                    ? etiqueta.cantidad
+                    : 1}"
                    placeholder="Ej: 900">
           </div>
         </div>

@@ -239,12 +239,14 @@
           </div>
 
           <!-- INPUT PERSONALIZADO -->
-          <div class="mt-2 d-none" id="cantidadPersonalizadaGroup">
+          <div class="mt-2" id="cantidadPersonalizadaGroup" th:classappend="${folleto.cantidadFolleto == null || (folleto.cantidadFolleto != null && folleto.cantidadFolleto.id != 9)} ? 'd-none' : ''">
             <label for="cantidad" class="form-label">
               Cantidad personalizada
             </label>
             <input type="number"
-                   th:value="${folleto.cantidad}"
+                   th:value="${folleto.cantidad != null and folleto.cantidad != 0
+                    ? folleto.cantidad
+                    : 1}"
                    class="form-control"
                    name="cantidad"
                    id="cantidad"
