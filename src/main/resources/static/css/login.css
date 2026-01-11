@@ -4,6 +4,11 @@
 }
 
 @font-face {
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
   font-family: 'Montserrat';
   src: url('../fonts/Montserrat-Regular.ttf') format('truetype');
 }
@@ -17,7 +22,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'Montserrat';
+    font-family: 'Roboto';
     font-size: 1.05rem;
 }
 
@@ -127,4 +132,8 @@ h3 {
     width: 200px;
     object-fit: contain;
     margin: auto;
+}
+
+.btn-iniciar-sesion {
+    font-family: 'Montserrat';
 }

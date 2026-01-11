@@ -15,7 +15,7 @@
  <div class="row pagina-en-proceso mt-3 mb-3">
    <form class="d-flex" method="post" th:action="@{/buscar-orden}">
      <input class="form-control me-2" name="datoOrden" type="search" placeholder="Ingresá el número de orden, nombre del cliente o número de teléfono" aria-label="Search">
-     <button class="btn btn-outline-success btn-lupa" type="submit">
+     <button class="btn btn-success btn-lupa" type="submit">
        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
        </svg>
@@ -25,8 +25,12 @@
    <div class="container mt-4">
      <h4 class="titulo-tabla-ordenes mb-4">Ordenes encontradas</h4>
 
-     <div th:if="${#lists.isEmpty(ordenesEncontradas)}" class="alert alert-warning">
-       No se encontraron órdenes con el dato <span th:text="${param.datoOrden}">dato</span>.
+     <div th:if="${#lists.isEmpty(ordenesEncontradas) and param.datoOrden != null}" class="alert alert-danger">
+       No se encontraron órdenes con el dato <span th:text="${param.datoOrden[0]}"></span>.
+     </div>
+
+     <div th:if="${#lists.isEmpty(ordenesEncontradas) and param.datoOrden == null}" class="alert alert-success">
+       Acá aparecerán todas las órdenes que coincidan total o parcialmente con tu búsqueda.
      </div>
 
      <div th:if="${!#lists.isEmpty(ordenesEncontradas)}" class="table-responsive">
