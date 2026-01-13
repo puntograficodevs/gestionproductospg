@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
       // Valores predefinidos
       const precioDisenio = 6000;
-      const precioPerilla = 2800;
+      const precioPerilla = 3500;
       const recargoFactura = 0.21; // 21% sobre subtotal
       const recargoCredito = 0.10; // 10% sobre subtotal+impuesto
 

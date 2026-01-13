@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
       // Valores predefinidos
-      const precioDisenio = 8000;
+      const precioDisenio = 9500;
       const recargoFactura = 0.21; // 21% sobre subtotal
       const recargoCredito = 0.10; // 10% sobre subtotal+impuesto
 
