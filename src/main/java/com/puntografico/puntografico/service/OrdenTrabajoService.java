@@ -100,7 +100,7 @@ public class OrdenTrabajoService {
 
     public List<OrdenTrabajo> buscarEstadoSinHacer(Empleado empleado, String tipoProducto) {
         Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maripm");
+        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
                 ? ordenTrabajoRepository.findByEstadoOrdenId(1L)
@@ -122,7 +122,7 @@ public class OrdenTrabajoService {
 
     public List<OrdenTrabajo> buscarEstadoCorregir(Empleado empleado, String tipoProducto) {
         Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maripm");
+        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
                 ? ordenTrabajoRepository.findByEstadoOrdenId(4L)
@@ -144,7 +144,7 @@ public class OrdenTrabajoService {
 
     public List<OrdenTrabajo> buscarEstadoEnProceso(Empleado empleado, String tipoProducto) {
         Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maripm");
+        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
                 ? ordenTrabajoRepository.findByEstadoOrdenId(2L)
@@ -166,7 +166,7 @@ public class OrdenTrabajoService {
 
     public List<OrdenTrabajo> buscarEstadoListaParaRetirar(Empleado empleado, String tipoProducto){
         Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maripm");
+        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
                 ? ordenTrabajoRepository.findByEstadoOrdenId(3L)
@@ -242,7 +242,7 @@ public class OrdenTrabajoService {
     public List<OrdenTrabajo> buscarTodasConIDONombreOTelefono(String datoOrden, Empleado empleado) {
         Set<OrdenTrabajo> ordenesEncontradas = new HashSet<>();
         Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maripm");
+        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         try {
             Long posibleId = Long.parseLong(datoOrden);
