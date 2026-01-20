@@ -41,17 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
       function mapearOpcionCantidad() {
           const cantidadHojas = parseInt(cantidadImpresionesInput.value) || 0;
 
-          if (cantidadHojas <= 10) {
+          if (cantidadHojas <= 50) {
               cantidadOpcion.value = 1;
               return 1;
           }
-          if (cantidadHojas <= 100) {
+          if (cantidadHojas > 50) {
               cantidadOpcion.value = 2;
               return 2;
-          }
-          if (cantidadHojas > 100) {
-              cantidadOpcion.value = 3;
-              return 3;
           }
       }
 
@@ -155,14 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function calcularPrecioSegunCantidadHojas(cantidadHojas) {
-            const precioMenos20 = 890;
-            const precioEntre20Y40 = 980;
-            const precioEntre40Y60 = 1100;
-            const precioEntre60Y100 = 1300;
-            const precioEntre100Y150 = 1500;
-            const precioEntre150Y200 = 1950;
-            const precioEntre200Y300 = 2500;
-            const precioEntre300Y400 = 2800;
+            const precioMenos20 = 1000;
+            const precioEntre20Y40 = 1200;
+            const precioEntre40Y60 = 1300;
+            const precioEntre60Y100 = 1500;
+            const precioEntre100Y150 = 1700;
+            const precioEntre150Y200 = 2500;
+            const precioEntre200Y300 = 2800;
+            const precioEntre300Y400 = 3300;
 
             if (cantidadHojas <= 20) {
                 return precioMenos20;
