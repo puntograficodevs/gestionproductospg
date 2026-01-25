@@ -23,6 +23,9 @@ public class OrdenTrabajoService {
     private final EstadoPagoRepository estadoPagoRepository;
     private final EmpleadoService empleadoService;
     private final PagoService pagoService;
+    private static final Long ID_ROL_DESARROLLADOR = 2L;
+    private static final Long ID_ROL_DISENIO = 5L;
+
 
     public OrdenTrabajo buscarPorId(Long id) {
         return ordenTrabajoRepository.findById(id).get();
@@ -99,89 +102,106 @@ public class OrdenTrabajoService {
     }
 
     public List<OrdenTrabajo> buscarEstadoSinHacer(Empleado empleado, String tipoProducto) {
-        Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
+        List<OrdenTrabajo> ordenes =
+                "todas".equalsIgnoreCase(tipoProducto)
+                        ? ordenTrabajoRepository.findByEstadoOrdenId(1L)
+                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(1L, tipoProducto);
 
-        List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
-                ? ordenTrabajoRepository.findByEstadoOrdenId(1L)
-                : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(1L, tipoProducto);
+        Long rolEmpleado = empleado.getRol().getId();
 
         return ordenes.stream()
-                .filter(orden -> {
-                    if (empleado.getId().equals(desarrollador.getId())) {
-                        return orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else if (empleado.getId().equals(community.getId())) {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId())
-                                && !orden.getEmpleado().getId().equals(community.getId());
-                    }
-                })
-                .toList();
+            .filter(orden -> {
+                Long rolAutorOrden = orden.getEmpleado().getRol().getId();
+
+                if (rolEmpleado.equals(ID_ROL_DESARROLLADOR)) {
+                    return rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
+                }
+
+                if (rolEmpleado.equals(ID_ROL_DISENIO)) {
+                    return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR)
+                            && !"impresion".equalsIgnoreCase(orden.getTipoProducto());
+                }
+
+                return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
+            })
+            .toList();
     }
 
-    public List<OrdenTrabajo> buscarEstadoCorregir(Empleado empleado, String tipoProducto) {
-        Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
-        List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
-                ? ordenTrabajoRepository.findByEstadoOrdenId(4L)
-                : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(4L, tipoProducto);
+    public List<OrdenTrabajo> buscarEstadoCorregir(Empleado empleado, String tipoProducto) {
+        List<OrdenTrabajo> ordenes =
+                "todas".equalsIgnoreCase(tipoProducto)
+                        ? ordenTrabajoRepository.findByEstadoOrdenId(4L)
+                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(4L, tipoProducto);
+
+        Long rolEmpleado = empleado.getRol().getId();
 
         return ordenes.stream()
                 .filter(orden -> {
-                    if (empleado.getId().equals(desarrollador.getId())) {
-                        return orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else if (empleado.getId().equals(community.getId())) {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId())
-                                && !orden.getEmpleado().getId().equals(community.getId());
+                    Long rolAutorOrden = orden.getEmpleado().getRol().getId();
+
+                    if (rolEmpleado.equals(ID_ROL_DESARROLLADOR)) {
+                        return rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                     }
+
+                    if (rolEmpleado.equals(ID_ROL_DISENIO)) {
+                        return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR)
+                                && !"impresion".equalsIgnoreCase(orden.getTipoProducto());
+                    }
+
+                    return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
                 .toList();
     }
 
     public List<OrdenTrabajo> buscarEstadoEnProceso(Empleado empleado, String tipoProducto) {
-        Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
+        List<OrdenTrabajo> ordenes =
+                "todas".equalsIgnoreCase(tipoProducto)
+                        ? ordenTrabajoRepository.findByEstadoOrdenId(2L)
+                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(2L, tipoProducto);
 
-        List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
-                ? ordenTrabajoRepository.findByEstadoOrdenId(2L)
-                : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(2L, tipoProducto);
+        Long rolEmpleado = empleado.getRol().getId();
 
         return ordenes.stream()
                 .filter(orden -> {
-                    if (empleado.getId().equals(desarrollador.getId())) {
-                        return orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else if (empleado.getId().equals(community.getId())) {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId())
-                                && !orden.getEmpleado().getId().equals(community.getId());
+                    Long rolAutorOrden = orden.getEmpleado().getRol().getId();
+
+                    if (rolEmpleado.equals(ID_ROL_DESARROLLADOR)) {
+                        return rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                     }
+
+                    if (rolEmpleado.equals(ID_ROL_DISENIO)) {
+                        return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR)
+                                && !"impresion".equalsIgnoreCase(orden.getTipoProducto());
+                    }
+
+                    return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
                 .toList();
     }
 
     public List<OrdenTrabajo> buscarEstadoListaParaRetirar(Empleado empleado, String tipoProducto){
-        Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
+        List<OrdenTrabajo> ordenes =
+                "todas".equalsIgnoreCase(tipoProducto)
+                        ? ordenTrabajoRepository.findByEstadoOrdenId(3L)
+                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(3L, tipoProducto);
 
-        List<OrdenTrabajo> ordenes = "todas".equals(tipoProducto)
-                ? ordenTrabajoRepository.findByEstadoOrdenId(3L)
-                : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(3L, tipoProducto);
+        Long rolEmpleado = empleado.getRol().getId();
 
         return ordenes.stream()
                 .filter(orden -> {
-                    if (empleado.getId().equals(desarrollador.getId())) {
-                        return orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else if (empleado.getId().equals(community.getId())) {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId())
-                                && !orden.getEmpleado().getId().equals(community.getId());
+                    Long rolAutorOrden = orden.getEmpleado().getRol().getId();
+
+                    if (rolEmpleado.equals(ID_ROL_DESARROLLADOR)) {
+                        return rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                     }
+
+                    if (rolEmpleado.equals(ID_ROL_DISENIO)) {
+                        return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR)
+                                && !"impresion".equalsIgnoreCase(orden.getTipoProducto());
+                    }
+
+                    return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
                 .toList();
     }
@@ -240,33 +260,39 @@ public class OrdenTrabajoService {
     }
 
     public List<OrdenTrabajo> buscarTodasConIDONombreOTelefono(String datoOrden, Empleado empleado) {
+
         Set<OrdenTrabajo> ordenesEncontradas = new HashSet<>();
-        Empleado desarrollador = empleadoService.traerEmpleadoPorUsername("benpm");
-        Empleado community = empleadoService.traerEmpleadoPorUsername("maricommunity");
 
         try {
             Long posibleId = Long.parseLong(datoOrden);
-            ordenTrabajoRepository.findById(posibleId).ifPresent(ordenesEncontradas::add);
+            ordenTrabajoRepository.findById(posibleId)
+                    .ifPresent(ordenesEncontradas::add);
         } catch (NumberFormatException e) {
-            System.out.println("Error: " + e);
+            // no era un ID, seguimos
         }
 
         ordenesEncontradas.addAll(
             ordenTrabajoRepository.findByNombreClienteContainingIgnoreCaseOrTelefonoClienteContaining(datoOrden, datoOrden)
         );
 
+        Long rolEmpleado = empleado.getRol().getId();
+
         return ordenesEncontradas.stream()
-                .filter(orden -> {
-                    if (empleado.getId().equals(desarrollador.getId())) {
-                        return orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else if (empleado.getId().equals(community.getId())) {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId());
-                    } else {
-                        return !orden.getEmpleado().getId().equals(desarrollador.getId())
-                                && !orden.getEmpleado().getId().equals(community.getId());
-                    }
-                })
-                .toList();
+            .filter(orden -> {
+                Long rolAutorOrden = orden.getEmpleado().getRol().getId();
+
+                if (rolEmpleado.equals(ID_ROL_DESARROLLADOR)) {
+                    return rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
+                }
+
+                if (rolEmpleado.equals(ID_ROL_DISENIO)) {
+                    return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR)
+                            && !"impresion".equalsIgnoreCase(orden.getTipoProducto());
+                }
+
+                return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
+            })
+            .toList();
     }
 
     public void eliminar(Long id) {

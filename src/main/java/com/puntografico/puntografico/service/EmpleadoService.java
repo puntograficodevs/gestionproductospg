@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +28,10 @@ public class EmpleadoService {
         Assert.notNull(username, "El username no puede venir nulo.");
         return empleadoRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con username: " + username));
+    }
+
+    public List<Empleado> traerEmpleadoPorRolId(Long idRol) {
+        Assert.notNull(idRol, "El id del rol deseado no puede venir nullo.");
+        return empleadoRepository.findByRolId(idRol);
     }
 }
