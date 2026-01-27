@@ -73,6 +73,7 @@
         <hr class="divider">
         <p><strong>Fecha de entrega: </strong><span th:text="${fechaEntrega}"></span>
         <p th:if="${ordenTrabajo.horaEntrega} != ''"><strong>Hora de entrega: </strong><span th:text="${ordenTrabajo.horaEntrega}"></span> hs.</p>
+        <p th:if="${ordenTrabajo.fechaMuestra}"><strong>Fecha de muestra: </strong><span th:text="${fechaMuestra}"></span></p>
         <p><strong>Cantidad: </strong><span th:text="${otro.cantidad}"></span></p>
       </div>
     </div>
