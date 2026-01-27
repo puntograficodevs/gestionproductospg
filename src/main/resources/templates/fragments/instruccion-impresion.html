@@ -1,0 +1,23 @@
+<div id="instruccion-impresion" class="card mb-3 border contenedor-orden-impresion" th:fragment="instruccion-impresion" xmlns:th="http://www.thymeleaf.org">
+  <p>Imprimí esta orden apretando Ctrl+P</p>
+
+  <style>
+    #instruccion-impresion {
+      display: flex;
+      align-items: center;
+      border: 1px solid #E52987;
+      color: #E52987;
+      font-family: 'Lemon Milk';
+    }
+
+    #instruccion-impresion p {
+      margin-bottom: 0;
+    }
+
+    @media print {
+      #instruccion-impresion {
+        display: none;
+      }
+    }
+  </style>
+</div>

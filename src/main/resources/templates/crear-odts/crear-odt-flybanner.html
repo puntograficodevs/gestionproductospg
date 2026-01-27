@@ -351,7 +351,7 @@
                  readonly>
         </div>
       </div>
-      <div class="row mb-3" th:classappend="${ordenTrabajo.id} != null ? 'd-none' : ''">
+      <div class="row mb-3">
         <div class="col-md-12">
           <label class="form-label d-block">
             Medio de pago *
@@ -365,7 +365,7 @@
                      th:id="'medioPago-' + ${medio.id}"
                      th:value="${medio.id}"
                      th:checked="${!#lists.isEmpty(ordenTrabajo.pagos) and medio.id == ordenTrabajo.pagos[ordenTrabajo.pagos.size() - 1].medioPago.id}"
-                     required>
+                     >
               <label for="medioPago" class="form-check-label"
                      th:for="'medioPago-' + ${medio.id}"
                      th:text="${medio.medioDePago}"></label>

@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
       precioImpuestosInput.value = 0;
       restaInput.value = 0;
 
+      abonadoInput.addEventListener('input', () => {
+        const abonado = parseFloat(abonadoInput.value) || 0;
+
+        radiosMedioPago.forEach(radio => {
+          radio.required = abonado > 0;
+        });
+      });
+
       // Toggles
       let toggleFechaMuestra = document.getElementById('toggleFechaMuestra');
       const fechaMuestraRow = document.getElementById('fechaMuestraRow');

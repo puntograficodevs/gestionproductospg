@@ -33,7 +33,7 @@
         <option value="flybanner" th:selected="${tipoProducto == 'flybanner'}">Flybanners</option>
         <option value="folleto" th:selected="${tipoProducto == 'folleto'}">Folletos</option>
         <option value="hojas membretadas" th:selected="${tipoProducto == 'hojas membretadas'}">Hojas membretadas</option>
-        <option value="impresión" th:selected="${tipoProducto == 'impresión'}">Impresiones</option>
+        <option value="impresión" th:selected="${tipoProducto == 'impresión'}" th:if="${empleado.rol.id != 5}">Impresiones</option>
         <option value="lona común" th:selected="${tipoProducto == 'lona común'}">Lonas comunes</option>
         <option value="lona publicitaria" th:selected="${tipoProducto == 'lona publicitaria'}">Lonas publicitarias</option>
         <option value="rifa o bono" th:selected="${tipoProducto == 'rifa o bono'}">Rifas o bonos</option>

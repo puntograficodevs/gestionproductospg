@@ -66,11 +66,11 @@ public class OrdenTrabajoService {
         ordenTrabajo.setFechaEntrega(LocalDate.parse(request.getParameter("fechaEntrega")));
         ordenTrabajo.setHoraEntrega(request.getParameter("horaEntrega"));
 
-        asignarValoresDelPago(ordenTrabajo, request);
+        asignarValoresDelPagoSiCorresponde(ordenTrabajo, request);
         return ordenTrabajoRepository.save(ordenTrabajo);
     }
 
-    private void asignarValoresDelPago(OrdenTrabajo ordenTrabajo, HttpServletRequest request) {
+    private void asignarValoresDelPagoSiCorresponde(OrdenTrabajo ordenTrabajo, HttpServletRequest request) {
 
             int abonado = Integer.parseInt(request.getParameter("abonado"));
             int total = Integer.parseInt(request.getParameter("total"));

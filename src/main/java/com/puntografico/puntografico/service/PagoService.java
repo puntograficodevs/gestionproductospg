@@ -25,19 +25,23 @@ public class PagoService {
     private final OrdenTrabajoRepository ordenTrabajoRepository;
 
     public void guardar(HttpServletRequest request, Long idOrdenTrabajo) {
-        MedioPago medioPago = obtenerMedioPagoDesdeRequest(request);
-        Empleado empleado = obtenerEmpleadoDesdeReequest(request);
-        int importe = obtenerImporteDesdeRequest(request);
-        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
+        int abonado = Integer.parseInt(request.getParameter("abonado"));
 
-        Pago pago = new Pago();
-        pago.setFechaPago(LocalDate.now());
-        pago.setMedioPago(medioPago);
-        pago.setEmpleado(empleado);
-        pago.setImporte(importe);
-        pago.setOrdenTrabajo(ordenTrabajo);
+        if (abonado != 0) {
+            MedioPago medioPago = obtenerMedioPagoDesdeRequest(request);
+            Empleado empleado = obtenerEmpleadoDesdeReequest(request);
+            int importe = obtenerImporteDesdeRequest(request);
+            OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo).get();
 
-        pagoRepository.save(pago);
+            Pago pago = new Pago();
+            pago.setFechaPago(LocalDate.now());
+            pago.setMedioPago(medioPago);
+            pago.setEmpleado(empleado);
+            pago.setImporte(importe);
+            pago.setOrdenTrabajo(ordenTrabajo);
+
+            pagoRepository.save(pago);
+        }
     }
 
     private MedioPago obtenerMedioPagoDesdeRequest(HttpServletRequest request) {

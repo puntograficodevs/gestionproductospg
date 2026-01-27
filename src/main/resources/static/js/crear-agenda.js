@@ -24,8 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
       precioImpuestosInput.value = 0;
-      //totalInput.value = 0;
       restaInput.value = 0;
+
+      abonadoInput.addEventListener('input', () => {
+        const abonado = parseFloat(abonadoInput.value) || 0;
+
+        radiosMedioPago.forEach(radio => {
+          radio.required = abonado > 0;
+        });
+      });
 
       // Toggles
       let toggleFechaMuestra = document.getElementById('toggleFechaMuestra');
