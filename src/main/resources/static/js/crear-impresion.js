@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       function mapearOpcionCantidad() {
           const cantidadPaginas = parseInt(cantidadImpresionesInput.value) || 0;
+          console.log("Cantidad de páginas " + cantidadPaginas);
 
           if (cantidadPaginas <= 100) {
               cantidadOpcion.value = 1;
