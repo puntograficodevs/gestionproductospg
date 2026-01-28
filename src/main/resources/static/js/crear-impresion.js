@@ -47,13 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function mapearOpcionCantidad() {
-          const cantidadHojas = parseInt(cantidadImpresionesInput.value) || 0;
+          const cantidadPaginas = parseInt(cantidadImpresionesInput.value) || 0;
 
-          if (cantidadHojas <= 50) {
+          if (cantidadPaginas <= 100) {
               cantidadOpcion.value = 1;
               return 1;
           }
-          if (cantidadHojas > 50) {
+          if (cantidadPaginas > 100) {
               cantidadOpcion.value = 2;
               return 2;
           }
