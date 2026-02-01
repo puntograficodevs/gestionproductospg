@@ -677,6 +677,7 @@ public class ProductoController {
         folletoDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
         folletoDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
         folletoDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
+        folletoDTO.setTamanioPersonalizado(request.getParameter("tamanioPersonalizado"));
         folletoDTO.setTipoPapelFolletoId(Long.parseLong(request.getParameter("tipoPapelFolleto.id")));
         folletoDTO.setTipoColorFolletoId(Long.parseLong(request.getParameter("tipoColorFolleto.id")));
         folletoDTO.setTipoFazFolletoId(Long.parseLong(request.getParameter("tipoFazFolleto.id")));

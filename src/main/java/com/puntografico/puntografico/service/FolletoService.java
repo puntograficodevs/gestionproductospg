@@ -49,6 +49,12 @@ public class FolletoService {
         folleto.setCantidadFolleto(cantidadFolleto);
         folleto.setCantidad(cantidad);
 
+        if (tamanioHojaFolleto.getTamanio().equalsIgnoreCase("otro")) {
+            folleto.setTamanioPersonalizado(folletoDTO.getTamanioPersonalizado());
+        } else {
+            folleto.setTamanioPersonalizado(null);
+        }
+
         return folletoRepository.save(folleto);
     }
 

@@ -9,6 +9,7 @@ public class FolletoDTO {
     private Boolean conAdicionalDisenio;
     private String informacionAdicional;
     private Integer cantidad;
+    private String tamanioPersonalizado;
     private Long tipoPapelFolletoId;
     private Long tipoColorFolletoId;
     private Long tipoFazFolletoId;

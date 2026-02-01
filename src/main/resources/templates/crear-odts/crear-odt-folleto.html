@@ -206,6 +206,19 @@
               <label class="form-check-label" th:for="'tamanio-' + ${tamanio.id}" th:text="${tamanio.tamanio}"></label>
             </div>
           </div>
+
+          <!-- INPUT PERSONALIZADO -->
+          <div class="mt-2" id="tamanioPersonalizadoGroup" th:classappend="${folleto.tamanioPersonalizado == null || folleto.tamanioHojaFolleto.id != 7} ? 'd-none' : ''">
+            <label for="tamanioPersonalizado" class="form-label">
+              Tamaño personalizado
+            </label>
+            <input type="text"
+                   class="form-control"
+                   name="tamanioPersonalizado"
+                   th:value="${folleto.tamanioPersonalizado}"
+                   id="tamanioPersonalizado"
+                   placeholder="Ej: 1/2 de A4">
+          </div>
         </div>
       </div>
       <div class="row mb-3">

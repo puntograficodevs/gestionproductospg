@@ -24,6 +24,8 @@ public class Folleto {
 
     private int cantidad;
 
+    private String tamanioPersonalizado;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_papel_folleto")
     private TipoPapelFolleto tipoPapelFolleto;

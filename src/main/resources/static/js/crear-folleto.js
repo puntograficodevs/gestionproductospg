@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
+      const tamanioHojaInputRow = document.getElementById('tamanioPersonalizadoGroup');
+      radiosTamanio.forEach(radio => {
+        radio.addEventListener('change', () => {
+          const label = document.querySelector(`label[for="${radio.id}"]`);
+          const esOtro = label?.textContent.trim().toLowerCase() === 'otro';
+          tamanioHojaInputRow.classList.toggle('d-none', !esOtro);
+        });
+      });
+
       function resetearPrecio() {
         precioProductoInput.value = 0;
         precioProductoInput.readOnly = false;

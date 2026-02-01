@@ -63,7 +63,12 @@
         <p><strong>Tipo de color: </strong><span th:text="${folleto.tipoColorFolleto.tipo}"></span></p>
         <p><strong>Tipo de faz: </strong><span th:text="${folleto.tipoFazFolleto.tipo}"></span></p>
         <p><strong>Tipo de folleto: </strong><span th:text="${folleto.tipoFolleto.tipo}"></span></p>
-        <p><strong>Tamaño de hoja: </strong><span th:text="${folleto.tamanioHojaFolleto.tamanio}"></span></p>
+        <p><strong>Tamaño de hoja: </strong>
+          <span th:text="${folleto.tamanioHojaFolleto.tamanio} == 'OTRO'
+            ? ${folleto.tamanioPersonalizado}
+            : ${folleto.tamanioHojaFolleto.tamanio}">
+          </span>
+        </p>
         <p><strong>Adicional diseño: </strong><span th:text="${folleto.conAdicionalDisenio} ? 'Sí' : 'No'"></span></p>
         <p><strong>Plegado: </strong><span th:text="${folleto.conPlegado} ? 'Sí' : 'No'"></span></p>
         <p><strong>Enlace al archivo: </strong>
