@@ -84,6 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case "folleto":
         window.location.href = `/crear-odts/crear-odt-folleto/${idOrden}`;
         break;
+      case "goma de polimero":
+        alert("se hizo click acá");
+        window.location.href = `/crear-odts/crear-odt-goma-polimero/${idOrden}`;
+        break;
       case "hojas membretadas":
         window.location.href = `/crear-odts/crear-odt-hojas-membreteadas/${idOrden}`;
         break;
@@ -109,8 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = `/crear-odts/crear-odt-sello-automatico/${idOrden}`;
         break;
       case "sello automático escolar":
-            window.location.href = `/crear-odts/crear-odt-sello-automatico-escolar/${idOrden}`;
-            break;
+        window.location.href = `/crear-odts/crear-odt-sello-automatico-escolar/${idOrden}`;
+        break;
       case "sello de madera":
         window.location.href = `/crear-odts/crear-odt-sello-madera/${idOrden}`;
         break;
@@ -148,8 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Tipo de producto no manejado:", tipoProducto);
     }
   }
-
-    
     
     // CAMBIOS DE ESTADO
 

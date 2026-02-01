@@ -28,6 +28,7 @@ public class ProductoController {
     private final EtiquetaService etiquetaService;
     private final FlybannerService flybannerService;
     private final FolletoService folletoService;
+    private final GomaPolimeroService gomaPolimeroService;
     private final HojasMembreteadasService hojasMembreteadasService;
     private final ImpresionService impresionService;
     private final LonaComunService lonaComunService;
@@ -109,6 +110,10 @@ public class ProductoController {
             case "folleto":
                 FolletoDTO folletoDTO = armarFolletoDTO(request);
                 folletoService.guardar(folletoDTO, idOrden);
+                break;
+            case "goma de polimero":
+                GomaPolimeroDTO gomaPolimeroDTO = armarGomaPolimeroDTO(request);
+                gomaPolimeroService.guardar(gomaPolimeroDTO, idOrden);
                 break;
             case "hojas membretadas":
                 HojasMembreteadasDTO hojasMembreteadasDTO = armarHojasMembreteadasDTO(request);
@@ -283,6 +288,12 @@ public class ProductoController {
                 model.addAttribute("folleto", folleto);
                 htmlRedireccion = "mostrar-odts/mostrar-odt-folleto";
                 break;
+            case "goma de polimero":
+                GomaPolimero gomaPolimero = gomaPolimeroService.buscarPorOrdenTrabajoId(ordenTrabajoId)
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
+                model.addAttribute("gomaPolimero", gomaPolimero);
+                htmlRedireccion = "mostrar-odts/mostrar-odt-goma-polimero";
+                break;
             case "hojas membretadas":
                 HojasMembreteadas hojasMembreteadas = hojasMembreteadasService.buscarPorOrdenTrabajoId(ordenTrabajoId)
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado para la orden"));
@@ -456,6 +467,9 @@ public class ProductoController {
             case "folleto":
                 folletoService.eliminar(ordenTrabajo.getId());
                 break;
+            case "goma de polimero":
+                gomaPolimeroService.eliminar(ordenTrabajo.getId());
+                break;
             case "hojas membretadas":
                 hojasMembreteadasService.eliminar(ordenTrabajo.getId());
                 break;
@@ -523,7 +537,6 @@ public class ProductoController {
         ordenTrabajoService.eliminar(ordenTrabajo.getId());
     }
 
-    
 
     private AgendaDTO armarAgendaDTO(HttpServletRequest request) {
         AgendaDTO agendaDTO = new AgendaDTO();
@@ -686,6 +699,17 @@ public class ProductoController {
         folletoDTO.setCantidadFolletoId(Long.parseLong(request.getParameter("cantidadFolleto.id")));
 
         return folletoDTO;
+    }
+
+    private GomaPolimeroDTO armarGomaPolimeroDTO(HttpServletRequest request) {
+        GomaPolimeroDTO gomaPolimeroDTO = new GomaPolimeroDTO();
+        gomaPolimeroDTO.setCantidad(Integer.parseInt(request.getParameter("cantidad")));
+        gomaPolimeroDTO.setEnlaceArchivo(request.getParameter("enlaceArchivo"));
+        gomaPolimeroDTO.setInformacionAdicional(request.getParameter("informacionAdicional"));
+        gomaPolimeroDTO.setConAdicionalDisenio(request.getParameter("conAdicionalDisenio") != null);
+        gomaPolimeroDTO.setModeloGomaPolimeroId(Long.parseLong(request.getParameter("modeloGomaPolimero.id")));
+
+        return gomaPolimeroDTO;
     }
 
     private HojasMembreteadasDTO armarHojasMembreteadasDTO(HttpServletRequest request) {
