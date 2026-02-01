@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const radiosMedioPago = document.querySelectorAll('input[name="medioPago.id"]');
       const radiosModelo = document.querySelectorAll('input[name="modeloSelloAutomatico.id"]');
       const cantidadSellosInput = document.getElementById('cantidad');
-      const totalInicial = totalInput.value;
 
       // Inicializamos valores visibles
       precioImpuestosInput.value = 0;
@@ -45,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let precioProducto = 0;
 
         if (!modeloSeleccionado) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             modeloSelloAutomaticoId = Number(modeloSeleccionado.value);
@@ -77,12 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : Math.ceil(subtotal + impuestoFactura);
+        let total = Math.ceil(subtotal + impuestoFactura);
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }

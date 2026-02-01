@@ -17,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const radiosLaminado = document.querySelectorAll('input[name="tipoLaminadoCarpetaSolapa.id"]');
       const radiosFaz = document.querySelectorAll('input[name="tipoFazCarpetaSolapa.id"]');
       const cantidadCarpetasInput = document.getElementById('carpeta-cantidad');
-      const totalInicial = totalInput.value;
-
 
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
@@ -54,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let precioProducto = 0;
 
         if (!tipoLaminadoSeleccionado || !tipoFazSeleccionada || !cantidad) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             tipoLaminadoCarpetaSolapaId = Number(tipoLaminadoSeleccionado.value);
@@ -92,12 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : subtotal + impuestoFactura;
+        let total = subtotal + impuestoFactura;
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }

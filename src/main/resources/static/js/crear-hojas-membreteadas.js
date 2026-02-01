@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const radiosMedida = document.querySelectorAll('input[name="medidaHojasMembreteadas.id"]');
       const radiosColor = document.querySelectorAll('input[name="tipoColorHojasMembreteadas.id"]');
       const radiosCantidad = document.querySelectorAll('input[name="cantidadHojasMembreteadas.id"]');
-      const totalInicial = totalInput.value;
 
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
@@ -74,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let precioProducto = 0;
 
         if (!cantidadHojas || !medidaSeleccionada || !colorSeleccionado || !cantidadSeleccionada) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             medidaHojasMembreteadasId = Number(medidaSeleccionada.value);
@@ -108,12 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : subtotal + impuestoFactura;
+        let total = subtotal + impuestoFactura;
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }

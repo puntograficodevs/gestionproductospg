@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const radiosMedioPago = document.querySelectorAll('input[name="medioPago.id"]');
       const radiosTamanio = document.querySelectorAll('input[name="tamanioSelloMadera.id"]');
       const cantidadSellosMaderaInput = document.getElementById('cantidad');
-      const totalInicial = totalInput.value;
 
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
@@ -64,6 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cantidad = parseInt(cantidadSellosMaderaInput.value, 10) || 0;
 
         if (!tamanioSeleccionado) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             tamanioSelloMaderaId = Number(tamanioSeleccionado.value);
@@ -98,12 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : Math.ceil(subtotal + impuestoFactura);
+        let total = Math.ceil(subtotal + impuestoFactura);
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }

@@ -21,8 +21,6 @@
       const radiosTroquelado = document.querySelectorAll('input[name="tipoTroqueladoEntrada.id"]');
       const radiosNumerado = document.querySelectorAll('input[name="numeradoEntrada.id"]');
       const radiosTerminacion = document.querySelectorAll('input[name="terminacionEntrada.id"]');
-      const totalInicial = totalInput.value;
-
 
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
@@ -85,6 +83,9 @@
         let precioProducto = 0;
 
         if (!papelSeleccionado || !colorSeleccionado || !troqueladoSeleccionado || !medidaSeleccionada || !cantidadSeleccionada || !numeradoSeleccionado || !terminacionSeleccionada) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             tipoPapelEntradaId = Number(papelSeleccionado.value);
@@ -123,12 +124,12 @@
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : subtotal + impuestoFactura;
+        let total = subtotal + impuestoFactura;
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }

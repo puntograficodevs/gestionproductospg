@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const radiosMedida = document.querySelectorAll('input[name="medidaTalonario.id"]');
       const radiosPapel = document.querySelectorAll('input[name="tipoPapelTalonario.id"]');
       const radiosCantidad = document.querySelectorAll('input[name="cantidadTalonario.id"]');
-      const totalInicial = totalInput.value;
 
       // Inicializamos valores visibles
       precioDisenioInput.value = 0;
@@ -88,6 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let precioProducto = 0;
 
         if (!cantidadHojas || !tipoSeleccionado || !troqueladoSeleccionado || !modoSeleccionado || !colorSeleccionado || !medidaSeleccionada || !papelSeleccionado || !cantidadSeleccionada) {
+            totalInput.value = 0;
+            precioImpuestosInput.value = 0;
+            restaInput.value = 0;
             return;
         } else {
             tipoTalonarioId = Number(tipoSeleccionado.value);
@@ -126,12 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Total inicial con impuesto
-        let total = (totalInicial != 0) ? totalInicial : subtotal + impuestoFactura;
+        let total = subtotal + impuestoFactura;
 
         // Recargo por crédito
         const medioPagoSeleccionado = document.querySelector('input[name="medioPago.id"]:checked');
         let recargoCreditoMonto = 0;
-        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2) && !(totalInicial != 0)) {
+        if ((medioPagoSeleccionado && Number(medioPagoSeleccionado.value) === 2)) {
           recargoCreditoMonto = Math.ceil(total * recargoCredito);
           total += recargoCreditoMonto;
         }
