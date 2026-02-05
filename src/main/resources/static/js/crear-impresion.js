@@ -45,18 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         precioProductoInput.readOnly = false;
       }
 
-      function mapearOpcionCantidad() {
-          const cantidadPaginas = parseInt(cantidadImpresionesInput.value) || 0;
-          console.log("Cantidad de páginas " + cantidadPaginas);
+      function mapearOpcionCantidad(fazSeleccionada) {
+        const cantidadPaginas = Number(cantidadImpresionesInput.value) || 0;
+        const faz = Number(fazSeleccionada.value);
 
-          if (cantidadPaginas <= 100) {
-              cantidadOpcion.value = 1;
-              return 1;
-          }
-          if (cantidadPaginas > 100) {
-              cantidadOpcion.value = 2;
-              return 2;
-          }
+        const limite = faz === 1 ? 50 : 100;
+
+        if (cantidadPaginas <= limite) {
+          cantidadOpcion.value = 1;
+          return 1;
+        }
+
+        cantidadOpcion.value = 2;
+        return 2;
       }
 
       async function calcularPrecio() {
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tamanioSeleccionado = document.querySelector('input[name="tamanioHojaImpresion.id"]:checked');
         const fazSeleccionada = document.querySelector('input[name="tipoFazImpresion.id"]:checked');
         const papelSeleccionado = document.querySelector('input[name="tipoPapelImpresion.id"]:checked');
-        const cantidadSeleccionada = mapearOpcionCantidad();
+        const cantidadSeleccionada = mapearOpcionCantidad(fazSeleccionada);
         const tipoSeleccionado = document.querySelector('input[name="tipoImpresion.id"]:checked');
         let tipoColorImpresionId = 0;
         let tamanioHojaImpresionId = 0;
@@ -155,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
            if (cantidadAnillados === 1) {
                 return calcularPrecioSegunCantidadHojas(cantidadHojas);
            } else {
-                const cantidadHojasPorParte = cantidadHojas / cantidadAnillados;
+                const cantidadHojasPorParte = Math.ceil(cantidadHojas / cantidadAnillados);
                 const precioParcial = calcularPrecioSegunCantidadHojas(cantidadHojasPorParte);
                 return precioParcial * cantidadAnillados;
            }
