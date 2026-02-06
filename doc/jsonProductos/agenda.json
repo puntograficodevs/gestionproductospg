@@ -1,0 +1,53 @@
+[
+  {
+    "name": "medida",
+    "label": "Medida *",
+    "tipo": "text",
+    "placeholder": "Ej: A4",
+    "required": true
+  },
+  {
+    "name": "tipo_color",
+    "label": "Tipo de color *",
+    "tipo": "select",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_tapa",
+    "label": "Tipo de tapa * ",
+    "tipo": "select",
+    "opciones": ["TAPA DURA", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "tapa_personalizada",
+    "label": "Tapa personalizada",
+    "tipo": "text",
+    "placeholder": "Ej: TAPA BLANDA"
+  },
+  {
+    "name": "cantidad_hojas",
+    "label": "Cantidad de hojas",
+    "tipo": "number",
+    "placeholder": "Ej: 100",
+    "required": true
+  },
+  {
+    "name": "enlace_archivo",
+    "label": "Enlace del archivo",
+    "tipo": "text",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "label": "Información adicional",
+    "tipo": "text",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "adicional_disenio",
+    "label": "Adicional diseño",
+    "tipo": "checkbox"
+  }
+]

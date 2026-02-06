@@ -32,7 +32,7 @@ public class Pago {
     private Empleado empleado;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_orden_trabajo")
+    @JoinColumn(name = "id_orden")
     @JsonIgnore
-    private OrdenTrabajo ordenTrabajo;
+    private Orden orden;
 }
