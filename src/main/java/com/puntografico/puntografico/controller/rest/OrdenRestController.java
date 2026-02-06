@@ -41,4 +41,10 @@ public class OrdenRestController {
         ordenTrabajoService.cambiarEstadoASinHacer(ordenId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/marcar-facturada/{idOrden}")
+    @ResponseBody
+    public void marcarFacturacionHecha(@PathVariable Long idOrden) {
+        ordenTrabajoService.marcarFacturacionHecha(idOrden);
+    }
 }

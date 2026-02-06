@@ -274,8 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formulario-selector-producto');
 
     select.addEventListener('change', () => {
-    document.getElementById('spinner-overlay').style.display = 'flex';
-    form.submit();
+        document.getElementById('spinner-overlay').style.display = 'flex';
+        form.submit();
     });
 });
 

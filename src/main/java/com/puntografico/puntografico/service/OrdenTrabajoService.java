@@ -3,6 +3,7 @@ package com.puntografico.puntografico.service;
 import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.repository.EstadoOrdenRepository;
 import com.puntografico.puntografico.repository.EstadoPagoRepository;
+import com.puntografico.puntografico.repository.ImpresionRepository;
 import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -19,10 +21,12 @@ import java.util.*;
 public class OrdenTrabajoService {
 
     private final OrdenTrabajoRepository ordenTrabajoRepository;
+    private final ImpresionRepository impresionRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final EstadoPagoRepository estadoPagoRepository;
     private final EmpleadoService empleadoService;
     private final PagoService pagoService;
+    private static final Long ID_EMPLEADO_BEN = 3L;
     private static final Long ID_ROL_DESARROLLADOR = 2L;
     private static final Long ID_ROL_DISENIO = 5L;
 
@@ -102,10 +106,27 @@ public class OrdenTrabajoService {
     }
 
     public List<OrdenTrabajo> buscarEstadoSinHacer(Empleado empleado, String tipoProducto) {
-        List<OrdenTrabajo> ordenes =
-                "todas".equalsIgnoreCase(tipoProducto)
-                        ? ordenTrabajoRepository.findByEstadoOrdenId(1L)
-                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(1L, tipoProducto);
+        List<OrdenTrabajo> ordenes = new ArrayList<>();
+
+        if (tipoProducto.equals("anillados")) {
+            List<Long> idsOrdenes = impresionRepository
+                    .findByEsAnilladoTrue()
+                    .stream()
+                    .map(i -> i.getOrdenTrabajo().getId())
+                    .distinct()
+                    .toList();
+
+            ordenes = ordenTrabajoRepository
+                    .findByEstadoOrdenIdAndTipoProductoAndIdIn(
+                            1L,
+                            "impresión",
+                            idsOrdenes
+                    );
+        } else if (tipoProducto.equalsIgnoreCase("todas")) {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenId(1L);
+        } else {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(1L, tipoProducto);
+        }
 
         Long rolEmpleado = empleado.getRol().getId();
 
@@ -129,10 +150,27 @@ public class OrdenTrabajoService {
 
 
     public List<OrdenTrabajo> buscarEstadoCorregir(Empleado empleado, String tipoProducto) {
-        List<OrdenTrabajo> ordenes =
-                "todas".equalsIgnoreCase(tipoProducto)
-                        ? ordenTrabajoRepository.findByEstadoOrdenId(4L)
-                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(4L, tipoProducto);
+        List<OrdenTrabajo> ordenes = new ArrayList<>();
+
+        if (tipoProducto.equals("anillados")) {
+            List<Long> idsOrdenes = impresionRepository
+                    .findByEsAnilladoTrue()
+                    .stream()
+                    .map(i -> i.getOrdenTrabajo().getId())
+                    .distinct()
+                    .toList();
+
+            ordenes = ordenTrabajoRepository
+                    .findByEstadoOrdenIdAndTipoProductoAndIdIn(
+                            4L,
+                            "impresión",
+                            idsOrdenes
+                    );
+        } else if (tipoProducto.equalsIgnoreCase("todas")) {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenId(4L);
+        } else {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(4L, tipoProducto);
+        }
 
         Long rolEmpleado = empleado.getRol().getId();
 
@@ -155,10 +193,27 @@ public class OrdenTrabajoService {
     }
 
     public List<OrdenTrabajo> buscarEstadoEnProceso(Empleado empleado, String tipoProducto) {
-        List<OrdenTrabajo> ordenes =
-                "todas".equalsIgnoreCase(tipoProducto)
-                        ? ordenTrabajoRepository.findByEstadoOrdenId(2L)
-                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(2L, tipoProducto);
+        List<OrdenTrabajo> ordenes = new ArrayList<>();
+
+        if (tipoProducto.equals("anillados")) {
+            List<Long> idsOrdenes = impresionRepository
+                    .findByEsAnilladoTrue()
+                    .stream()
+                    .map(i -> i.getOrdenTrabajo().getId())
+                    .distinct()
+                    .toList();
+
+            ordenes = ordenTrabajoRepository
+                    .findByEstadoOrdenIdAndTipoProductoAndIdIn(
+                            2L,
+                            "impresión",
+                            idsOrdenes
+                    );
+        } else if (tipoProducto.equalsIgnoreCase("todas")) {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenId(2L);
+        } else {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(2L, tipoProducto);
+        }
 
         Long rolEmpleado = empleado.getRol().getId();
 
@@ -181,10 +236,27 @@ public class OrdenTrabajoService {
     }
 
     public List<OrdenTrabajo> buscarEstadoListaParaRetirar(Empleado empleado, String tipoProducto){
-        List<OrdenTrabajo> ordenes =
-                "todas".equalsIgnoreCase(tipoProducto)
-                        ? ordenTrabajoRepository.findByEstadoOrdenId(3L)
-                        : ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(3L, tipoProducto);
+        List<OrdenTrabajo> ordenes = new ArrayList<>();
+
+        if (tipoProducto.equals("anillados")) {
+            List<Long> idsOrdenes = impresionRepository
+                    .findByEsAnilladoTrue()
+                    .stream()
+                    .map(i -> i.getOrdenTrabajo().getId())
+                    .distinct()
+                    .toList();
+
+            ordenes = ordenTrabajoRepository
+                    .findByEstadoOrdenIdAndTipoProductoAndIdIn(
+                            3L,
+                            "impresión",
+                            idsOrdenes
+                    );
+        } else if (tipoProducto.equalsIgnoreCase("todas")) {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenId(3L);
+        } else {
+            ordenes = ordenTrabajoRepository.findByEstadoOrdenIdAndTipoProducto(3L, tipoProducto);
+        }
 
         Long rolEmpleado = empleado.getRol().getId();
 
@@ -334,6 +406,18 @@ public class OrdenTrabajoService {
 
         OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrden).get();
         ordenTrabajo.setCorreccion(correccion);
+        ordenTrabajoRepository.save(ordenTrabajo);
+    }
+
+    public List<OrdenTrabajo> buscarOrdenesQueNecesitanFactura() {
+        return ordenTrabajoRepository.findByNecesitaFacturaTrueAndFacturaHechaFalseAndEmpleadoIdNot(ID_EMPLEADO_BEN);
+    }
+
+    public void marcarFacturacionHecha(Long idOrden) {
+        Assert.notNull(idOrden, "El id no debe venir nulo para marcar su factura hecha.");
+
+        OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrden).get();
+        ordenTrabajo.setFacturaHecha(true);
         ordenTrabajoRepository.save(ordenTrabajo);
     }
 }

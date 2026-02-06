@@ -49,4 +49,20 @@ public class ListadoController {
 
         return "listado";
     }
+
+    @GetMapping("/facturas-pendientes")
+    public String facturasPendientes(HttpSession session, Model model) {
+        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+
+        if (empleado == null) {
+            return "redirect:/"; // Si no hay sesión, lo manda al login
+        }
+
+        List<OrdenTrabajo> ordenesConFacturaPendiente = ordenTrabajoService.buscarOrdenesQueNecesitanFactura();
+
+        model.addAttribute("empleado", empleado);
+        model.addAttribute("ordenesConFacturaPendiente", ordenesConFacturaPendiente);
+
+        return "facturas-pendientes";
+    }
 }

@@ -22,6 +22,7 @@
       <select name="tipoProducto" class="form-select mb-3" onchange="this.form.submit()" id="selector-producto">
         <option value="todas" th:selected="${tipoProducto == null or tipoProducto == 'todas'}">Todas</option>
         <option value="agenda" th:selected="${tipoProducto == 'agenda'}">Agendas</option>
+        <option value="agenda" th:selected="${tipoProducto == 'anillados'}">Anillados</option>
         <option value="anotador" th:selected="${tipoProducto == 'anotador'}">Anotadores</option>
         <option value="carpeta con solapas" th:selected="${tipoProducto == 'carpeta con solapas'}">Carpetas con solapas</option>
         <option value="catálogo" th:selected="${tipoProducto == 'catálogo'}">Catálogos</option>

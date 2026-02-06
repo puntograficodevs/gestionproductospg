@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/buscador.css}"/>
+  <link rel="stylesheet" th:href="@{/css/mostrar-productos.css}"/>
+  <title>Facturas pendientes - Punto Gráfico</title>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container-fluid contenedor-pagina-en-proceso">
+  <div class="row pagina-en-proceso mt-3 mb-3">
+    <div class="container mt-4">
+      <h4 class="titulo-tabla-ordenes mb-4">Ordenes encontradas</h4>
+
+      <div th:if="${#lists.isEmpty(ordenesConFacturaPendiente)}" class="alert alert-success">
+        No se encontraron órdenes facturas pendientes.
+      </div>
+
+      <div th:if="${!#lists.isEmpty(ordenesConFacturaPendiente)}" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>N° de Orden</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Producto</th>
+            <th>Entrega</th>
+            <th>Pago</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="orden : ${ordenesConFacturaPendiente}">
+            <td th:text="${orden.id}"></td>
+            <td th:text="${orden.nombreCliente}"></td>
+            <td th:text="${orden.telefonoCliente}"></td>
+            <td th:text="${orden.tipoProducto}" class="capitalize"></td>
+            <td th:text="${orden.fechaEntrega}"></td>
+            <td th:text="${orden.estadoPago.estadoDePago}"></td>
+            <td>
+              <button class="btn btn-primary btn-sm btn-buscador ver-btn"
+                      data-bs-target="#ordenModal"
+                      data-bs-toggle="modal"
+                      data-bs-title="Ver detalle"
+                      th:data-idorden="${orden.id}"
+                      th:data-tipoproducto="${orden.tipoProducto}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-eye" viewBox="0 0 16 16">
+                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                </svg>
+              </button>
+              <button class="btn btn-success btn-sm btn-buscador marcar-facturacion-btn"
+                      data-bs-title="Factura hecha"
+                      th:data-idorden="${orden.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ordenModal" tabindex="-1" aria-labelledby="ordenModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ordenModalLabel">Detalle de la Orden</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+      </div>
+      <div class="modal-footer border-top-0 pt-0" id="modalFooter"></div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+<script th:src="@{/js/facturas-pendientes.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJ+Y7Vu8y+6ie4EnWz9Z2Jv3C92iZgfH1lwCk="
+        crossorigin="anonymous"></script>
+</html>
