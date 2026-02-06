@@ -41,21 +41,21 @@ public class OrdenTrabajoService {
         if (idOrdenTrabajo != null) {
             ordenTrabajo = ordenTrabajoRepository.findById(idOrdenTrabajo)
                     .orElseThrow(() -> new RuntimeException("Orden de trabajo no encontrada"));;
+        } else {
+            ordenTrabajo.setEstadoOrden(estadoOrdenRepository.findById(1L).orElseThrow(() -> new RuntimeException("Estado Orden no encontrado")));
+            ordenTrabajo.setFechaPedido(LocalDate.now());
+            ordenTrabajo.setTipoProducto(request.getParameter("tipoProducto"));
+            Empleado empleado = (Empleado) request.getSession().getAttribute("empleadoLogueado");
+            ordenTrabajo.setEmpleado(empleado);
         }
 
         boolean necesitaFactura = request.getParameter("necesitaFactura") != null;
         boolean esCuentaCorriente = request.getParameter("esCuentaCorriente") != null;
 
-        Empleado empleado = (Empleado) request.getSession().getAttribute("empleadoLogueado");
-        ordenTrabajo.setEmpleado(empleado);
-        ordenTrabajo.setFechaPedido(LocalDate.now());
-        ordenTrabajo.setEstadoOrden(estadoOrdenRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Estado Orden no encontrado")));
         ordenTrabajo.setNombreCliente(request.getParameter("nombreCliente"));
         ordenTrabajo.setTelefonoCliente(request.getParameter("telefonoCliente"));
         ordenTrabajo.setEsCuentaCorriente(esCuentaCorriente);
         ordenTrabajo.setNecesitaFactura(necesitaFactura);
-        ordenTrabajo.setTipoProducto(request.getParameter("tipoProducto"));
         ordenTrabajo.setCorreccion(null);
 
         String fechaMuestraStr = request.getParameter("fechaMuestra");
