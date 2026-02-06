@@ -39,6 +39,8 @@ public class Orden {
     @Column(nullable = false)
     private boolean necesitaFactura;
 
+    private boolean facturaHecha;
+
     @Column(nullable = false)
     private int total;
 
