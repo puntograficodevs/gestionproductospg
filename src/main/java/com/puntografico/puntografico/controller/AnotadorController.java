@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class AnotadorController {
-
+/*
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final AnotadorService anotadorService;
@@ -39,5 +39,5 @@ public class AnotadorController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-anotador";
-    }
+    }*/
 }

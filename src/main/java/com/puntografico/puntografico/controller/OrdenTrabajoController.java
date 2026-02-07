@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class OrdenTrabajoController {
-
+/*
     @Autowired
     private OrdenTrabajoService ordenTrabajoService;
 
@@ -38,5 +38,5 @@ public class OrdenTrabajoController {
         ordenTrabajoService.cambiarEstadoACorregir(idOrdenTrabajo);
 
         return "redirect:/listado";
-    }
+    }*/
 }

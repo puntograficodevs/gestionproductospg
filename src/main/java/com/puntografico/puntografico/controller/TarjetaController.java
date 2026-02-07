@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class TarjetaController {
-
+/*
     private final TarjetaService tarjetaService;
     private final MedioPagoService medioPagoService;
     private final OpcionesTarjetaService opcionesTarjetaService;
@@ -51,5 +51,5 @@ public class TarjetaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-tarjeta";
-    }
+    }*/
 }

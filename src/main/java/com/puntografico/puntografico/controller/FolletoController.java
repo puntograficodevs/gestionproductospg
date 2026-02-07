@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class FolletoController {
-
+/*
     private final OpcionesFolletoService opcionesFolletoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -51,5 +51,5 @@ public class FolletoController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-folleto";
-    }
+    }*/
 }

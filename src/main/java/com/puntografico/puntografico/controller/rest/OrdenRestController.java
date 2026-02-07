@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController @AllArgsConstructor
 @RequestMapping("/api/orden")
 public class OrdenRestController {
-
+/*
     private final OrdenTrabajoService ordenTrabajoService;
 
     @PostMapping("/cambiar-a-corregir/{ordenId}")
@@ -40,5 +40,5 @@ public class OrdenRestController {
     public ResponseEntity<Void> cambiarEstadoASinHacer(@PathVariable Long ordenId) {
         ordenTrabajoService.cambiarEstadoASinHacer(ordenId);
         return ResponseEntity.ok().build();
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class OtroController {
-
+/*
     private final OpcionesOtroService opcionesOtroService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -41,5 +41,5 @@ public class OtroController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-otro";
-    }
+    }*/
 }

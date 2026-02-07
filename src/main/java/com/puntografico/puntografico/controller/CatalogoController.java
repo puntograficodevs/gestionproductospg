@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CatalogoController {
-
+/*
     private final OpcionesCatalogoService opcionesCatalogoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -44,5 +44,5 @@ public class CatalogoController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-catalogo";
-    }
+    }*/
 }

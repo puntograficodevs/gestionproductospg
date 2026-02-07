@@ -17,7 +17,7 @@ import java.util.*;
 @Service
 @Transactional @AllArgsConstructor
 public class OrdenTrabajoService {
-
+/*
     private final OrdenTrabajoRepository ordenTrabajoRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final EstadoPagoRepository estadoPagoRepository;
@@ -335,5 +335,5 @@ public class OrdenTrabajoService {
         OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(idOrden).get();
         ordenTrabajo.setCorreccion(correccion);
         ordenTrabajoRepository.save(ordenTrabajo);
-    }
+    }*/
 }

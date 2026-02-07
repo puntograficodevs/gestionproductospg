@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class StickerController {
-
+/*
     private final StickerService stickerService;
     private final MedioPagoService medioPagoService;
     private final OpcionesStickerService opcionesStickerService;
@@ -45,5 +45,5 @@ public class StickerController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-sticker";
-    }
+    }*/
 }

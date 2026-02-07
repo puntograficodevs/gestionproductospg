@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class AgendaController {
-
+/*
     private final AgendaService agendaService;
     private final MedioPagoService medioPagoService;
     private final OpcionesAgendaService opcionesAgendaService;
@@ -46,5 +46,5 @@ public class AgendaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-agenda";
-    }
+    }*/
 }

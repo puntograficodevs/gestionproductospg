@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class EntradaController {
-
+/*
     private final OpcionesEntradaService opcionesEntradaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -53,5 +53,5 @@ public class EntradaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-entrada";
-    }
+    }*/
 }

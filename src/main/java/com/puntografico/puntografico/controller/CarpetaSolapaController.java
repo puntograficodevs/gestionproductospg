@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CarpetaSolapaController {
-
+/*
     private final OpcionesCarpetaSolapaService opcionesCarpetaSolapaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -43,5 +43,5 @@ public class CarpetaSolapaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-carpeta-solapa";
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class HojasMembreteadasController {
-
+/*
     private final OpcionesHojasMembreteadasService opcionesHojasMembreteadasService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -47,5 +47,5 @@ public class HojasMembreteadasController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-hojas-membreteadas";
-    }
+    }*/
 }

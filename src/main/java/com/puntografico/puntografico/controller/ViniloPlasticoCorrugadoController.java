@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ViniloPlasticoCorrugadoController {
-
+/*
     private final OpcionesViniloPlasticoCorrugadoService opcionesViniloPlasticoCorrugadoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -41,5 +41,5 @@ public class ViniloPlasticoCorrugadoController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-vinilo-plastico-corrugado";
-    }
+    }*/
 }

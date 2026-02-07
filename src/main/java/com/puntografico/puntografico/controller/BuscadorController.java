@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class BuscadorController {
-
+/*
     private final OrdenTrabajoService ordenTrabajoService;
 
     @GetMapping("/buscador")
@@ -59,5 +59,5 @@ public class BuscadorController {
         }
         model.addAttribute("empleado", empleado);
         return "buscador";
-    }
+    }*/
 }

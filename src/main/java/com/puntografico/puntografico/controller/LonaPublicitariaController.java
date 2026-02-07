@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class LonaPublicitariaController {
-
+/*
     private final OpcionesLonaPublicitariaService opcionesLonaPublicitariaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -43,5 +43,5 @@ public class LonaPublicitariaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-lona-publicitaria";
-    }
+    }*/
 }

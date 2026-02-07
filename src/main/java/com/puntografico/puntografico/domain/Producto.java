@@ -16,6 +16,11 @@ public class Producto {
 
     private String nombre;
 
+    private Integer precioDisenio;
+
     @Column(columnDefinition = "json")
     private String esquemaConfiguracion;
+
+    @Column(columnDefinition = "TEXT")
+    private String iconoSvg;
 }

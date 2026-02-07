@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CierraBolsasController {
-
+/*
     private final OpcionesCierraBolsasService opcionesCierraBolsasService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -46,5 +46,5 @@ public class CierraBolsasController {
 
         return "crear-odts/crear-odt-cierra-bolsas";
     }
-
+*/
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class ListadoController {
-
+/*
     private final OrdenTrabajoService ordenTrabajoService;
     private final MedioPagoService medioPagoService;
 
@@ -48,5 +48,5 @@ public class ListadoController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "listado";
-    }
+    }*/
 }

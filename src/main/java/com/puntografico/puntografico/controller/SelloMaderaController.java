@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SelloMaderaController {
-
+/*
     private final OpcionesSelloMaderaService opcionesSelloMaderaService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -41,5 +41,5 @@ public class SelloMaderaController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-sello-madera";
-    }
+    }*/
 }

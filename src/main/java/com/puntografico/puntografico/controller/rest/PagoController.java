@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequiredArgsConstructor
 public class PagoController {
-
+/*
     private final PagoService pagoService;
     private final OrdenTrabajoService ordenTrabajoService;
 
@@ -22,5 +22,5 @@ public class PagoController {
         ordenTrabajoService.actualizarTotalAbonado(request);
 
         return "redirect:/listado";
-    }
+    }*/
 }

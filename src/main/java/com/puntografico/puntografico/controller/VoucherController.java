@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class VoucherController {
-
+/*
     private final OpcionesVoucherService opcionesVoucherService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -47,5 +47,5 @@ public class VoucherController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-voucher";
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SublimacionController {
-
+/*
     private final SublimacionService sublimacionService;
     private final MedioPagoService medioPagoService;
     private final OpcionesSublimacionService opcionesSublimacionService;
@@ -43,5 +43,5 @@ public class SublimacionController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-sublimacion";
-    }
+    }*/
 }

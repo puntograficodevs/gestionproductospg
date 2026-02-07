@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class TurneroController {
-
+/*
     private final OpcionesTurneroService opcionesTurneroService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -45,5 +45,5 @@ public class TurneroController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-turnero";
-    }
+    }*/
 }

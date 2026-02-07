@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class SobreController {
-
+/*
     private final SobreService sobreService;
     private final MedioPagoService medioPagoService;
     private final OpcionesSobreService opcionesSobreService;
@@ -45,5 +45,5 @@ public class SobreController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-sobre";
-    }
+    }*/
 }

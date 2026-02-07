@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class CuadernoAnilladoController {
-
+/*
     private final OpcionesCuadernoAnilladoService opcionesCuadernoAnilladoService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -43,5 +43,5 @@ public class CuadernoAnilladoController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-cuaderno-anillado";
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class TalonarioController {
-
+/*
     private final TalonarioService talonarioService;
     private final MedioPagoService medioPagoService;
     private final OpcionesTalonarioService opcionesTalonarioService;
@@ -53,5 +53,5 @@ public class TalonarioController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-talonario";
-    }
+    }*/
 }

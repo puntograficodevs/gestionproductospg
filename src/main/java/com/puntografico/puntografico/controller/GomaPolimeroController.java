@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class GomaPolimeroController {
-
+/*
     private final OpcionesGomaPolimeroService opcionesGomaPolimeroService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -44,5 +44,5 @@ public class GomaPolimeroController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-goma-polimero";
-    }
+    }*/
 }

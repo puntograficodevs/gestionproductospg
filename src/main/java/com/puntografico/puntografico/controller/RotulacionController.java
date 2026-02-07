@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class RotulacionController {
-
+/*
     private final OpcionesRotulacionService opcionesRotulacionService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -43,5 +43,5 @@ public class RotulacionController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-rotulacion";
-    }
+    }*/
 }

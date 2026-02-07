@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ComboController {
-
+/*
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final OpcionesComboService opcionesComboService;
@@ -41,5 +41,5 @@ public class ComboController {
         model.addAttribute("listaTipoCombo", listaTipoCombo);
 
         return "crear-odts/crear-odt-combo";
-    }
+    }*/
 }

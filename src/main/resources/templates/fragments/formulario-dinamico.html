@@ -1,0 +1,174 @@
+<div th:fragment="cuerpo-formulario" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container">
+        <h2 th:text="'Crear orden - ' + ${producto.nombre}"></h2>
+    </div>
+
+    <form th:action="@{/ordenes/guardar}" method="post" th:object="${orden}">
+
+        <div class="contenedor-datos-odt contenedor-correccion-odt" th:if="${orden.correccion}">
+            <h5 class="titulo-correccion">Correcci&oacute;n pendiente</h5>
+            <p class="texto-correccion" th:text="${orden.correccion}"></p>
+        </div>
+
+        <div class="contenedor-datos-odt">
+            <h5 class="mt-4 datos-del-cliente">Datos del Cliente</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre del cliente *</label>
+                    <input type="text" class="form-control" th:field="*{nombreCliente}" placeholder="Ej: Juan Pérez" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Teléfono *</label>
+                    <input type="number" class="form-control" th:field="*{telefonoCliente}" placeholder="Ej: 1123952892" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" th:field="*{esCuentaCorriente}" id="esCC">
+                        <label class="form-check-label" for="esCC">¿CC?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de entrega *</label>
+                    <input type="date" class="form-control" th:field="*{fechaEntrega}" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Hora de entrega</label>
+                    <input type="text" class="form-control" th:field="*{horaEntrega}" placeholder="Ej: 11:30">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="checkMuestra">
+                        <label class="form-check-label" for="checkMuestra">¿Muestra?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3 d-none" id="filaFechaMuestra">
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de muestra</label>
+                    <input type="date" class="form-control" th:field="*{fechaMuestra}">
+                </div>
+            </div>
+        </div>
+
+        <div class="contenedor-datos-odt">
+            <h5 class="mt-4 datos-del-producto">Datos del Producto</h5>
+            <div class="row" id="contenedor-dinamico">
+                <div th:each="campo : ${campos}" class="col-md-12 mb-3 bloque-campo"
+                    th:data-depends-on="${campo['dependsOn']}"
+                    th:data-show-if="${campo['showIf']}"
+                    th:style="${campo['dependsOn'] != null ? 'display: none;' : ''}">
+
+                    <label class="form-label" th:text="${campo['label']}"></label>
+
+                    <div th:switch="${campo['tipo']}">
+
+                        <input th:case="'text'" type="text" class="form-control input-dinamico"
+                               th:name="'detalles[' + ${campo['name']} + ']'"
+                               th:placeholder="${campo['placeholder']}"
+                               th:required="${campo['required']}">
+
+                        <input th:case="'number'" type="number" class="form-control input-dinamico"
+                               th:name="'detalles[' + ${campo['name']} + ']'"
+                               th:placeholder="${campo['placeholder']}"
+                               th:required="${campo['required']}">
+
+                        <div th:case="'select'" class="d-flex flex-wrap gap-3 p-2 border rounded bg-light">
+                            <div th:each="opt : ${campo['opciones']}" class="form-check">
+                                <input type="radio"
+                                       class="form-check-input input-dinamico"
+                                       th:name="'detalles[' + ${campo['name']} + ']'"
+                                       th:id="'radio-' + ${campo['name']} + '-' + ${opt}"
+                                       th:value="${opt}"
+                                       th:required="${campo['required']}">
+                                <label class="form-check-label"
+                                       th:for="'radio-' + ${campo['name']} + '-' + ${opt}"
+                                       th:text="${opt}">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div th:case="'checkbox'" class="form-check">
+                            <input type="checkbox" class="form-check-input input-dinamico"
+                                   th:name="'detalles[' + ${campo['name']} + ']'"
+                                   th:id="'check-' + ${campo['name']}">
+                            <label class="form-check-label" th:for="'check-' + ${campo['name']}" th:text="${campo['label']}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contenedor-datos-odt">
+            <input type="hidden" id="precioDisenioBase" th:value="${producto.precioDisenio}">
+            <h5 class="mt-4 datos-de-pago">Datos de Pago</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="checkDisenio" name="conAdicionalDisenio">
+                        <label class="form-check-label" for="checkDisenio">Adicional diseño</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="checkFactura" th:field="*{necesitaFactura}">
+                        <label class="form-check-label" for="checkFactura">¿Necesita factura?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Precio Producto *</label>
+                    <input type="number" class="form-control" id="inputPrecioProd" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Precio Diseño</label>
+                    <input type="number" class="form-control" id="inputPrecioDisenio" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Precio Impuestos</label>
+                    <input type="number" class="form-control" id="inputPrecioImpuestos" value="0" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Total *</label>
+                    <input type="number" class="form-control" th:field="*{total}" id="inputTotal" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Abonado *</label>
+                    <input type="number" class="form-control" th:field="*{abonado}" id="inputAbonado" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Resta</label>
+                    <input type="number" class="form-control" id="inputResta" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label d-block">Medio de pago *</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div th:each="medio : ${listaMediosDePago}" class="form-check mx-3">
+                            <input type="radio" name="idMedioPago" class="form-check-input"
+                                   th:id="'medio-' + ${medio.id}" th:value="${medio.id}">
+                            <label class="form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" id="btnGuardar" class="btn btn-crear-odt text-white px-4 py-2">
+                Crear orden
+            </button>
+        </div>
+    </form>
+</div>

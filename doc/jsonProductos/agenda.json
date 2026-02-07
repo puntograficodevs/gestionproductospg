@@ -1,53 +1,49 @@
 [
   {
     "name": "medida",
-    "label": "Medida *",
     "tipo": "text",
-    "placeholder": "Ej: A4",
-    "required": true
+    "label": "Medida *",
+    "required": true,
+    "placeholder": "Ej: A4"
   },
   {
     "name": "tipo_color",
-    "label": "Tipo de color *",
     "tipo": "select",
+    "label": "Tipo de color *",
     "opciones": ["BLANCO Y NEGRO", "A COLOR"],
     "required": true
   },
   {
     "name": "tipo_tapa",
-    "label": "Tipo de tapa * ",
     "tipo": "select",
+    "label": "Tipo de tapa * ",
     "opciones": ["TAPA DURA", "OTRA"],
     "required": true
   },
   {
     "name": "tapa_personalizada",
-    "label": "Tapa personalizada",
     "tipo": "text",
+    "label": "Tapa personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "tipo_tapa",
     "placeholder": "Ej: TAPA BLANDA"
   },
   {
     "name": "cantidad_hojas",
-    "label": "Cantidad de hojas",
     "tipo": "number",
-    "placeholder": "Ej: 100",
-    "required": true
+    "label": "Cantidad de hojas",
+    "required": true,
+    "placeholder": "Ej: 100"
   },
-  {
-    "name": "enlace_archivo",
-    "label": "Enlace del archivo",
+  {"name": "enlace_archivo",
     "tipo": "text",
+    "label": "Enlace del archivo",
     "placeholder": "Ej: https://drive.com/archivo.pdf"
   },
   {
     "name": "informacion_adicional",
-    "label": "Información adicional",
     "tipo": "text",
+    "label": "Información adicional",
     "placeholder": "Ej: Que las hojas sean cuadriculadas"
-  },
-  {
-    "name": "adicional_disenio",
-    "label": "Adicional diseño",
-    "tipo": "checkbox"
   }
 ]

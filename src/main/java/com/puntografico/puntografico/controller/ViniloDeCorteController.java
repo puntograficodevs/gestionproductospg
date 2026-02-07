@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller @AllArgsConstructor
 public class ViniloDeCorteController {
-
+/*
     private final OpcionesViniloDeCorteService opcionesViniloDeCorteService;
     private final MedioPagoService medioPagoService;
     private final OrdenTrabajoService ordenTrabajoService;
@@ -41,5 +41,5 @@ public class ViniloDeCorteController {
         model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "crear-odts/crear-odt-vinilo-de-corte";
-    }
+    }*/
 }

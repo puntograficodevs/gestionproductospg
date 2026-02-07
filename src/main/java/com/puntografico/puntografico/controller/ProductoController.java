@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller @AllArgsConstructor
 public class ProductoController {
-
+/*
     private final ProductoService productoService;
     private final OrdenTrabajoService ordenTrabajoService;
     private final AgendaService agendaService;
@@ -1025,5 +1025,5 @@ public class ProductoController {
         voucherDTO.setCantidadVoucherId(Long.parseLong(request.getParameter("cantidadVoucher.id")));
 
         return voucherDTO;
-    }
+    }*/
 }
