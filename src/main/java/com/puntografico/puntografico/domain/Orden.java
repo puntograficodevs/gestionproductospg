@@ -2,6 +2,7 @@ package com.puntografico.puntografico.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,11 +28,14 @@ public class Orden {
     private boolean esCuentaCorriente;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaPedido;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaMuestra;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaEntrega;
 
     private String horaEntrega;

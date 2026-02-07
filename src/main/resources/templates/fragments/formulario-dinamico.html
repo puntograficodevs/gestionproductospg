@@ -3,7 +3,9 @@
         <h2 th:text="'Crear orden - ' + ${producto.nombre}"></h2>
     </div>
 
-    <form th:action="@{/ordenes/guardar}" method="post" th:object="${orden}">
+    <form th:action="@{/ordenes/guardar-orden}" method="post" th:object="${orden}">
+        <input type="hidden" name="productoId" id="currentProductoId" th:value="${producto.id}">
+        <input type="hidden" th:name="empleado.id" th:value="${empleado.id}">
 
         <div class="contenedor-datos-odt contenedor-correccion-odt" th:if="${orden.correccion}">
             <h5 class="titulo-correccion">Correcci&oacute;n pendiente</h5>
@@ -100,6 +102,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label">Cantidad *</label>
+                    <input type="number" class="form-control" name="cantidadItem" id="inputCantidad" value="1" min="1" required>
+                </div>
+            </div>
         </div>
 
         <div class="contenedor-datos-odt">
@@ -123,7 +132,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label class="form-label">Precio Producto *</label>
+                    <label class="form-label">Precio Unitario *</label>
                     <input type="number" class="form-control" id="inputPrecioProd" value="0">
                 </div>
                 <div class="col-md-4">

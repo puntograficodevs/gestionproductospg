@@ -6,6 +6,7 @@ import com.puntografico.puntografico.repository.EstadoPagoRepository;
 import com.puntografico.puntografico.repository.OrdenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -18,26 +19,30 @@ public class OrdenService {
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final EstadoPagoRepository estadoPagoRepository;
 
-    public Orden guardar(Orden orden) {
+    public Orden buscarPorId(Long id) {
+        Assert.notNull(id, "Necesito que envíes un id para buscar.");
+
+        return ordenRepository.findById(id).get();
+    }
+
+    public void guardar(Orden orden) {
         orden.setFechaPedido(LocalDate.now());
-        orden.setEstadoOrden(estadoOrdenRepository.findById(1L).orElseThrow(
-                () -> new RuntimeException("Estado inicial no encontrado.")));
+        orden.setEstadoOrden(estadoOrdenRepository.findById(1L).get());
 
         asignarEstadoPago(orden);
 
         if (orden.getItems() != null) {
-            orden.getItems().forEach(ordenItem -> ordenItem.setOrden(orden));
+            orden.getItems().forEach(item -> {
+                item.setOrden(orden);
+            });
         }
 
         if (orden.getPagos() != null) {
             orden.getPagos().removeIf(pago -> pago.getImporte() <= 0);
-            orden.getPagos().forEach(pago -> {
-                pago.setOrden(orden);
-                pago.setFechaPago(LocalDate.now());
-            });
+            orden.getPagos().forEach(pago -> pago.setOrden(orden));
         }
 
-        return ordenRepository.save(orden);
+        ordenRepository.save(orden);
     }
 
     private void asignarEstadoPago(Orden orden) {

@@ -1,18 +1,7 @@
 package com.puntografico.puntografico.controller;
 
-import com.puntografico.puntografico.domain.Empleado;
-import com.puntografico.puntografico.domain.MedioPago;
-import com.puntografico.puntografico.domain.OrdenTrabajo;
-import com.puntografico.puntografico.service.MedioPagoService;
-import com.puntografico.puntografico.service.OrdenTrabajoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @AllArgsConstructor

@@ -2,15 +2,9 @@ package com.puntografico.puntografico.service;
 
 import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.repository.MedioPagoRepository;
-import com.puntografico.puntografico.repository.OrdenRepository;
-import com.puntografico.puntografico.repository.OrdenTrabajoRepository;
-import com.puntografico.puntografico.repository.PagoRepository;
 import lombok.AllArgsConstructor;
-import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
