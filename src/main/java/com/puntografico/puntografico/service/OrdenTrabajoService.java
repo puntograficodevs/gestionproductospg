@@ -58,6 +58,11 @@ public class OrdenTrabajoService {
         ordenTrabajo.setNecesitaFactura(necesitaFactura);
         ordenTrabajo.setCorreccion(null);
 
+        if (ordenTrabajo.getEstadoPrevio() != null) {
+            ordenTrabajo.setEstadoOrden(ordenTrabajo.getEstadoPrevio());
+            ordenTrabajo.setEstadoPrevio(null);
+        }
+
         String fechaMuestraStr = request.getParameter("fechaMuestra");
         String toggleFechaMuestra = request.getParameter("toggleFechaMuestra"); // el checkbox
 
@@ -285,6 +290,8 @@ public class OrdenTrabajoService {
     public void cambiarEstadoACorregir(Long id) {
         OrdenTrabajo ordenTrabajo = ordenTrabajoRepository.findById(id).get();
         EstadoOrden aCorregir = estadoOrdenRepository.findById(4L).get();
+        EstadoOrden estadoPrevio = ordenTrabajo.getEstadoOrden();
+        ordenTrabajo.setEstadoPrevio(estadoPrevio);
         ordenTrabajo.setEstadoOrden(aCorregir);
         ordenTrabajoRepository.save(ordenTrabajo);
     }

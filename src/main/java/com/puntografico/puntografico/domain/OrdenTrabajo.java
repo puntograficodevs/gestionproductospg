@@ -65,6 +65,10 @@ public class OrdenTrabajo {
     private EstadoOrden estadoOrden;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_estado_previo")
+    private EstadoOrden estadoPrevio;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;
 
