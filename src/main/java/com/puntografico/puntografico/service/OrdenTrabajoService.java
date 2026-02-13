@@ -24,7 +24,6 @@ public class OrdenTrabajoService {
     private final ImpresionRepository impresionRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final EstadoPagoRepository estadoPagoRepository;
-    private final EmpleadoService empleadoService;
     private final PagoService pagoService;
     private static final Long ID_EMPLEADO_BEN = 3L;
     private static final Long ID_ROL_DESARROLLADOR = 2L;
@@ -150,6 +149,7 @@ public class OrdenTrabajoService {
 
                 return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
             })
+            .sorted(Comparator.comparing(OrdenTrabajo::getId).reversed())
             .toList();
     }
 
@@ -194,6 +194,7 @@ public class OrdenTrabajoService {
 
                     return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
+                .sorted(Comparator.comparing(OrdenTrabajo::getId).reversed())
                 .toList();
     }
 
@@ -237,6 +238,7 @@ public class OrdenTrabajoService {
 
                     return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
+                .sorted(Comparator.comparing(OrdenTrabajo::getId).reversed())
                 .toList();
     }
 
@@ -280,6 +282,7 @@ public class OrdenTrabajoService {
 
                     return !rolAutorOrden.equals(ID_ROL_DESARROLLADOR);
                 })
+                .sorted(Comparator.comparing(OrdenTrabajo::getId).reversed())
                 .toList();
     }
 
