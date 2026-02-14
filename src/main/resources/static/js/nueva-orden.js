@@ -1,5 +1,6 @@
 function seleccionarProducto(id) {
     const contenedor = document.getElementById('contenedor-formulario-dinamico');
+    
     fetch(`/ordenes/formulario-producto/${id}`)
         .then(response => response.text())
         .then(html => {
@@ -15,9 +16,12 @@ function seleccionarProducto(id) {
 function buscarPrecioCatalogo() {
     const inputProductoId = document.getElementById('currentProductoId');
     const inputPrecioProd = document.getElementById('inputPrecioProd');
+    const cantInput = document.getElementById('inputCantidad');
+    
     if (!inputProductoId || !inputPrecioProd) return;
 
     const productoId = inputProductoId.value;
+    const vCant = cantInput ? (parseInt(cantInput.value) || 1) : 1;
     const inputsDinamicos = document.querySelectorAll('.input-dinamico');
     let detalles = {};
 
@@ -40,12 +44,15 @@ function buscarPrecioCatalogo() {
         if (!response.ok) throw new Error();
         return response.json();
     })
-    .then(precio => {
-        inputPrecioProd.value = precio;
+    .then(precioUnitario => {
+        // Multiplicamos el precio del catálogo por la cantidad actual
+        inputPrecioProd.value = Math.ceil(precioUnitario * vCant);
         inputPrecioProd.readOnly = true;
         recalcular();
     })
-    .catch(() => { inputPrecioProd.readOnly = false; });
+    .catch(() => { 
+        inputPrecioProd.readOnly = false; 
+    });
 }
 
 function recalcular() {
@@ -64,8 +71,8 @@ function recalcular() {
 
     if (!pProd || !pDis) return;
 
-    const vProdUnitario = parseFloat(pProd.value) || 0;
-    const vCant = cantInput ? (parseInt(cantInput.value) || 1) : 1;
+    // Ahora vSubtotalProd ya es (Precio * Cantidad)
+    const vSubtotalProd = parseFloat(pProd.value) || 0;
     const vBaseFijaDisenio = pBaseHidden ? parseFloat(pBaseHidden.value) : 0;
 
     // --- 1. LÓGICA DE DISEÑO ---
@@ -81,9 +88,10 @@ function recalcular() {
         pDis.readOnly = true;
     }
 
-    // --- 2. CÁLCULO DEL SUBTOTAL (Base para impuestos) ---
+    // --- 2. CÁLCULO DEL SUBTOTAL ---
     const vDisenioActual = parseFloat(pDis.value) || 0;
-    const subtotalBase = (vProdUnitario * vCant) + vDisenioActual;
+    // Ya no multiplicamos por cantidad aquí porque pProd ya lo incluye
+    const subtotalBase = vSubtotalProd + vDisenioActual;
 
     let totalCorriendo = subtotalBase;
     let impuestosAcumulados = 0;
@@ -138,7 +146,10 @@ function inicializarLogicaCondicional() {
                 } else {
                     bloqueHijo.style.display = 'none';
                     const input = bloqueHijo.querySelector('.input-dinamico');
-                    if (input) input.value = '';
+                    if (input) {
+                        if (input.type === 'checkbox' || input.type === 'radio') input.checked = false;
+                        else input.value = '';
+                    }
                 }
             });
         }
@@ -147,7 +158,14 @@ function inicializarLogicaCondicional() {
 
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener('input', function (e) {
-        if (['inputPrecioProd', 'inputPrecioDisenio', 'inputAbonado', 'inputCantidad'].includes(e.target.id)) recalcular();
+        const idsRecalcular = ['inputPrecioProd', 'inputPrecioDisenio', 'inputAbonado'];
+        if (idsRecalcular.includes(e.target.id)) recalcular();
+        
+        // Si cambia la cantidad, re-disparamos la búsqueda de catálogo para actualizar el subtotal
+        if (e.target.id === 'inputCantidad') {
+            buscarPrecioCatalogo();
+            recalcular();
+        }
     });
 
     document.addEventListener('change', function (e) {
@@ -165,8 +183,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener('submit', function (e) {
         const checkCC = document.getElementById('esCC');
-        const total = parseFloat(document.getElementById('inputTotal').value) || 0;
-        const abonado = parseFloat(document.getElementById('inputAbonado').value) || 0;
+        const totalInput = document.getElementById('inputTotal');
+        const abonadoInput = document.getElementById('inputAbonado');
+        
+        const total = totalInput ? (parseFloat(totalInput.value) || 0) : 0;
+        const abonado = abonadoInput ? (parseFloat(abonadoInput.value) || 0) : 0;
 
         if (checkCC && !checkCC.checked && total > 0) {
             if (abonado < (total / 2)) {

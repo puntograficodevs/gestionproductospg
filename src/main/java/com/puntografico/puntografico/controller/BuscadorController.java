@@ -1,52 +1,51 @@
 package com.puntografico.puntografico.controller;
 
+import com.puntografico.puntografico.domain.Empleado;
+import com.puntografico.puntografico.domain.Orden;
+import com.puntografico.puntografico.repository.OrdenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
 public class BuscadorController {
-/*
-    private final OrdenTrabajoService ordenTrabajoService;
+ 
+    private final OrdenRepository ordenRepository;
 
     @GetMapping("/buscador")
-    public String buscador(HttpSession session, Model model) {
+    public String verBuscador(Model model, HttpSession session) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
-
         if (empleado == null) {
-            return "redirect:/"; // Si no hay sesión, lo manda al login
+            return "redirect:/";
         }
 
-        List<OrdenTrabajo> ordenesEncontradas = new ArrayList<>();
+        model.addAttribute("ordenesEncontradas", new ArrayList<Orden>());
         model.addAttribute("empleado", empleado);
-        model.addAttribute("ordenesEncontradas", ordenesEncontradas);
         return "buscador";
     }
 
     @PostMapping("/buscar-orden")
-    public String buscarOrden(@RequestParam("datoOrden") String datoOrden, Model model, HttpSession session) {
+    public String buscar(@RequestParam("datoOrden") String datoOrden, Model model, HttpSession session) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
 
-        if (empleado == null) {
-            return "redirect:/"; // Si no hay sesión, lo manda al login
-        }
-
-        List<OrdenTrabajo> ordenesEncontradas = ordenTrabajoService.buscarTodasConIDONombreOTelefono(datoOrden, empleado);
-
-        model.addAttribute("ordenesEncontradas", ordenesEncontradas);
-        model.addAttribute("empleado", empleado);
-
-        return "buscador";
-    }
-
-    @GetMapping("/buscar-orden")
-    public String verBuscador(Model model, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         if (empleado == null) {
             return "redirect:/";
         }
+
+        List<Orden> resultados = (datoOrden == null || datoOrden.isBlank())
+                ? new ArrayList<>()
+                : ordenRepository.buscarPorCriterioGenerico(datoOrden);
+
         model.addAttribute("empleado", empleado);
+        model.addAttribute("ordenesEncontradas", resultados);
+        model.addAttribute("datoBusqueda", datoOrden);
         return "buscador";
-    }*/
+    }
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "medida",
+    "tipo": "text",
+    "label": "Medida *",
+    "required": true,
+    "placeholder": "Ej: A4"
+  },
+  {
+    "name": "tipo_tapa",
+    "tipo": "text",
+    "label": "Tipo de tapa *",
+    "required": true,
+    "placeholder": "Ej: TAPA BLANDA"
+  },
+  {
+    "name": "cantidad_hojas",
+    "tipo": "number",
+    "label": "Cantidad de hojas",
+    "required": true,
+    "placeholder": "Ej: 100"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  }
+]

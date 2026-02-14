@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puntografico.puntografico.domain.*;
+import com.puntografico.puntografico.repository.OrdenRepository;
 import com.puntografico.puntografico.repository.ProductoRepository;
 import com.puntografico.puntografico.service.MedioPagoService;
 import com.puntografico.puntografico.service.OrdenService;
@@ -29,6 +30,7 @@ public class OrdenController {
     private final MedioPagoService medioPagoService;
     private final PagoService pagoService;
     private final ProductoRepository productoRepository;
+    private final OrdenRepository ordenRepository;
 
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
@@ -148,5 +150,13 @@ public class OrdenController {
         }
 
         return "exito";
+    }
+
+    @GetMapping("/detalle-fragmento/{id}")
+    public String obtenerFragmentoDetalle(@PathVariable Long id, Model model) {
+        Orden orden = ordenRepository.findById(id).orElseThrow();
+        model.addAttribute("orden", orden);
+
+        return "exito :: detalle-orden";
     }
 }

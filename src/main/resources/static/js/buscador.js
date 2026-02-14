@@ -1,134 +1,28 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-title]'));
-  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-    new bootstrap.Tooltip(tooltipTriggerEl);
-  });
+function verDetalle(id) {
+    const modalBody = document.getElementById('modalBody');
+    
+    // 1. Mostrar spinner de carga
+    modalBody.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Cargando orden...</p>
+        </div>`;
+    
+    // 2. Inicializar y mostrar el modal de Bootstrap
+    const modalElement = document.getElementById('ordenModal');
+    const myModal = new bootstrap.Modal(modalElement);
+    myModal.show();
 
-  const botonesEditar = document.querySelectorAll(".editar-btn");
-  botonesEditar.forEach(boton => {
-    boton.addEventListener("click", function () {
-      const idOrden = this.getAttribute("data-idorden");
-      const tipoProducto = this.getAttribute("data-tipoproducto");
-      renderizarEdicionCorrespondiente(idOrden, tipoProducto);
-    });
-  });
-
-  const botonesEliminar = document.querySelectorAll(".eliminar-btn");
-  botonesEliminar.forEach(boton => {
-    boton.addEventListener("click", function () {
-      const idOrden = this.getAttribute("data-idorden");
-
-      if (!confirm("¿Estás seguro que querés eliminar esta orden?")) {
-        return; 
-      }
-
-      fetch(`/api/eliminar-producto/${idOrden}`, {
-                method: "DELETE"
-              })
-              .then(response => {
-                window.location.href = `/buscador`;
-              })
-              .catch(error => console.error("Error eliminando orden hojas membreteadas:", error));
-    });
-  });
-
-  function renderizarEdicionCorrespondiente(idOrden, tipoProducto) {
-    switch (tipoProducto) {
-      case "agenda":
-        window.location.href = `/crear-odts/crear-odt-agenda/${idOrden}`;
-        break;
-      case "anotador":
-        window.location.href = `/crear-odts/crear-odt-anotador/${idOrden}`;
-        break;
-      case "carpeta con solapas":
-        window.location.href = `/crear-odts/crear-odt-carpeta-solapa/${idOrden}`;
-        break;
-      case "catálogo":
-        window.location.href = `/crear-odts/crear-odt-catalogo/${idOrden}`;
-        break;
-      case "cierra bolsas":
-        window.location.href = `/crear-odts/crear-odt-cierra-bolsas/${idOrden}`;
-        break;
-      case "combo":
-        window.location.href = `/crear-odts/crear-odt-combo/${idOrden}`;
-        break;
-      case "cuaderno anillado":
-        window.location.href = `/crear-odts/crear-odt-cuaderno-anillado/${idOrden}`;
-        break;
-      case "entrada":
-        window.location.href = `/crear-odts/crear-odt-entrada/${idOrden}`;
-        break;
-      case "etiqueta":
-        window.location.href = `/crear-odts/crear-odt-etiqueta/${idOrden}`;
-        break;
-      case "flybanner":
-        window.location.href = `/crear-odts/crear-odt-flybanner/${idOrden}`;
-        break;
-      case "folleto":
-        window.location.href = `/crear-odts/crear-odt-folleto/${idOrden}`;
-        break;
-      case "hojas membretadas":
-        window.location.href = `/crear-odts/crear-odt-hojas-membreteadas/${idOrden}`;
-        break;
-      case "impresion":
-        window.location.href = `/crear-odts/crear-odt-impresion/${idOrden}`;
-        break;
-      case "lona común":
-        window.location.href = `/crear-odts/crear-odt-lona-comun/${idOrden}`;
-        break;
-      case "lona publicitaria":
-        window.location.href = `/crear-odts/crear-odt-lona-publicitaria/${idOrden}`;
-        break;
-      case "sin categoría":
-        window.location.href = `/crear-odts/crear-odt-otro/${idOrden}`;
-        break;
-      case "rifa o bono":
-        window.location.href = `/crear-odts/crear-odt-rifas-bonos-contribucion/${idOrden}`;
-        break;
-      case "rotulación":
-        window.location.href = `/crear-odts/crear-odt-rotulacion/${idOrden}`;
-        break;
-      case "sello automático":
-        window.location.href = `/crear-odts/crear-odt-sello-automatico/${idOrden}`;
-        break;
-      case "sello automático escolar":
-            window.location.href = `/crear-odts/crear-odt-sello-automatico-escolar/${idOrden}`;
-            break;
-      case "sello de madera":
-        window.location.href = `/crear-odts/crear-odt-sello-madera/${idOrden}`;
-        break;
-      case "sobre":
-        window.location.href = `/crear-odts/crear-odt-sobre/${idOrden}`;
-        break;
-      case "sticker":
-        window.location.href = `/crear-odts/crear-odt-sticker/${idOrden}`;
-        break;
-      case "sublimación":
-        window.location.href = `/crear-odts/crear-odt-sublimacion/${idOrden}`;
-        break;
-      case "talonario":
-        window.location.href = `/crear-odts/crear-odt-talonario/${idOrden}`;
-        break;
-      case "tarjeta":
-        window.location.href = `/crear-odts/crear-odt-tarjeta/${idOrden}`;
-        break;
-      case "turnero":
-        window.location.href = `/crear-odts/crear-odt-turnero/${idOrden}`;
-        break;
-      case "vinilo":
-        window.location.href = `/crear-odts/crear-odt-vinilo/${idOrden}`;
-        break;
-      case "vinilo de corte":
-        window.location.href = `/crear-odts/crear-odt-vinilo-de-corte/${idOrden}`;
-        break;
-      case "vinilo con plástico corrugado":
-        window.location.href = `/crear-odts/crear-odt-vinilo-plastico-corrugado/${idOrden}`;
-        break;
-      case "voucher":
-        window.location.href = `/crear-odts/crear-odt-voucher/${idOrden}`;
-        break;
-      default:
-        console.warn("Tipo de producto no manejado:", tipoProducto);
-    }
-  }
-});
+    // 3. Fetch del fragmento (la ruta es relativa al dominio)
+    fetch(`/ordenes/detalle-fragmento/${id}`)
+        .then(response => {
+            if (!response.ok) throw new Error('No se pudo encontrar la orden');
+            return response.text();
+        })
+        .then(html => {
+            modalBody.innerHTML = html;
+        })
+        .catch(error => {
+            modalBody.innerHTML = `<div class="alert alert-danger m-3">Error: ${error.message}</div>`;
+        });
+}
