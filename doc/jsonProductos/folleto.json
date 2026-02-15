@@ -1,0 +1,68 @@
+[
+  {
+    "name": "con_plegado",
+    "tipo": "checkbox",
+    "label": "¿Con plegado?"
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 115 GRS", "ILUSTRACIÓN 150 GRS"],
+    "required": true
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {
+    "name": "tamanio_hoja",
+    "tipo": "select",
+    "label": "Tamaño de hoja * ",
+    "opciones": ["A3" ,"A4", "A5", "OFICIO", "1/4 DE A4", "1/4 DE OFICIO", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tamanio_hoja_personalizado",
+    "tipo": "text",
+    "label": "Tamaño de hoja personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tamanio_hoja",
+    "placeholder": "Ej: 1/4 DE A3"
+  },
+  {
+    "name": "tipo_folleto",
+    "tipo": "select",
+    "label": "Tipo de folleto * ",
+    "opciones": ["COMÚN", "DÍPTICO", "TRÍPTICO"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["50", "100", "150", "200", "300", "400", "500", "1000", "OTRA"],
+    "required": true
+  }
+]

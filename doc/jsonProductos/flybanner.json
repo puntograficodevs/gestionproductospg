@@ -1,0 +1,41 @@
+[
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz *",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {
+    "name": "altura",
+    "tipo": "select",
+    "label": "Altura *",
+    "opciones": ["240 CM", "190 CM"],
+    "required": true
+  },
+  {
+    "name": "bandera",
+    "tipo": "select",
+    "label": "Bandera *",
+    "opciones": ["70X145 CM"],
+    "required": true
+  },
+  {
+    "name": "tipo_base",
+    "tipo": "select",
+    "label": "Tipo de base *",
+    "opciones": ["SIN BASE", "BASE CRUZ", "ESTACA ECO"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  }
+]

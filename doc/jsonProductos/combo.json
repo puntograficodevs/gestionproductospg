@@ -1,0 +1,28 @@
+[
+  {
+    "name": "tipo_combo",
+    "tipo": "select",
+    "label": "Tipo de combo *",
+    "opciones": ["OFICINA", "PROFESIONAL", "EMPRENDEDOR X100", "EMPRENDEDOR X200", "EMPRENDEDOR X500", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tipo_combo_personalizado",
+    "tipo": "text",
+    "label": "Tipo de combo personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tipo_combo",
+    "placeholder": "Ej: EMPRENDEDOR X1000"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["17X6 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: 12X4 CM"
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 150 GRS"],
+    "required": true
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_troquelado",
+    "tipo": "select",
+    "label": "Tipo de troquelado * ",
+    "opciones": ["SIN TROQUELAR", "TROQUELADO SIMPLE", "TROQUELADO DOBLE"],
+    "required": true
+  },
+  {
+    "name": "tipo_numerado",
+    "tipo": "select",
+    "label": "Tipo de numerado * ",
+    "opciones": ["SIN NUMERADO", "NUMERADO SIMPLE", "NUMERADO DOBLE"],
+    "required": true
+  },
+  {
+    "name": "tipo_terminacion",
+    "tipo": "select",
+    "label": "Tipo de terminación * ",
+    "opciones": ["NINGUNA", "CON BROCHE Y TAPA"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["100", "150", "200", "300", "500", "1000", "OTRA"],
+    "required": true
+  }
+]

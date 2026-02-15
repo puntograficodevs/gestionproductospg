@@ -1,0 +1,50 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["A4", "A5", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: A6"
+  },
+  {
+    "name": "tipo_tapa",
+    "tipo": "select",
+    "label": "Tipo de tapa * ",
+    "opciones": ["TAPA DURA", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "tapa_personalizada",
+    "tipo": "text",
+    "label": "Tapa personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "tipo_tapa",
+    "placeholder": "Ej: TAPA BLANDA"
+  },
+  {
+    "name": "cantidad_hojas",
+    "tipo": "number",
+    "label": "Cantidad de hojas",
+    "required": true,
+    "placeholder": "Ej: 100"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  }
+]

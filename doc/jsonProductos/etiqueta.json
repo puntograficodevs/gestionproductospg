@@ -1,0 +1,73 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["7X5 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: 14x10 CM"
+  },
+  {
+    "name": "con_perforacion_adicional",
+    "tipo": "checkbox",
+    "label": "¿Con perforación adicional?"
+  },
+  {
+    "name": "con_marca_adicional",
+    "tipo": "checkbox",
+    "label": "¿Con marca adicional?"
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OPALINA 180 GRS", "OPALINA 210 GRS", "ILUSTRACIÓN 250 GRS", "KRAFT", "ILUSTRACIÓN 220 GRS"],
+    "required": true
+  },
+  {
+    "name": "tipo_laminado",
+    "tipo": "select",
+    "label": "Tipo de laminado * ",
+    "opciones": ["BRILLANTE", "MATE", "NINGUNO"],
+    "required": true
+  },
+  {
+    "name": "tamanio_perforacion",
+    "tipo": "select",
+    "label": "Tamaño de perforación * ",
+    "opciones": ["NINGUNA", "CHICA", "MEDIANA", "GRANDE"],
+    "required": true
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["100", "200", "500", "1000", "OTRA"],
+    "required": true
+  }
+]

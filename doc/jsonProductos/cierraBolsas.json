@@ -1,0 +1,42 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["8X4 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: 10X10 CM"
+  },
+  {
+    "name": "tipo_troquelado",
+    "tipo": "select",
+    "label": "Tipo troquelado *",
+    "opciones": ["CUADRADO", "CIRCULAR", "POR EL CONTORNO", "CORTE INDIVIDUAL", "SIN TROQUELAR"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del producto"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["100", "200", "500", "OTRA"],
+    "required": true
+  }
+]
