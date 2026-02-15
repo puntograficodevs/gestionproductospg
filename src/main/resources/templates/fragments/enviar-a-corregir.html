@@ -1,38 +1,20 @@
-<div th:fragment="enviar-a-corregir(idOrden)" xmlns:th="http://www.thymeleaf.org">
-  <div class="modal fade"
-       th:id="'modalEnviarACorregir-' + ${idOrden}"
-       th:attr="aria-labelledby='modalEnviarACorregirLabel-' + ${idOrden}"
-       tabindex="-1"
-       aria-hidden="true">
-    <div class="modal-dialog">
+<div th:fragment="enviar-a-corregir(ordenId)" class="modal fade" th:id="'modalEnviarACorregir-' + ${ordenId}" tabindex="-1">
+  <div class="modal-dialog">
+    <form action="/ordenes/enviar-a-corregir" method="post">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"
-              th:id="'modalEnviarACorregirLabel-' + ${idOrden}">
-            CORREGIR ORDEN
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          <h5 class="modal-title">¿Cu&aacute;l es la correcci&oacute;n?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
-        <form th:action="@{/api/orden/pedir-correccion}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="idOrden" th:value="${idOrden}"/>
-            <input type="hidden" name="empleadoLogueado" th:value="${empleadoLogueado}"/>
-
-            <div class="mb-3">
-              <label th:for="'correccion-' + ${idOrden}" class="form-label">¿Qué modificación debe hacerse?</label>
-              <textarea type="text" class="form-control"
-                     th:id="'correccion-' + ${idOrden}"
-                     name="correccion"
-                        placeholder="" required style="height: 150px;"></textarea>
-            </div>
-          </div>
-
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Pedir correcci&oacute;n</button>
-          </div>
-        </form>
+        <div class="modal-body">
+          <input type="hidden" name="id" th:value="${ordenId}">
+          <textarea name="motivo" class="form-control" rows="5"
+                    placeholder="Escribí acá los cambios o correcciones..." required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Enviar a Corregir</button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>

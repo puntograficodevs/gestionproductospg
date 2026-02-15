@@ -26,15 +26,47 @@ public class OrdenService {
     }
 
     public void guardar(Orden orden) {
-        orden.setFechaPedido(LocalDate.now());
-        orden.setEstadoOrden(estadoOrdenRepository.findById(1L).get());
+        // 1. CASO ORDEN NUEVA
+        if (orden.getId() == null) {
+            orden.setFechaPedido(LocalDate.now());
+            orden.setEstadoOrden(estadoOrdenRepository.findById(1L).get()); // 1L = Sin Hacer
+        }
+        // 2. CASO EDICIÓN O CORRECCIÓN
+        else {
+            // Recuperamos la orden tal cual está en la DB antes de que los datos del form la pisen
+            Orden vieja = ordenRepository.findById(orden.getId())
+                    .orElseThrow(() -> new RuntimeException("No se encontró la orden a editar"));
 
+            // REGLA A: El EMPLEADO no se modifica (se mantiene el original)
+            orden.setEmpleado(vieja.getEmpleado());
+
+            // REGLA B: Mantenemos la fecha original
+            orden.setFechaPedido(vieja.getFechaPedido());
+
+            // REGLA C: Lógica de Corrección vs Edición Común
+            if (vieja.getEstadoOrden().getId() == 4L) {
+                // Estaba en estado CORREGIR, hay que restaurarla
+                Integer previoId = vieja.getIdEstadoPrevio();
+                Long estadoADondeVolver = (previoId != null) ? previoId.longValue() : 1L;
+
+                orden.setEstadoOrden(estadoOrdenRepository.findById(estadoADondeVolver).get());
+
+                // Limpiamos los campos de corrección porque ya se cumplió
+                orden.setCorreccion(null);
+                orden.setIdEstadoPrevio(null);
+            } else {
+                // Es una edición común, mantenemos el estado que ya tenía
+                orden.setEstadoOrden(vieja.getEstadoOrden());
+                // Por las dudas, mantenemos el estado previo si es que existía
+                orden.setIdEstadoPrevio(vieja.getIdEstadoPrevio());
+            }
+        }
+
+        // 3. LÓGICA DE PAGOS E ÍTEMS (Se mantiene igual)
         asignarEstadoPago(orden);
 
         if (orden.getItems() != null) {
-            orden.getItems().forEach(item -> {
-                item.setOrden(orden);
-            });
+            orden.getItems().forEach(item -> item.setOrden(orden));
         }
 
         if (orden.getPagos() != null) {
@@ -43,6 +75,13 @@ public class OrdenService {
         }
 
         ordenRepository.save(orden);
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        if (ordenRepository.existsById(id)) {
+            ordenRepository.deleteById(id);
+        }
     }
 
     private void asignarEstadoPago(Orden orden) {

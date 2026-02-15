@@ -42,3 +42,13 @@
 .eliminar-btn:hover {
     background-color: #B41C68;
 }
+
+.checkOrden, #checkAll {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+#btnEliminarMasivo {
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}

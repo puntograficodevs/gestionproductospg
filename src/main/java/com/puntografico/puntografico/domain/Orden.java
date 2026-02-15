@@ -43,15 +43,23 @@ public class Orden {
     @Column(nullable = false)
     private boolean necesitaFactura;
 
+    private boolean conAdicionalDisenio;
+
     private boolean facturaHecha;
 
     @Column(nullable = false)
     private int total;
 
+    private Integer subtotal;
+
+    private Integer precioDisenio;
+
     @Column(nullable = false)
     private int abonado;
 
     private String correccion;
+
+    private Integer idEstadoPrevio;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_estado_pago")
@@ -70,4 +78,12 @@ public class Orden {
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pago> pagos = new ArrayList<>();
+
+    public void agregarPago(Pago pago) {
+        if (this.pagos == null) {
+            this.pagos = new ArrayList<>();
+        }
+        this.pagos.add(pago);
+        pago.setOrden(this); // Esto es vital para Hibernate
+    }
 }

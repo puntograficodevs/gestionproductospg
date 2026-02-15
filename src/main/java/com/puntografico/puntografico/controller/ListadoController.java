@@ -1,41 +1,52 @@
 package com.puntografico.puntografico.controller;
 
+import com.puntografico.puntografico.domain.*;
+import com.puntografico.puntografico.repository.*;
+import com.puntografico.puntografico.service.MedioPagoService;
+import com.puntografico.puntografico.service.ProductoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
 public class ListadoController {
-/*
-    private final OrdenTrabajoService ordenTrabajoService;
+
+    private final OrdenRepository ordenRepository;
     private final MedioPagoService medioPagoService;
+    private final ProductoService productoService;
 
     @GetMapping("/listado")
-    public String listado(HttpSession session, Model model, @RequestParam(required = false) String tipoProducto) {
+    public String verListado(HttpSession session, Model model) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+        if (empleado == null) return "redirect:/";
 
-        if (empleado == null) {
-            return "redirect:/"; // Si no hay sesión, lo manda al login
-        }
-
-        if (tipoProducto == null) {
-            tipoProducto = "todas";
-        }
-
-        List<OrdenTrabajo> ordenesSinHacer = ordenTrabajoService.buscarEstadoSinHacer(empleado, tipoProducto);
-        List<OrdenTrabajo> ordenesCorregir = ordenTrabajoService.buscarEstadoCorregir(empleado, tipoProducto);
-        List<OrdenTrabajo> ordenesEnProceso = ordenTrabajoService.buscarEstadoEnProceso(empleado, tipoProducto);
-        List<OrdenTrabajo> ordenesListaParaRetirar = ordenTrabajoService.buscarEstadoListaParaRetirar(empleado, tipoProducto);
+        // Traemos absolutamente todas las órdenes de la base
+        List<Orden> todas = ordenRepository.findAllByOrderByIdDesc();
         List<MedioPago> listaMediosDePago = medioPagoService.buscarTodos();
+        List<Producto> productos = productoService.buscarTodos();
+
+        // Las repartimos en las 4 columnas según el ID de estado
+        model.addAttribute("ordenesSinHacer", filtrarPorEstado(todas, 1L));
+        model.addAttribute("ordenesEnProceso", filtrarPorEstado(todas, 2L));
+        model.addAttribute("ordenesListaParaRetirar", filtrarPorEstado(todas, 3L));
+        model.addAttribute("ordenesCorregir", filtrarPorEstado(todas, 4L));
+        model.addAttribute("listaMediosDePago", listaMediosDePago);
+        model.addAttribute("productos", productos);
 
         model.addAttribute("empleado", empleado);
-        model.addAttribute("ordenesSinHacer", ordenesSinHacer);
-        model.addAttribute("ordenesCorregir", ordenesCorregir);
-        model.addAttribute("ordenesEnProceso", ordenesEnProceso);
-        model.addAttribute("ordenesListaParaRetirar", ordenesListaParaRetirar);
-        model.addAttribute("tipoProducto", tipoProducto);
-        model.addAttribute("listaMediosDePago", listaMediosDePago);
 
         return "listado";
-    }*/
+    }
+
+    private List<Orden> filtrarPorEstado(List<Orden> ordenes, Long estadoId) {
+        return ordenes.stream()
+                .filter(orden -> orden.getEstadoOrden() != null && orden.getEstadoOrden().getId().equals(estadoId))
+                .collect(Collectors.toList());
+    }
 }

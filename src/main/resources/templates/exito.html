@@ -90,8 +90,16 @@
             </div>
         </div>
         <div th:replace="fragments/footer-odt :: footer-odt"></div>
+
+        <div th:if="${ordenCorrecta.estadoOrden.id == 4}" class="modal-footer mt-3">
+            <a th:href="@{'/ordenes/editar-orden/' + ${ordenCorrecta.id}}" class="btn btn-warning w-100 shadow-sm">
+                <strong>Corregir ahora</strong>
+            </a>
+        </div>
     </th:block>
 </div>
+
+
 
 </body>
 </html>

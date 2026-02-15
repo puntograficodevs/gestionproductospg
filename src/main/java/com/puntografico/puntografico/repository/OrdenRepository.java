@@ -16,4 +16,8 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
             "LOWER(o.nombreCliente) LIKE LOWER(concat('%', :dato, '%')) OR " +
             "o.telefonoCliente LIKE %:dato%")
     List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato);
+
+    List<Orden> findAllByOrderByIdDesc();
+
+    List<Orden> findByNecesitaFacturaTrueAndFacturaHechaFalse();
 }
