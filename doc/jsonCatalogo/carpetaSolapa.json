@@ -1,0 +1,42 @@
+[
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "SIMPLE FAZ",
+    "cantidad_producto": "1-49"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "DOBLE FAZ",
+    "cantidad_producto": "1-49"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "SIMPLE FAZ",
+    "cantidad_producto": "50"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "DOBLE FAZ",
+    "cantidad_producto": "50"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "SIMPLE FAZ",
+    "cantidad_producto": "100"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "DOBLE FAZ",
+    "cantidad_producto": "100"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "SIMPLE FAZ",
+    "cantidad_producto": "150"
+  },
+  {
+    "tipo_laminado": "NINGUNO",
+    "tipo_faz": "DOBLE FAZ",
+    "cantidad_producto": "150"
+  }
+]

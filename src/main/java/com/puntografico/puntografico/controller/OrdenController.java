@@ -68,17 +68,12 @@ public class OrdenController {
         if (orden.getId() != null) {
             // --- CASO EDICIÓN ---
             Orden ordenExistente = ordenService.buscarPorId(orden.getId());
-
-            // Recuperamos el ítem existente (asumiendo uno por orden)
             item = ordenExistente.getItems().get(0);
 
-            // Seteamos en el objeto 'orden' que viene del form los datos que no están en el HTML
-            // para que el Service no los pise con null o valores por defecto
             orden.setFechaPedido(ordenExistente.getFechaPedido());
             orden.setEstadoOrden(ordenExistente.getEstadoOrden());
-            orden.setPagos(ordenExistente.getPagos()); // Clave para no borrar señas previas
+            orden.setPagos(ordenExistente.getPagos());
 
-            // Vinculamos el ítem a la orden del modelo
             if (orden.getItems() == null) orden.setItems(new ArrayList<>());
             orden.getItems().add(item);
         } else {
@@ -89,8 +84,19 @@ public class OrdenController {
             orden.getItems().add(item);
         }
 
-        // 2. Actualizar datos del Ítem (común a ambos casos)
-        item.setCantidad(Integer.parseInt(allParams.getOrDefault("cantidadItem", "1")));
+        // 2. Actualizar datos del Ítem
+        String cantDinamicaStr = detallesMap.get("cantidad_producto");
+        int cantidadFinal;
+
+        // Si NO existe, o es "OTRA", o es un rango (contiene guion), usamos el input manual
+        if (cantDinamicaStr == null || cantDinamicaStr.equals("OTRA") || cantDinamicaStr.contains("-")) {
+            cantidadFinal = Integer.parseInt(allParams.getOrDefault("cantidadItem", "1"));
+        } else {
+            // Es un valor fijo numérico (50, 100, etc.)
+            cantidadFinal = Integer.parseInt(cantDinamicaStr);
+        }
+
+        item.setCantidad(cantidadFinal);
 
         if (allParams.containsKey("productoId")) {
             Producto p = new Producto();
@@ -98,20 +104,17 @@ public class OrdenController {
             item.setProducto(p);
         }
 
-        // Serializar el Map de detalles a JSON String
         try {
             item.setDetallePersonalizado(new ObjectMapper().writeValueAsString(detallesMap));
         } catch (JsonProcessingException e) {
             item.setDetallePersonalizado("{}");
         }
 
-        // 3. Procesar el Subtotal (el campo que agregamos al dominio)
+        // 3. Procesar Subtotal y Diseño
         if (allParams.containsKey("subtotal")) {
-            // Lo parseamos a double y redondeamos para evitar problemas de coma
             double subtotalExtraido = Double.parseDouble(allParams.get("subtotal"));
             orden.setSubtotal((int) Math.ceil(subtotalExtraido));
         }
-
         if (allParams.containsKey("precioDisenio")) {
             try {
                 double disenioExtraido = Double.parseDouble(allParams.get("precioDisenio"));
@@ -121,14 +124,16 @@ public class OrdenController {
             }
         }
 
-        // 4. Registrar nuevo pago solo si hay monto y medio seleccionado
-        // (pagoService.guardar internamente debería manejar el .add() a la lista de pagos)
-        if (idMedioPago != null && orden.getAbonado() > 0) {
+        // --- 4. FLUJO DE GUARDADO (CREACIÓN / EDICIÓN) ---
+        ordenService.guardar(orden);
+
+        if (idMedioPago != null) {
             pagoService.guardar(orden, idMedioPago);
+        } else {
+            pagoService.actualizarSaldosYEstados(orden);
         }
 
-        // 5. Guardado final mediante el Service
-        ordenService.guardar(orden);
+        ordenRepository.save(orden);
 
         return "redirect:/ordenes/exito/" + orden.getId();
     }

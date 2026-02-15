@@ -66,10 +66,12 @@
 
                     <div th:if="${itemCorrecto.detallesMap != null}">
                         <div th:each="entry : ${itemCorrecto.detallesMap}">
-                            <p>
-                                <strong th:text="${#strings.capitalize(#strings.replace(entry.key, '_', ' '))} + ': '"></strong>
-                                <span th:text="${entry.value}"></span>
-                            </p>
+                            <th:block th:if="${entry.key != 'cantidad_producto'}">
+                                <p>
+                                    <strong th:text="${#strings.capitalize(#strings.replace(entry.key, '_', ' '))} + ': '"></strong>
+                                    <span th:text="${entry.value}"></span>
+                                </p>
+                            </th:block>
                         </div>
                     </div>
 
@@ -77,6 +79,7 @@
                     <p><strong>Fecha de entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
                     <p th:if="${ordenCorrecta.horaEntrega != null && ordenCorrecta.horaEntrega != ''}"><strong>Hora: </strong><span th:text="${ordenCorrecta.horaEntrega}"></span> hs.</p>
                     <p th:if="${ordenCorrecta.fechaMuestra}"><strong>Muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
+
                     <p><strong>Cantidad: </strong><span th:text="${itemCorrecto.cantidad}"></span></p>
                 </div>
             </div>

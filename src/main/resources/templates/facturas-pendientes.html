@@ -10,50 +10,57 @@
 </head>
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
-<div class="row pagina-en-proceso ">
-<div class="container mt-4">
-  <h4 class="mb-4">Facturas pendientes de realizar</h4>
 
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>N° Orden</th>
-      <th>Cliente</th>
-      <th>Teléfono</th>
-      <th>Producto</th>
-      <th>Entrega</th>
-      <th>Estado Pago</th>
-      <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="orden : ${ordenes}">
-      <td th:text="${orden.id}"></td>
-      <td th:text="${orden.nombreCliente}"></td>
-      <td th:text="${orden.telefonoCliente}"></td>
-      <td th:text="${orden.items[0].producto.nombre}"></td>
-      <td th:text="${orden.fechaEntrega}"></td>
-      <td>
-                <span th:text="${orden.estadoPago.estadoDePago}"
-                      th:classappend="${orden.estadoPago.id == 3 ? 'fw-bold text-success' : 'fw-bold text-warning'}"></span>
-      </td>
-      <td>
-        <div class="d-flex gap-2">
-          <button class="btn btn-primary btn-sm" th:onclick="'verDetalle(' + ${orden.id} + ')'">
-            <i class="bi bi-eye"></i>
-          </button>
+<div class="container-fluid mt-3 px-5">
+  <h5 class="mb-3"><b>Facturas pendientes de realizar</b></h5>
+  <hr>
 
-          <form th:action="@{/facturas/marcar-hecha/{id}(id=${orden.id})}" method="post"
-                onsubmit="return confirm('¿Confirmás que ya realizaste la factura para esta orden?');">
-            <button type="submit" class="btn btn-success btn-sm">
-              <i class="bi bi-check-lg"></i>
+  <div th:if="${not #lists.isEmpty(ordenes)}">
+    <table class="table table-striped shadow-sm">
+      <thead>
+      <tr>
+        <th>N° Orden</th>
+        <th>Cliente</th>
+        <th>Teléfono</th>
+        <th>Producto</th>
+        <th>Entrega</th>
+        <th>Estado Pago</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="orden : ${ordenes}">
+        <td th:text="${orden.id}"></td>
+        <td th:text="${orden.nombreCliente}"></td>
+        <td th:text="${orden.telefonoCliente}"></td>
+        <td th:text="${orden.items[0].producto.nombre}"></td>
+        <td th:text="${orden.fechaEntrega}"></td>
+        <td>
+          <span th:text="${orden.estadoPago.estadoDePago}"
+                th:classappend="${orden.estadoPago.id == 3 ? 'fw-bold text-success' : 'fw-bold text-warning'}"></span>
+        </td>
+        <td>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" th:onclick="'verDetalle(' + ${orden.id} + ')'">
+              <i class="bi bi-eye"></i>
             </button>
-          </form>
-        </div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+            <form th:action="@{/facturas/marcar-hecha/{id}(id=${orden.id})}" method="post"
+                  onsubmit="return confirm('¿Confirmás que ya realizaste la factura para esta orden?');">
+              <button type="submit" class="btn btn-success btn-sm">
+                <i class="bi bi-check-lg"></i>
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:unless="${not #lists.isEmpty(ordenes)}" class="alert alert-success text-center mt-2 shadow-sm">
+    <i class="bi bi-info-circle me-2"></i>
+    <span>No hay órdenes pendientes de facturar.</span>
+  </div>
 </div>
 
 <div class="modal fade" id="ordenModal" tabindex="-1" aria-hidden="true">
@@ -63,11 +70,9 @@
         <h5 class="modal-title">Detalle de la Orden</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <div class="modal-body" id="modalBody">
-      </div>
+      <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
-</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

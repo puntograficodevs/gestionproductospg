@@ -78,12 +78,4 @@ public class Orden {
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pago> pagos = new ArrayList<>();
-
-    public void agregarPago(Pago pago) {
-        if (this.pagos == null) {
-            this.pagos = new ArrayList<>();
-        }
-        this.pagos.add(pago);
-        pago.setOrden(this); // Esto es vital para Hibernate
-    }
 }

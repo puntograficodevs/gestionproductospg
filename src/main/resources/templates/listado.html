@@ -39,9 +39,9 @@
           <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
           <div class="card-body">
             <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="list-unstyled small mb-2">
-              <li>Cliente: <span th:text="${orden.nombreCliente}"></span></li>
-              <li>Entrega: <span th:text="${orden.fechaEntrega}"></span></li>
+            <ul class="mb-2">
+              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
+              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
             </ul>
             <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
             <b th:if="${orden.total - orden.abonado != 0}">
@@ -50,13 +50,13 @@
 
             <div class="row g-1">
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalEnviarACorregir-' + ${orden.id}">Corregir</button>
+                <button class="btn btn-columna-sin-hacer btn-correccion btn-sm w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalEnviarACorregir-' + ${orden.id}">Corregir</button>
               </div>
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
+                <button class="btn btn-columna-sin-hacer btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
               </div>
             </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-outline-success btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
+            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-sin-hacer btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
 
             <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
             <div th:replace="fragments/enviar-a-corregir :: enviar-a-corregir(${orden.id})"></div>
@@ -71,19 +71,24 @@
           <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
           <div class="card-body">
             <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="list-unstyled small mb-2">
-              <li>Cliente: <span th:text="${orden.nombreCliente}"></span></li>
-              <li>Entrega: <span th:text="${orden.fechaEntrega}"></span></li>
+            <ul class="mb-2">
+              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
+              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
             </ul>
+            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
+            <b th:if="${orden.total - orden.abonado != 0}">
+              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
+            </b>
+
             <div class="row g-1">
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="sin-hacer">Sin hacer</button>
+                <button class="btn btn-sm w-100 btn-columna-en-proceso  btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="sin-hacer">Sin hacer</button>
               </div>
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="hecha">Hecha</button>
+                <button class="btn btn-sm w-100 btn-columna-en-proceso btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="hecha">Hecha</button>
               </div>
             </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-outline-success btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
+            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-en-proceso btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
             <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
           </div>
         </div>
@@ -96,19 +101,24 @@
           <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
           <div class="card-body">
             <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="list-unstyled small mb-2">
-              <li>Cliente: <span th:text="${orden.nombreCliente}"></span></li>
-              <li>Resta: $<span th:text="${orden.total - orden.abonado}"></span></li>
+            <ul class="mb-2">
+              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
+              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
             </ul>
+            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
+            <b th:if="${orden.total - orden.abonado != 0}">
+              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
+            </b>
+
             <div class="row g-1">
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
+                <button class="btn  btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
               </div>
               <div class="col-6">
-                <button class="btn btn-success btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" th:data-resta="${orden.total - orden.abonado}" data-accion="entregado">Entregado</button>
+                <button class="btn  btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" th:data-resta="${orden.total - orden.abonado}" data-accion="entregado">Entregado</button>
               </div>
             </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-outline-success btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
+            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-lista-para-retirar btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
             <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
           </div>
         </div>
@@ -121,9 +131,14 @@
           <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
           <div class="card-body">
             <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <p class="small">Cliente: <span th:text="${orden.nombreCliente}"></span></p>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
-            <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
+            <ul class="mb-2">
+              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
+              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
+            </ul>
+            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
+            <b th:if="${orden.total - orden.abonado != 0}">
+              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
+            </b>
           </div>
         </div>
       </div>

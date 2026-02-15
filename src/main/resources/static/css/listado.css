@@ -101,7 +101,8 @@ p {
     border: 3px solid #abf28c;
 }
 
-.btn-cambio-estado {
+.btn-cambio-estado,
+.btn-correccion {
     font-size: 1em;
     color: #1d1d1b;
     border: none;
@@ -111,57 +112,32 @@ p {
     width: 100%;
 }
 
-.btn-cambio-estado:hover {
+.btn-cambio-estado:hover,
+.btn-correccion:hover {
     color: #000000;
 }
 
-.corregir-btn,
-.pasar-en-proceso-btn {
+.btn-columna-sin-hacer {
     background-color: #F4CFFF;
 }
 
-.corregir-btn:hover,
-.pasar-en-proceso-btn:hover {
+.btn-columna-sin-hacer :hover {
     background-color: #C79BD4;
 }
 
-.pasar-lista-para-retirar-btn {
+.btn-columna-en-proceso {
     background-color: #ffef8b;
 }
 
-.pasar-lista-para-retirar-btn:hover {
+.btn-columna-en-proceso:hover {
     background-color: #F6E15D;
 }
 
-.pasar-retirada-btn {
+.btn-columna-lista-para-retirar {
     background-color: #abf28c;
 }
 
-.pasar-retirada-btn:hover {
-    background-color: #81C862;
-}
-
-.pasar-corregido-btn {
-    background-color: #ff8f8f;
-}
-
-.pasar-corregido-btn:hover {
-    background-color: #CF4B4B;
-}
-
-.volver-sin-hacer-btn {
-    background-color: #ffef8b;
-}
-
-.volver-sin-hacer-btn:hover {
-    background-color: #F6E15D;
-}
-
-.volver-en-proceso-btn {
-    background-color: #abf28c;
-}
-
-.volver-en-proceso-btn:hover {
+.btn-columna-lista-para-retirar:hover {
     background-color: #81C862;
 }
 
