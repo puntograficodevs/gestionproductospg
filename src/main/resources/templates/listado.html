@@ -20,9 +20,12 @@
     <div class="col-md-6">
       <select class="form-select" id="selector-producto">
         <option value="todas">Todas</option>
-        <option th:each="producto : ${productos}"
-                th:value="${producto.nombre}"
-                th:text="${producto.nombre}"></option>
+        <th:block th:each="producto : ${productos}">
+          <option th:if="${empleado.rol.id != 5 or producto.nombre != 'Impresion'}"
+                  th:value="${producto.nombre}"
+                  th:text="${producto.nombre}">
+          </option>
+        </th:block>
       </select>
     </div>
   </div>

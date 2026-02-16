@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,27 +27,51 @@ public class ListadoController {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         if (empleado == null) return "redirect:/";
 
-        // Traemos absolutamente todas las órdenes de la base
-        List<Orden> todas = ordenRepository.findAllByOrderByIdDesc();
+        List<Orden> todas = ordenRepository.buscarTodasSegunRol(empleado.getRol().getId());
         List<MedioPago> listaMediosDePago = medioPagoService.buscarTodos();
-        List<Producto> productos = productoService.buscarTodos();
 
-        // Las repartimos en las 4 columnas según el ID de estado
-        model.addAttribute("ordenesSinHacer", filtrarPorEstado(todas, 1L));
-        model.addAttribute("ordenesEnProceso", filtrarPorEstado(todas, 2L));
-        model.addAttribute("ordenesListaParaRetirar", filtrarPorEstado(todas, 3L));
-        model.addAttribute("ordenesCorregir", filtrarPorEstado(todas, 4L));
+        // 1. Obtenemos y ordenamos la lista de productos (A-Z, "Sin categoria" al final)
+        List<Producto> productos = productoService.buscarTodos().stream()
+                .sorted(crearComparadorProductos())
+                .collect(Collectors.toList());
+
+        // 2. Repartimos las órdenes filtradas por estado y TAMBIÉN las ordenamos A-Z por producto
+        model.addAttribute("ordenesSinHacer", filtrarYOrdenar(todas, 1L, empleado));
+        model.addAttribute("ordenesEnProceso", filtrarYOrdenar(todas, 2L, empleado));
+        model.addAttribute("ordenesListaParaRetirar", filtrarYOrdenar(todas, 3L, empleado));
+        model.addAttribute("ordenesCorregir", filtrarYOrdenar(todas, 4L, empleado));
+
         model.addAttribute("listaMediosDePago", listaMediosDePago);
         model.addAttribute("productos", productos);
-
         model.addAttribute("empleado", empleado);
 
         return "listado";
     }
 
-    private List<Orden> filtrarPorEstado(List<Orden> ordenes, Long estadoId) {
+    private List<Orden> filtrarYOrdenar(List<Orden> ordenes, Long estadoId, Empleado empleado) {
         return ordenes.stream()
-                .filter(orden -> orden.getEstadoOrden() != null && orden.getEstadoOrden().getId().equals(estadoId))
+                .filter(o -> o.getEstadoOrden() != null && o.getEstadoOrden().getId().equals(estadoId))
+                .filter(o -> {
+                    if (empleado.getRol().getId() == 5L) {
+                        return o.getItems().stream()
+                                .noneMatch(i -> i.getProducto() != null && i.getProducto().getId() == 12);
+                    }
+                    return true;
+                })
+                // Ordenamos las tarjetas dentro de la columna por nombre de producto (A-Z)
+                .sorted(Comparator.comparing(o -> o.getItems().get(0).getProducto().getNombre(), String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
+    }
+
+    private Comparator<Producto> crearComparadorProductos() {
+        return (p1, p2) -> {
+            String n1 = p1.getNombre();
+            String n2 = p2.getNombre();
+            String sinCat = "Sin categoria";
+
+            if (n1.equalsIgnoreCase(sinCat)) return 1;  // n1 va al final
+            if (n2.equalsIgnoreCase(sinCat)) return -1; // n2 va al final
+            return n1.compareToIgnoreCase(n2);          // Orden A-Z normal
+        };
     }
 }

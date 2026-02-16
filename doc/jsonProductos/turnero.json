@@ -1,0 +1,49 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["1/4 DE A4","13X18 CM", "7X8,5 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: A6"
+  },
+  {
+    "name": "cantidad_hojas",
+    "tipo": "number",
+    "label": "Cantidad de hojas *",
+    "required": true,
+    "placeholder": "Ej: 100"
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color *",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del producto"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["2", "4", "8", "12", "OTRA"],
+    "required": true
+  }
+]

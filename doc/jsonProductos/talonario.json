@@ -1,0 +1,103 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["1/4 DE A4", "A4", "A5", "1/2 DE A4", "13X18 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: A6"
+  },
+  {
+    "name": "con_numerado",
+    "tipo": "checkbox",
+    "label": "¿Con numerado?"
+  },
+  {
+    "name": "numerado_personalizado",
+    "tipo": "text",
+    "label": "Numerado personalizado",
+    "showIf": "on",
+    "dependsOn": "con_numerado",
+    "placeholder": "Detalle del numerado"
+  },
+  {
+    "name": "es_encolado",
+    "tipo": "checkbox",
+    "label": "¿Encolado?"
+  },
+  {
+    "name": "tipo_talonario",
+    "tipo": "select",
+    "label": "Tipo de talonario * ",
+    "opciones": ["RECIBO", "PRESUPUESTO", "X", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tipo_talonario_personalizado",
+    "tipo": "text",
+    "label": "Tipo de talonario personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tipo_talonario",
+    "placeholder": "Especificar"
+  },
+  {
+    "name": "tipo_troquelado",
+    "tipo": "select",
+    "label": "Tipo de troquelado * ",
+    "opciones": ["SIN TROQUELAR", "TROQUELADO SIMPLE", "TROQUELADO DOBLE"],
+    "required": true
+  },
+  {
+    "name": "modo_talonario",
+    "tipo": "select",
+    "label": "Modo de talonario * ",
+    "opciones": ["ORIGINAL", "ORIGINAL + DUPLICADO", "N/A"],
+    "required": true
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 150 GRS"],
+    "required": true
+  },
+  {
+    "name": "cantidad_hojas",
+    "tipo": "number",
+    "label": "Cantidad de hojas",
+    "required": true,
+    "placeholder": "Ej: 100"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["1", "2", "4", "8", "OTRA"],
+    "required": true
+  }
+]

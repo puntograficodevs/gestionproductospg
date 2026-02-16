@@ -1,0 +1,27 @@
+[
+  {
+    "name": "objeto_a_sublimar",
+    "tipo": "select",
+    "label": "Objeto a sublimar *",
+    "opciones": ["BIROME","TAZA DE POLÍMERO", "TAZA DE CERÁMICA", "TAZA DE CERÁMICA CON DETALLE", "TAZA MÁGICA", "TELA", "MATE DE POLÍMERO", "MATE DE CERÁMICA", "JARRO DE CAFÉ DE POLÍMERO", "LAPICERO DE POLÍMERO", "CINTA FALLETINA", "LLAVERO CORTO LANYARD", "LLAVERO LARGO LANYARD", "MOUSEPAD"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional de la sublimación"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["1", "50", "100", "150", "OTRA"],
+    "required": true
+  }
+]

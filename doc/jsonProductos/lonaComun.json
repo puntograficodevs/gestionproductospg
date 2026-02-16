@@ -1,0 +1,57 @@
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["60X160 CM", "90X190 CM", "85X200 CM", "A3 MINI - 25X42 CM"],
+    "required": true
+  },
+  {
+    "name": "tipo_lona",
+    "tipo": "select",
+    "label": "Tipo de lona * ",
+    "opciones": ["LONA FRONT", "LONA BACK LIGHT", "LONA BLOCKOUT"],
+    "required": true
+  },
+  {
+    "name": "con_adicional_portabanner",
+    "tipo": "checkbox",
+    "label": "¿Con adicional portabanner?"
+  },
+  {
+    "name": "con_ojales",
+    "tipo": "checkbox",
+    "label": "¿Con ojales comunes?"
+  },
+  {
+    "name": "con_ojales_con_refuerzo",
+    "tipo": "checkbox",
+    "label": "¿Con ojales reforzados?"
+  },
+  {
+    "name": "con_bolsillos",
+    "tipo": "checkbox",
+    "label": "¿Con bolsillos?"
+  },
+  {
+    "name": "con_demasia_para_tensado",
+    "tipo": "checkbox",
+    "label": "¿Con demasía para tensado?"
+  },
+  {
+    "name": "con_solapado",
+    "tipo": "checkbox",
+    "label": "¿Con solapado?"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que cada lona tenga dos bolsillos"
+  }
+]

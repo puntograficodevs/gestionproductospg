@@ -1,0 +1,70 @@
+[
+  {
+    "name": "es_anillado",
+    "tipo": "checkbox",
+    "label": "¿Con anillado?"
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tamanio_hoja",
+    "tipo": "select",
+    "label": "Tamaño de hoja * ",
+    "opciones": ["A4", "A5", "OFICIO", "A3", "A3+", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tamanio_hoja_personalizado",
+    "tipo": "text",
+    "label": "Tamaño de hoja personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tamanio_hoja",
+    "placeholder": "Ej: 1/4 DE A3"
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 90 GRS", "ILUSTRACIÓN 115 GRS", "ILUSTRACIÓN 150 GRS", "ILUSTRACIÓN 200 GRS", "ILUSTRACIÓN 220 GRS", "ILUSTRACIÓN 250 GRS", "ILUSTRACIÓN 300 GRS", "OPALINA 150 GRS", "OPALINA 180 GRS", "OPALINA 200 GRS","OPALINA 210 GRS", "KRAFT 200 GRS"],
+    "required": true
+  },
+  {
+    "name": "tipo_impresion",
+    "tipo": "select",
+    "label": "Tipo de impresión * ",
+    "opciones": ["PARTICULAR", "ESCOLAR/UNIVERSITARIO"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que las hojas sean cuadriculadas"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "number",
+    "label": "Cantidad de páginas *",
+    "placeholder": "Ej: 200",
+    "required": true
+  }
+]
+
+

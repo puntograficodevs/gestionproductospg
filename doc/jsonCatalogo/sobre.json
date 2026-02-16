@@ -1,0 +1,17 @@
+[
+  {
+    "medida": "OFICIO INGLÉS - 23,5X12 CM",
+    "tipo_color": "X",
+    "cantidad_producto": "X"
+  }
+]
+
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["BOLSA A4 - 27X37 CM", "BOLSA A5 - 19X24 CM", "OFICIO INGLÉS - 23,5X12 CM", "OTRA"],
+    "required": true
+  },
+  {

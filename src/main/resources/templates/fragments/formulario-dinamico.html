@@ -1,5 +1,5 @@
 <div th:fragment="cuerpo-formulario" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="container">
+    <div class="container mt-2">
         <h2 th:text="${orden.id != null ? 'Editar orden #' + orden.id + ' - ' + producto.nombre : 'Crear orden - ' + producto.nombre}"></h2>
     </div>
 
@@ -23,11 +23,11 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Nombre del cliente *</label>
-                    <input type="text" class="form-control" th:field="*{nombreCliente}" required placeholder="Ej: Juan Pérez">
+                    <input type="text" class="form-control" th:field="*{nombreCliente}" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Teléfono *</label>
-                    <input type="number" class="form-control" th:field="*{telefonoCliente}" required placeholder="2804123456">
+                    <input type="number" class="form-control" th:field="*{telefonoCliente}" required>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <div class="form-check">
@@ -65,25 +65,22 @@
         <div class="contenedor-datos-odt">
             <h5 class="mt-4 datos-del-producto">Datos del Producto</h5>
             <div class="row" id="contenedor-dinamico" th:with="mapaDetalles=${orden.id != null ? orden.items[0].getDetallesMap() : null}">
+
                 <div th:each="campo : ${campos}" class="col-md-12 mb-3 bloque-campo"
                      th:data-depends-on="${campo['dependsOn']}"
                      th:data-show-if="${campo['showIf']}"
                      th:style="${campo['dependsOn'] != null && (mapaDetalles == null || mapaDetalles[campo['dependsOn']] != campo['showIf']) ? 'display: none;' : ''}">
 
-                    <label class="form-label" th:text="${campo['label']}"></label>
+                    <label th:if="${campo['tipo'] != 'checkbox'}" class="form-label" th:text="${campo['label']}"></label>
 
                     <div th:switch="${campo['tipo']}">
                         <input th:case="'text'" type="text" class="form-control input-dinamico"
                                th:name="'detalles[' + ${campo['name']} + ']'"
-                               th:value="${mapaDetalles != null && mapaDetalles[campo['name']] != null ? mapaDetalles[campo['name']] : null}"
-                               th:required="${campo['required']}"
-                               th:placeholder="${campo['placeholder']}">
+                               th:value="${mapaDetalles != null ? mapaDetalles[campo['name']] : ''}">
 
                         <input th:case="'number'" type="number" class="form-control input-dinamico"
                                th:name="'detalles[' + ${campo['name']} + ']'"
-                               th:value="${mapaDetalles != null && mapaDetalles[campo['name']] != null ? mapaDetalles[campo['name']] : null}"
-                               th:required="${campo['required']}"
-                               th:placeholder="${campo['placeholder']}">
+                               th:value="${mapaDetalles != null ? mapaDetalles[campo['name']] : ''}">
 
                         <div th:case="'select'" class="d-flex flex-wrap gap-3 p-2 border rounded bg-light">
                             <div th:each="opt : ${campo['opciones']}" class="form-check">
@@ -91,8 +88,7 @@
                                        th:name="'detalles[' + ${campo['name']} + ']'"
                                        th:id="'radio-' + ${campo['name']} + '-' + ${opt}"
                                        th:value="${opt}"
-                                       th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == opt}"
-                                       th:required="${campo['required']}">
+                                       th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == opt}">
                                 <label class="form-check-label" th:for="'radio-' + ${campo['name']} + '-' + ${opt}" th:text="${opt}"></label>
                             </div>
                         </div>
@@ -100,18 +96,15 @@
                         <div th:case="'checkbox'" class="form-check">
                             <input type="checkbox" class="form-check-input input-dinamico"
                                    th:name="'detalles[' + ${campo['name']} + ']'"
-                                   th:id="'check-' + ${campo['name']}"
                                    th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == 'on'}">
-                            <label class="form-check-label" th:for="'check-' + ${campo['name']}" th:text="${campo['label']}"></label>
+                            <label class="form-check-label" th:text="${campo['label']}"></label>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row mb-3" id="contenedor-cantidad-manual">
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3" id="contenedor-cantidad-item">
                     <label class="form-label">Cantidad *</label>
-                    <input type="number" class="form-control" name="cantidadItem" id="inputCantidad"
+                    <input type="number" class="form-control" name="cantidadItem" id="inputCantidadItem"
                            th:value="${orden.id != null ? orden.items[0].cantidad : 1}" min="1" required>
                 </div>
             </div>
@@ -140,14 +133,12 @@
                 <div class="col-md-4">
                     <label class="form-label">Subtotal producto *</label>
                     <input type="number" class="form-control" id="inputPrecioProd" name="subtotal"
-                           th:value="${orden.subtotal != null && orden.subtotal > 0 ? orden.subtotal : null}"
-                           placeholder="0">
+                           th:value="${orden.subtotal != null ? orden.subtotal : ''}" placeholder="0">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Precio diseño</label>
                     <input type="number" class="form-control" id="inputPrecioDisenio" name="precioDisenio"
-                           th:value="${orden.precioDisenio != null && orden.precioDisenio > 0 ? orden.precioDisenio : null}"
-                           placeholder="0">
+                           th:value="${orden.precioDisenio != null ? orden.precioDisenio : ''}" placeholder="0">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Precio impuestos</label>

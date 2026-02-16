@@ -86,7 +86,7 @@ window.verDetalle = function(ordenId) {
 }
 
 window.confirmarEliminar = function(ordenId) {
-    if (confirm(`¿Eliminar orden #${ordenId}?`)) {
+    if (confirm(`¿Eliminar orden #${ordenId}?\nEsta acción es irreversible.`)) {
         window.location.href = `/ordenes/eliminar/${ordenId}`;
     }
 }

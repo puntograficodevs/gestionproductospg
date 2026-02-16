@@ -23,10 +23,6 @@ public class ProductoCatalogoRestController {
                 consulta.getDetalles()
         );
 
-        if (precio != null) {
-            return ResponseEntity.ok(precio);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(precio != null ? precio : 0);
     }
 }

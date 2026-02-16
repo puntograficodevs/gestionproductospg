@@ -23,7 +23,7 @@ public class FacturaController {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         if (empleado == null) return "redirect:/";
 
-        List<Orden> pendientes = ordenRepository.findByNecesitaFacturaTrueAndFacturaHechaFalse();
+        List<Orden> pendientes = ordenRepository.buscarFacturasPendientesSegunRol(empleado.getRol().getId());
         model.addAttribute("ordenes", pendientes);
         model.addAttribute("empleado", empleado);
 

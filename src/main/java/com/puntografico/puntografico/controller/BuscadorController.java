@@ -41,7 +41,7 @@ public class BuscadorController {
 
         List<Orden> resultados = (datoOrden == null || datoOrden.isBlank())
                 ? new ArrayList<>()
-                : ordenRepository.buscarPorCriterioGenerico(datoOrden);
+                : ordenRepository.buscarPorCriterioGenerico(datoOrden, empleado.getRol().getId());
 
         model.addAttribute("empleado", empleado);
         model.addAttribute("ordenesEncontradas", resultados);

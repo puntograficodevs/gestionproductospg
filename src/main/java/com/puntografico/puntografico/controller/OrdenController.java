@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/ordenes")
@@ -39,14 +40,20 @@ public class OrdenController {
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+        if (empleado == null) return "redirect:/";
 
-        if (empleado == null) {
-            return "redirect:/";
-        }
+        // Ordenamos: A-Z y "Sin categoria" al final
+        List<Producto> productosOrdenados = productoRepository.findAll().stream()
+                .sorted((p1, p2) -> {
+                    if (p1.getNombre().equalsIgnoreCase("Sin categoria")) return 1;
+                    if (p2.getNombre().equalsIgnoreCase("Sin categoria")) return -1;
+                    return p1.getNombre().compareToIgnoreCase(p2.getNombre());
+                })
+                .collect(Collectors.toList());
 
         model.addAttribute("empleado", empleado);
         model.addAttribute("orden", new Orden());
-        model.addAttribute("productos", productoRepository.findAll());
+        model.addAttribute("productos", productosOrdenados);
         return "nueva-orden";
     }
 

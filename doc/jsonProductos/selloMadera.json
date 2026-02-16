@@ -1,0 +1,47 @@
+[
+  {
+    "name": "tamanio",
+    "tipo": "select",
+    "label": "Tamaño * ",
+    "opciones": ["6X3 CM", "6X4 CM", "6X5 CM", "6X7 CM", "6X8 CM", "7X3 CM", "7X5 CM", "1X1 CM", "2X2 CM", "3X3 CM", "4X4 CM", "5X5 CM", "6X6 CM", "7X7 CM", "8X8 CM", "9X9 CM", "10X10 CM", "11X11 CM", "12X12 CM", "13X13 CM", "14X14 CM", "15X15 CM", "10X15 CM", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tamanio_personalizado",
+    "tipo": "text",
+    "label": "Tamaño personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tamanio",
+    "placeholder": "Ej: 5X9 CM"
+  },
+  {
+    "name": "tipografia",
+    "tipo": "text",
+    "label": "Tipografía *",
+    "placeholder": "Ej: Helvetica",
+    "required": true
+  },
+  {
+    "name": "detalle_del_sello",
+    "tipo": "text",
+    "label": "Detalle del sello",
+    "placeholder": "Ej: Detalle a contemplar"
+  },
+  {
+    "name": "con_adicional_perilla",
+    "tipo": "checkbox",
+    "label": "¿Con adicional perilla?"
+  },
+  {
+    "name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del sello"
+  }
+]

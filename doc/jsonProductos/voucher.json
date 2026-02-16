@@ -1,0 +1,57 @@
+[
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OPALINA 180 GRS", "ILUSTRACIÓN 200 GRS", "OTRO"],
+    "required": true
+  },
+  {
+    "name": "tipo_papel_personalizado",
+    "tipo": "text",
+    "label": "Tipo de papel personalizado",
+    "showIf": "OTRO",
+    "dependsOn": "tipo_papel",
+    "placeholder": "Ej: ILUSTRACIÓN 300 GRS"
+  },
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["1/4 DE A4", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ej: A5"
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional de los vouchers"
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["50", "100", "150", "OTRA"],
+    "required": true
+  }
+]

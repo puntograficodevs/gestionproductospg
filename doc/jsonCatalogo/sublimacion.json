@@ -1,0 +1,14 @@
+[
+  {
+    "objeto_a_sublimar": "x",
+    "cantidad_producto": "x"
+  }
+]
+
+{
+  "name": "objeto_a_sublimar",
+  "tipo": "select",
+  "label": "Objeto a sublimar *",
+  "opciones": ["BIROME","", "", "", "", "TELA", "", "", "", "", "CINTA FALLETINA", "LLAVERO CORTO LANYARD", "LLAVERO LARGO LANYARD", ""],
+  "required": true
+},

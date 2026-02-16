@@ -1,0 +1,54 @@
+[
+  {
+    "name": "texto_linea_uno",
+    "tipo": "text",
+    "label": "Texto línea uno *",
+    "placeholder": "Ej: Luna Gómez",
+    "required": true
+  },
+  {
+    "name": "texto_linea_dos",
+    "tipo": "text",
+    "label": "Texto línea dos",
+    "placeholder": "Ej: Esc. 759"
+  },
+  {
+    "name": "texto_linea_tres",
+    "tipo": "text",
+    "label": "Texto línea tres",
+    "placeholder": "Ej: 2805112233"
+  },
+  {
+    "name": "tipografia",
+    "tipo": "text",
+    "label": "Tipografía *",
+    "placeholder": "Ej: 67 (Good Mood)",
+    "required": true
+  },
+  {
+    "name": "dibujo",
+    "tipo": "text",
+    "label": "Dibujo *",
+    "placeholder": "Ej: H (estrella)",
+    "required": true
+  },
+  {
+    "name": "modelo",
+    "tipo": "select",
+    "label": "Modelo *",
+    "opciones": ["10X27 MM - 10 COLOP", "14X38 MM - 20 COLOP"],
+    "required": true
+  },
+  {
+    "name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del sello escolar"
+  }
+]

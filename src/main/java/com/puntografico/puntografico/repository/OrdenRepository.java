@@ -12,12 +12,26 @@ import java.util.List;
 public interface OrdenRepository extends JpaRepository<Orden, Long> {
 
     @Query("SELECT o FROM Orden o WHERE " +
-            "CAST(o.id AS string) LIKE %:dato% OR " +
+            "(CAST(o.id AS string) LIKE %:dato% OR " +
             "LOWER(o.nombreCliente) LIKE LOWER(concat('%', :dato, '%')) OR " +
-            "o.telefonoCliente LIKE %:dato%")
-    List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato);
+            "o.telefonoCliente LIKE %:dato%) " +
+            "AND (" +
+            "  (:idRol = 2L AND o.empleado.id = (SELECT e.id FROM Empleado e WHERE e.rol.id = 2L AND e.id = o.empleado.id)) " +
+            "  OR " +
+            "  (:idRol != 2L AND o.empleado.rol.id != 2L)" +
+            ")")
+    List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato, @Param("idRol") Long idRol);
 
-    List<Orden> findAllByOrderByIdDesc();
+    @Query("SELECT o FROM Orden o WHERE " +
+            "(:idRol = 2L AND o.empleado.rol.id = 2L) OR " +
+            "(:idRol != 2L AND o.empleado.rol.id != 2L) " +
+            "ORDER BY o.id DESC")
+    List<Orden> buscarTodasSegunRol(@Param("idRol") Long idRol);
 
-    List<Orden> findByNecesitaFacturaTrueAndFacturaHechaFalse();
+    @Query("SELECT o FROM Orden o WHERE o.necesitaFactura = true AND o.facturaHecha = false " +
+            "AND (" +
+            "  (:idRol = 2L AND o.empleado.rol.id = 2L) OR " +
+            "  (:idRol != 2L AND o.empleado.rol.id != 2L)" +
+            ")")
+    List<Orden> buscarFacturasPendientesSegunRol(@Param("idRol") Long idRol);
 }

@@ -1,0 +1,53 @@
+[
+  {
+    "name": "medida",
+    "tipo": "text",
+    "label": "Medida *",
+    "placeholder": "190X90 CM",
+    "required": true
+  },
+  {
+    "name": "tipo_rotulacion",
+    "tipo": "select",
+    "label": "Tipo de rotulación * ",
+    "opciones": ["ARLON BRILLANTE", "ARLON MATE", "CLEAR", "MICROPERFORADO", "VINILO DE CORTE"],
+    "required": true
+  },
+  {
+    "name": "tipo_corte",
+    "tipo": "select",
+    "label": "Tipo de corte * ",
+    "opciones": ["MANUAL", "TROQUELADO", "TROQUELADO CON CORTE INDIVIDUAL", "PLANCHA IMPRESA"],
+    "required": true
+  },
+  {
+    "name": "horario",
+    "tipo": "text",
+    "label": "¿Cuándo se hará la rotulación? *",
+    "placeholder": "Ej: 9 de marzo a las 18:00",
+    "required": true
+  },
+  {
+    "name": "direccion",
+    "tipo": "text",
+    "label": "Dirección *",
+    "placeholder": "Ej: San Martín 813",
+    "required": true
+  },
+  {
+    "name": "es_laminado",
+    "tipo": "checkbox",
+    "label": "¿Es laminado?"
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Llamar por teléfono al llegar al lugar"
+  }
+]

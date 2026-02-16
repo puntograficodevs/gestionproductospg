@@ -1,0 +1,20 @@
+[
+  {
+    "name": "modelo",
+    "tipo": "select",
+    "label": "Modelo *",
+    "opciones": ["Printer C 10", "Printer C 20", "Printer C 30", "Printer C 40", "Printer C 45", "Printer C 50", "Printer C 55", "Printer C 60", "Goma estándar para madera escribanía", "Goma estándar para sello ovalado ministerio", "Goma estándar fechador automático o similar", "Goma para sello de madera 3x3cm a 5x5cm", "Goma para sello de madera 6x6cm a 8x8cm", "Goma para sello de madera 10x10cm a 12x12cm", "Goma para sello de madera 13x13cm a 15x15cm"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del producto"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "tipo_troquelado": "x",
+    "cantidad_producto": "",
+    "medida": "x"
+  }
+]
+
+,
+[
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["5 CM", "7 CM", "10 CM", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "tipo_troquelado",
+    "tipo": "select",
+    "label": "Tipo de troquelado * ",
+    "opciones": ["CUADRADO", "CIRCULAR", "POR EL CONTORNO", "CORTE INDIVIDUAL", "SIN TROQUELAR"],
+    "required": true
+  },
+  {
+    "name": "cantidad_producto",
+    "tipo": "select",
+    "label": "Cantidad *",
+    "opciones": ["100", "200", "500", "OTRA"],
+    "required": true
+  }
+]

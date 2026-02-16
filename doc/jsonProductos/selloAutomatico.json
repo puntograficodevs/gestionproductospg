@@ -1,0 +1,60 @@
+[
+  {
+    "name": "texto_linea_uno",
+    "tipo": "text",
+    "label": "Texto línea uno *",
+    "placeholder": "Ej: Dr. Roberto López",
+    "required": true
+  },
+  {
+    "name": "texto_linea_dos",
+    "tipo": "text",
+    "label": "Texto línea dos",
+    "placeholder": "Ej: Kinesiólogo"
+  },
+  {
+    "name": "texto_linea_tres",
+    "tipo": "text",
+    "label": "Texto línea tres",
+    "placeholder": "Ej: MS.1234"
+  },
+  {
+    "name": "texto_linea_cuatro",
+    "tipo": "text",
+    "label": "Texto línea cuatro",
+    "placeholder": "Ej: 2026"
+  },
+  {
+    "name": "tipografia",
+    "tipo": "text",
+    "label": "Tipografía *",
+    "placeholder": "Ej: Helvetica",
+    "required": true
+  },
+  {
+    "name": "tipo_sello",
+    "tipo": "select",
+    "label": "Tipo de sello * ",
+    "opciones": ["PROFESIONAL", "PARTICULAR"],
+    "required": true
+  },
+  {
+    "name": "modelo",
+    "tipo": "select",
+    "label": "Modelo *",
+    "opciones": ["MOUSE STAMP 20 COLOP - 14X38 MM", "POCKET 20 COLOP - 14X38 MM", "AUT 20 COLOP - 14X38 MM", "AUT 10 COLOP - 10X27 MM", "PRINTER C30 - 18X47 MM", "PRINTER 45 - 82X25 MM", "PRINTER C50 - 30X69 MM", "PRINTER 55 - 40X60 MM", "PRINTER 55 DATER - 40X60 MM", "PRINTER C60 - 76X37 MM", "S260 - 45X24 MM", "MINI DATER S120 - 40X45 MM", "MINI DATER S160 - 40X20 MM", "PRINTER R30", "PRINTER R40", "PRINTER R24", "PRINTER R17", "PRINTER 52 DATER", "PRINTER S120 MINI DATER", "PRINTER 53", "PRINTER Q24 DATER"],
+    "required": true
+  },
+  {
+    "name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del sello"
+  }
+]

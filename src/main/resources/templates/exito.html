@@ -94,8 +94,8 @@
         </div>
         <div th:replace="fragments/footer-odt :: footer-odt"></div>
 
-        <div th:if="${ordenCorrecta.estadoOrden.id == 4}" class="modal-footer mt-3">
-            <a th:href="@{'/ordenes/editar-orden/' + ${ordenCorrecta.id}}" class="btn btn-warning w-100 shadow-sm">
+        <div th:if="${ordenCorrecta.estadoOrden?.id == 4 and (session.empleadoLogueado?.rol?.id == 1 or session.empleadoLogueado?.rol?.id == 2)}" class="modal-footer mt-3">
+            <a th:href="@{/ordenes/editar-orden/{id}(id=${ordenCorrecta.id})}" class="btn btn-warning w-100 shadow-sm">
                 <strong>Corregir ahora</strong>
             </a>
         </div>

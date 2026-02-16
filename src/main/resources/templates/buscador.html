@@ -34,13 +34,13 @@
      </div>
 
      <div th:if="${!#lists.isEmpty(ordenesEncontradas)}" class="table-responsive">
-       <button id="btnEliminarMasivo" class="btn btn-danger btn-sm mb-3" style="display: none;" onclick="eliminarSeleccionados()">
+       <button th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}" id="btnEliminarMasivo" class="btn btn-danger btn-sm mb-3" style="display: none;" onclick="eliminarSeleccionados()">
          Eliminar seleccionadas (<span id="cantSeleccionadas">0</span>)
        </button>
        <table class="table table-striped">
          <thead>
          <tr>
-           <th style="width: 40px;">
+           <th style="width: 40px;" th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}">
              <input type="checkbox" id="checkAll" onclick="toggleAll(this)">
            </th>
            <th>N° de Orden</th>
@@ -55,7 +55,7 @@
          </thead>
          <tbody>
          <tr th:each="orden : ${ordenesEncontradas}">
-           <td>
+           <td th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}">
              <input type="checkbox" class="checkOrden" th:value="${orden.id}">
            </td>
            <td th:text="${orden.id}"></td>
@@ -77,7 +77,7 @@
                  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                </svg>
              </button>
-             <a th:href="@{'/ordenes/editar-orden/' + ${orden.id}}"
+             <a th:href="@{'/ordenes/editar-orden/' + ${orden.id}}" th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}"
                 class="btn btn-warning btn-sm btn-buscador editar-btn"
                 data-bs-title="Editar orden">
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -85,7 +85,7 @@
                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                </svg>
              </a>
-             <button class="btn btn-danger btn-sm btn-buscador eliminar-btn"
+             <button class="btn btn-danger btn-sm btn-buscador eliminar-btn" th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}"
                      th:onclick="'confirmarEliminar(' + ${orden.id} + ')'"
                      title="Eliminar orden">
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-trash" viewBox="0 0 16 16">

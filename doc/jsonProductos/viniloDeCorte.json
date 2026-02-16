@@ -1,0 +1,49 @@
+[
+  {
+    "name": "medida",
+    "tipo": "text",
+    "label": "Medida *",
+    "placeholder": "Ej: 200X100 CM",
+    "required": true
+  },
+  {
+    "name": "es_promocional",
+    "tipo": "checkbox",
+    "label": "¿Es promocional?"
+  },
+  {
+    "name": "es_oracal",
+    "tipo": "checkbox",
+    "label": "¿Es oracal?"
+  },
+  {
+    "name": "codigo_de_color",
+    "tipo": "text",
+    "label": "Código de color *",
+    "placeholder": "Ej: #F66060",
+    "required": true
+  },
+  {
+    "name": "con_colocacion",
+    "tipo": "checkbox",
+    "label": "¿Con colocación?"
+  },
+  {
+    "name": "trae_material_vinilo",
+    "tipo": "select",
+    "label": "Trae material de vinilo *",
+    "opciones": ["PARA SOLO CORTE", "CORTE PELADO TRANSFER", "NO APLICA"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional del vinilo"
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "name": "con_numerado",
+    "tipo": "checkbox",
+    "label": "¿Con numerado?"
+  },
+  {
+    "name": "numerado_personalizado",
+    "tipo": "text",
+    "label": "Numerado personalizado",
+    "showIf": "on",
+    "dependsOn": "con_numerado",
+    "placeholder": "Detalle del numerado"
+  },
+  {
+    "name": "con_encolado",
+    "tipo": "checkbox",
+    "label": "¿Con encolado?"
+  },
+  {
+    "name": "medida",
+    "tipo": "text",
+    "label": "Medida *",
+    "placeholder": "Ej: 17X6 CM",
+    "required": true
+  },
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 150 GRS"],
+    "required": true
+  },
+  {
+    "name": "tipo_troquelado",
+    "tipo": "select",
+    "label": "Tipo de troquelado * ",
+    "opciones": ["SIN TROQUELAR", "TROQUELADO SIMPLE", "TROQUELADO DOBLE"],
+    "required": true
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que cada lona tenga dos bolsillos"
+  }
+]
