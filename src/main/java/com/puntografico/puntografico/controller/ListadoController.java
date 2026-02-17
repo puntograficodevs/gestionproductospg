@@ -58,8 +58,7 @@ public class ListadoController {
                     }
                     return true;
                 })
-                // Ordenamos las tarjetas dentro de la columna por nombre de producto (A-Z)
-                .sorted(Comparator.comparing(o -> o.getItems().get(0).getProducto().getNombre(), String.CASE_INSENSITIVE_ORDER))
+                .sorted(Comparator.comparing(Orden::getId).reversed())
                 .collect(Collectors.toList());
     }
 
