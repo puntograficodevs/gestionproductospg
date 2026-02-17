@@ -8,8 +8,14 @@
   <link rel="stylesheet" th:href="@{/css/listado.css}"/>
   <link rel="stylesheet" th:href="@{/css/mostrar-productos.css}"/>
   <title>Listado - Punto Gráfico</title>
+  <style>
+    body.con-filtro .tarjeta-orden {
+      display: none;
+    }
+  </style>
 </head>
-<body>
+</head>
+<body th:classappend="${filtroSeleccionado != null and filtroSeleccionado != 'todas'} ? 'con-filtro' : ''">
 <div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="contenido-pagina-listado">
@@ -19,12 +25,12 @@
     </div>
     <div class="col-md-6">
       <select class="form-select" id="selector-producto">
-        <option value="todas">Todas</option>
+        <option value="todas" th:selected="${filtroSeleccionado == 'todas'}">Todas</option>
         <th:block th:each="producto : ${productos}">
           <option th:if="${empleado.rol.id != 5 or producto.nombre != 'Impresion'}"
                   th:value="${producto.nombre}"
-                  th:text="${producto.nombre}">
-          </option>
+                  th:text="${producto.nombre}"
+                  th:selected="${filtroSeleccionado == producto.nombre}"> </option>
         </th:block>
       </select>
     </div>

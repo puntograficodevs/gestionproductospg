@@ -269,27 +269,26 @@ public class OrdenController {
     }
 
     @GetMapping("/pasar-en-proceso/{id}")
-    public String pasarEnProceso(@PathVariable Long id) {
-        cambiarEstado(id, 2L); // Supongamos que ID 2 es "En Proceso"
-        return "redirect:/listado";
+    public String pasarEnProceso(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
+        cambiarEstado(id, 2L);
+        return "redirect:/listado?producto=" + producto;
     }
-
     @GetMapping("/volver-sin-hacer/{id}")
-    public String volverSinHacer(@PathVariable Long id) {
+    public String volverSinHacer(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
         cambiarEstado(id, 1L); // Supongamos que ID 1 es "Sin Hacer"
-        return "redirect:/listado";
+        return "redirect:/listado?producto=" + producto;
     }
 
     @GetMapping("/pasar-lista-para-retirar/{id}")
-    public String pasarAListaParaRetirar(@PathVariable Long id) {
+    public String pasarAListaParaRetirar(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
         cambiarEstado(id, 3L); // Supongamos que ID 3 es "Lista para retirar"
-        return "redirect:/listado";
+        return "redirect:/listado?producto=" + producto;
     }
 
     @GetMapping("/pasar-retirada/{id}")
-    public String pasarRetirada(@PathVariable Long id) {
+    public String pasarRetirada(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
         cambiarEstado(id, 5L); // Supongamos que ID 4 es "Entregada"
-        return "redirect:/listado";
+        return "redirect:/listado?producto=" + producto;
     }
 
     private void cambiarEstado(Long ordenId, Long estadoId) {

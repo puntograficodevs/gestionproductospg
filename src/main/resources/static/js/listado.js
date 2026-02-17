@@ -25,6 +25,7 @@ $(document).ready(function() {
     // --- CAMBIOS DE ESTADO (BOTONES) ---
     $(document).on('click', '.btn-cambio-estado', function() {
         const $boton = $(this);
+        const filtroActual = $('#selector-producto').val();
         const ordenId = $boton.data('idorden');
         const accion = $boton.data('accion');
         const resta = parseFloat($boton.data('resta') || 0);
@@ -48,7 +49,13 @@ $(document).ready(function() {
 
         const urlFinal = rutas[accion];
         if (urlFinal) {
-            window.location.href = urlFinal;
+            window.location.href = urlFinal + "?producto=" + encodeURIComponent(filtroActual);
         }
     });
+
+// --- LÓGICA DE ARRANQUE ---
+    const selector = $('#selector-producto');
+    if (selector.val() !== "todas") {
+        selector.trigger('change');
+    }
 });

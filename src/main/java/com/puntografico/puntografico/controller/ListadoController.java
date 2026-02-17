@@ -23,7 +23,7 @@ public class ListadoController {
     private final ProductoService productoService;
 
     @GetMapping("/listado")
-    public String verListado(HttpSession session, Model model) {
+    public String verListado(@RequestParam(value = "producto", required = false) String productoFiltro, HttpSession session, Model model) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         if (empleado == null) return "redirect:/";
 
@@ -36,6 +36,7 @@ public class ListadoController {
                 .collect(Collectors.toList());
 
         // 2. Repartimos las órdenes filtradas por estado y TAMBIÉN las ordenamos A-Z por producto
+        model.addAttribute("filtroSeleccionado", productoFiltro != null ? productoFiltro : "todas");
         model.addAttribute("ordenesSinHacer", filtrarYOrdenar(todas, 1L, empleado));
         model.addAttribute("ordenesEnProceso", filtrarYOrdenar(todas, 2L, empleado));
         model.addAttribute("ordenesListaParaRetirar", filtrarYOrdenar(todas, 3L, empleado));
