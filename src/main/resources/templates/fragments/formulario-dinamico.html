@@ -23,11 +23,11 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Nombre del cliente *</label>
-                    <input type="text" class="form-control" th:field="*{nombreCliente}" required>
+                    <input type="text" class="form-control" th:field="*{nombreCliente}" placeholder="Ej: Juan Pérez" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Teléfono *</label>
-                    <input type="number" class="form-control" th:field="*{telefonoCliente}" required>
+                    <input type="number" class="form-control" th:field="*{telefonoCliente}" placeholder="2804112233" required>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <div class="form-check">
@@ -76,10 +76,12 @@
                     <div th:switch="${campo['tipo']}">
                         <input th:case="'text'" type="text" class="form-control input-dinamico"
                                th:name="'detalles[' + ${campo['name']} + ']'"
+                               th:placeholder="${campo['placeholder']}"
                                th:value="${mapaDetalles != null ? mapaDetalles[campo['name']] : ''}">
 
                         <input th:case="'number'" type="number" class="form-control input-dinamico"
                                th:name="'detalles[' + ${campo['name']} + ']'"
+                               th:placeholder="${campo['placeholder']}"
                                th:value="${mapaDetalles != null ? mapaDetalles[campo['name']] : ''}">
 
                         <div th:case="'select'" class="d-flex flex-wrap gap-3 p-2 border rounded bg-light">
@@ -105,6 +107,7 @@
                 <div class="col-md-12 mb-3" id="contenedor-cantidad-item">
                     <label class="form-label">Cantidad *</label>
                     <input type="number" class="form-control" name="cantidadItem" id="inputCantidadItem"
+                           placeholder="Ej: 1"
                            th:value="${orden.id != null ? orden.items[0].cantidad : 1}" min="1" required>
                 </div>
             </div>

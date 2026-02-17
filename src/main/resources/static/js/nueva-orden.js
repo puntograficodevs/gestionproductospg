@@ -101,7 +101,6 @@ function buscarPrecioCatalogo() {
             precioFinal = costoHojas + costoAnillado;
         } else {
             const radioCantProd = document.querySelector('input[name="detalles[cantidad_producto]"]:checked');
-            // Si es manual puro (Agenda) o se eligió OTRA/Rango, multiplicamos precio unitario por cantidad real
             precioFinal = (!radioCantProd || radioCantProd.value === "OTRA" || radioCantProd.value.includes("-"))
                 ? precioRecibido * vCantFinal : precioRecibido;
         }
@@ -110,7 +109,10 @@ function buscarPrecioCatalogo() {
         inputSubtotal.readOnly = true;
         recalcular();
     })
-    .catch(() => { inputSubtotal.readOnly = false; });
+    .catch(() => {
+        inputSubtotal.readOnly = false;
+        if(inputSubtotal.value === "") inputSubtotal.value = 0;
+    });
 }
 
 function manejarLogicaCantidadDinamica() {
@@ -121,27 +123,24 @@ function manejarLogicaCantidadDinamica() {
 
     if (!contenedorManual || !inputManual) return;
 
-    // CASO A: No existe el campo dinámico (Agendas)
     if (inputsRadioCant.length === 0 && !inputNumberCant) {
         contenedorManual.style.display = 'block';
         return;
     }
 
-    // CASO B: Es un input number (Impresiones)
     if (inputNumberCant) {
         contenedorManual.style.display = 'none';
         inputManual.value = inputNumberCant.value || 1;
         return;
     }
 
-    // CASO C: Son Radios (Merchandising)
     const seleccionado = document.querySelector('input[name="detalles[cantidad_producto]"]:checked');
     if (seleccionado) {
         if (seleccionado.value === "OTRA" || seleccionado.value.includes("-")) {
             contenedorManual.style.display = 'block';
         } else {
             contenedorManual.style.display = 'none';
-            inputManual.value = seleccionado.value; // Sincronizamos el valor fijo al input real
+            inputManual.value = seleccionado.value;
         }
     } else {
         contenedorManual.style.display = 'none';
@@ -165,13 +164,12 @@ function recalcular() {
     const vSubtotalProd = parseFloat(pSubtotal.value) || 0;
     const vBaseFijaDisenio = pBaseHidden ? parseFloat(pBaseHidden.value) : 0;
 
+    // Lógica Diseño
     if (cDis && cDis.checked) {
         if ((parseFloat(pDis.value) || 0) === 0 && vBaseFijaDisenio > 0) {
             pDis.value = Math.ceil(vBaseFijaDisenio);
-            pDis.readOnly = true;
-        } else {
-            pDis.readOnly = false;
         }
+        pDis.readOnly = false;
     } else if (pDis) {
         pDis.value = 0;
         pDis.readOnly = true;
@@ -181,12 +179,14 @@ function recalcular() {
     let totalCorriendo = subtotalBase;
     let impuestosAcumulados = 0;
 
+    // Lógica Factura (IVA 21%)
     if (cFac && cFac.checked) {
         const iva = subtotalBase * 0.21;
         impuestosAcumulados += iva;
         totalCorriendo += iva;
     }
 
+    // Lógica Mercado Pago (Recargo 10%)
     const radioPago = document.querySelector('input[name="idMedioPago"]:checked');
     if (radioPago && parseInt(radioPago.value) === 2) {
         const recargo = totalCorriendo * 0.10;
@@ -195,14 +195,24 @@ function recalcular() {
     }
 
     const totalFinal = Math.ceil(totalCorriendo);
+    const vAbo = parseFloat(abonado?.value) || 0;
+    const vResta = totalFinal - vAbo;
+
     if (pImp) pImp.value = Math.ceil(impuestosAcumulados);
     if (total) total.value = totalFinal;
-    const vAbo = parseFloat(abonado?.value) || 0;
-    if (resta) resta.value = Math.ceil(totalFinal - vAbo);
+    if (resta) {
+        resta.value = Math.ceil(vResta);
+        // Feedback visual Resta Negativa
+        vResta < 0 ? resta.classList.add('text-danger', 'fw-bold') : resta.classList.remove('text-danger', 'fw-bold');
+    }
 
-    // Validación visual de seña
-    if (checkCC && !checkCC.checked && totalFinal > 0 && abonado) {
-        vAbo < (totalFinal / 2) ? abonado.classList.add('border-danger', 'text-danger') : abonado.classList.remove('border-danger', 'text-danger');
+    // Feedback visual Seña (50%)
+    if (abonado) {
+        if (checkCC && !checkCC.checked && totalFinal > 0) {
+            vAbo < (totalFinal / 2) ? abonado.classList.add('border-danger', 'text-danger') : abonado.classList.remove('border-danger', 'text-danger');
+        } else {
+            abonado.classList.remove('border-danger', 'text-danger');
+        }
     }
 }
 
@@ -231,6 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
     manejarLogicaCantidadDinamica();
     recalcular();
 
+    // Listener para inputs de precio y abono
     document.addEventListener('input', function (e) {
         const ids = ['inputPrecioProd', 'inputPrecioDisenio', 'inputAbonado', 'inputCantidadItem'];
         if (ids.includes(e.target.id)) {
@@ -239,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Listener para cambios de estado (Checks, Radios)
     document.addEventListener('change', function (e) {
         if (e.target.id === 'checkMuestra') {
             const fila = document.getElementById('filaFechaMuestra');
@@ -248,4 +260,15 @@ document.addEventListener("DOMContentLoaded", function () {
             recalcular();
         }
     });
+
+    document.addEventListener('submit', function (e) {
+            const total = parseFloat(document.getElementById('inputTotal')?.value) || 0;
+            const abonado = parseFloat(document.getElementById('inputAbonado')?.value) || 0;
+            const esCC = document.getElementById('esCC')?.checked;
+
+            if (!esCC && total > 0 && abonado < (total / 2)) {
+                e.preventDefault();
+                alert("Se requiere una seña mínima del 50% para continuar.");
+            }
+        });
 });
