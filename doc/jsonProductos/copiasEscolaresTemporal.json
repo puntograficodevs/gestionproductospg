@@ -1,0 +1,30 @@
+[
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "textarea",
+    "label": "Detalles del producto",
+    "placeholder": "Ej: 1 copia de Matemática 3 de la FAPE y 1 de Lengua 1° grado de la 158"
+  },
+  {
+    "name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  }
+]
+
+

@@ -29,7 +29,7 @@
                     <label class="form-label">Teléfono *</label>
                     <input type="number" class="form-control" th:field="*{telefonoCliente}" placeholder="2804112233" required>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-md-2 d-flex align-items-end" th:unless="${producto.id == 33}">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" th:field="*{esCuentaCorriente}" id="esCC">
                         <label class="form-check-label" for="esCC">¿CC?</label>
@@ -46,7 +46,7 @@
                     <label class="form-label">Hora de entrega</label>
                     <input type="text" class="form-control" th:field="*{horaEntrega}" placeholder="Ej: 18:00">
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-md-2 d-flex align-items-end" th:unless="${producto.id == 33}">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="checkMuestra" th:checked="${orden.fechaMuestra != null}">
                         <label class="form-check-label" for="checkMuestra">¿Muestra?</label>
@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-12 mb-3" id="contenedor-cantidad-item">
+                <div class="col-md-12 mb-3" id="contenedor-cantidad-item" th:unless="${producto.id == 33}">
                     <label class="form-label">Cantidad *</label>
                     <input type="number" class="form-control" name="cantidadItem" id="inputCantidadItem"
                            placeholder="Ej: 1"
@@ -118,7 +118,7 @@
             <h5 class="mt-4 datos-de-pago">Datos de Pago</h5>
 
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-6" th:unless="${producto.id == 33}">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="checkDisenio" name="conAdicionalDisenio" th:field="*{conAdicionalDisenio}">
                         <label class="form-check-label" for="checkDisenio">Adicional diseño</label>
