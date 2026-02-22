@@ -1,274 +1,406 @@
 let debounceTimer;
+let itemIndexElement = document.querySelectorAll('.item-producto');
+let indiceActual = itemIndexElement.length > 0 ? (itemIndexElement.length - 1) : 0;
 
-/**
- * Función para evitar múltiples peticiones al escribir rápido
- */
-function debounceBuscarPrecio() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        buscarPrecioCatalogo();
-    }, 300);
-}
+// --- 1. INICIALIZACIÓN Y CARGA ---
 
 function seleccionarProducto(id) {
     const contenedor = document.getElementById('contenedor-formulario-dinamico');
-    fetch(`/ordenes/formulario-producto/${id}`)
+
+    fetch(`/ordenes/formulario-producto/${id}?index=0`)
         .then(response => response.text())
         .then(html => {
             contenedor.innerHTML = html;
             document.getElementById('selector-productos').classList.add('d-none');
             contenedor.classList.remove('d-none');
-            inicializarLogicaCondicional();
-            manejarLogicaCantidadDinamica();
+
+            inicializarLogicaItem(0);
+            // IMPORTANTE: Buscamos precio inicial apenas carga
+            buscarPrecioCatalogo(0);
             recalcular();
         })
-        .catch(error => console.error('Error al cargar el formulario:', error));
+        .catch(error => console.error('Error:', error));
 }
 
-function calcularLogicaAnillado(paginas, faz) {
-    let hojas = (faz === "DOBLE FAZ") ? Math.ceil(paginas / 2) : paginas;
-    if (hojas === 0) return 0;
+function inicializarLogicaItem(index) {
+    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
+    if (!item) return;
 
-    const cantidadAnillados = Math.ceil(hojas / 400);
-    const hojasPorAnillado = Math.ceil(hojas / cantidadAnillados);
+    // 1. Mostrar campos dependientes
+    item.querySelectorAll('.bloque-campo[data-depends-on]').forEach(bloque => {
+        const dependeDe = bloque.getAttribute('data-depends-on');
+        const valorRequerido = bloque.getAttribute('data-show-if');
+        const inputOrigen = item.querySelector(`[name*="detalles[${dependeDe}]"]:checked`) ||
+                            item.querySelector(`[name*="detalles[${dependeDe}]"]`);
 
-    const escalas = [
-        { hasta: 20, precio: 1000 }, { hasta: 40, precio: 1200 },
-        { hasta: 60, precio: 1300 }, { hasta: 100, precio: 1500 },
-        { hasta: 150, precio: 1700 }, { hasta: 200, precio: 2500 },
-        { hasta: 300, precio: 2800 }, { hasta: 400, precio: 3300 }
-    ];
+        if (inputOrigen) {
+            const valorActual = inputOrigen.type === 'checkbox' ? (inputOrigen.checked ? "on" : "off") : inputOrigen.value;
+            if (String(valorActual) === String(valorRequerido)) bloque.style.display = 'block';
+        }
+    });
 
-    const escala = escalas.find(p => hojasPorAnillado <= p.hasta) || escalas[escalas.length - 1];
-    return escala.precio * cantidadAnillados;
+    manejarLogicaCantidadDinamica(index);
+
+    // 2. Listeners de Diseño
+    const inputDisenio = item.querySelector('.input-disenio-item');
+    if (inputDisenio) {
+        inputDisenio.addEventListener('focus', function() { if (this.value == "0") this.value = ""; });
+        inputDisenio.addEventListener('blur', function() {
+            if (this.value == "" || isNaN(this.value)) this.value = 0;
+            recalcular();
+        });
+    }
+
+    // 3. Listener principal de inputs
+    item.addEventListener('input', (e) => {
+        const target = e.target;
+
+        // Si cambia un campo de "detalles" (ej: Modelo de Sello)
+        if (target.classList.contains('input-dinamico')) {
+            const match = target.name.match(/detalles\[(.*?)\]/);
+            if (match) {
+                const nombreCampo = match[1];
+                let valorActual = target.type === 'checkbox' ? (target.checked ? "on" : "off") : target.value;
+
+                item.querySelectorAll(`[data-depends-on="${nombreCampo}"]`).forEach(bloque => {
+                    const valorReq = bloque.getAttribute('data-show-if');
+                    bloque.style.display = (String(valorActual) === String(valorReq)) ? 'block' : 'none';
+                });
+
+                if (nombreCampo === 'cantidad_producto') manejarLogicaCantidadDinamica(index);
+                debounceBuscarPrecio(index);
+            }
+        }
+
+        // Si cambia el precio manual o la CANTIDAD manual (para multiplicar)
+        if (target.classList.contains('input-precio-item') ||
+            target.classList.contains('input-cantidad-real') ||
+            target.classList.contains('input-disenio-item') ||
+            target.classList.contains('check-disenio-item')) {
+
+            if (target.classList.contains('input-cantidad-real')) {
+                debounceBuscarPrecio(index); // Re-calcula con la nueva cantidad
+            }
+            recalcular();
+        }
+    });
 }
 
-function buscarPrecioCatalogo() {
-    const h2Element = document.querySelector('h2');
+// --- 2. LÓGICA DE AGREGAR, CONFIRMAR Y ELIMINAR ---
+
+function confirmarItem(index) {
+    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
+    const inputPrecio = item.querySelector('.input-precio-item');
+
+    if ((parseFloat(inputPrecio.value) || 0) <= 0) {
+        alert("Cargá un precio válido antes de confirmar.");
+        return;
+    }
+
+    const collapseEl = item.querySelector('.collapse');
+    if (collapseEl) bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
+
+    document.getElementById('btn-agregar-otro').classList.remove('d-none');
+
+    const pProd = parseFloat(inputPrecio.value) || 0;
+    const pDis = parseFloat(item.querySelector('.input-disenio-item')?.value) || 0;
+    const sumaItem = Math.ceil(pProd + pDis);
+
+    const tit = item.querySelector('.titulo-item');
+    if (!tit.dataset.baseText) tit.dataset.baseText = tit.innerText.split(' - $')[0];
+    tit.innerText = `${tit.dataset.baseText} - $${sumaItem}`;
+
+    recalcular();
+}
+
+function duplicarItemActual() {
+    indiceActual++;
+    const lista = document.getElementById('lista-items-productos');
+    const idProducto = document.getElementById('currentProductoId').value;
+
+    fetch(`/ordenes/formulario-producto/${idProducto}?index=${indiceActual}`)
+        .then(response => response.text())
+        .then(html => {
+            lista.insertAdjacentHTML('beforeend', html);
+            const nuevoItem = lista.querySelector(`.item-producto[data-index="${indiceActual}"]`);
+            const collapseDiv = nuevoItem.querySelector('.collapse');
+            if (collapseDiv) {
+                const bsCollapse = new bootstrap.Collapse(collapseDiv, { toggle: false });
+                bsCollapse.show();
+            }
+            document.getElementById('btn-agregar-otro').classList.add('d-none');
+            inicializarLogicaItem(indiceActual);
+            buscarPrecioCatalogo(indiceActual); // Buscamos precio para el nuevo ítem
+            setTimeout(() => { nuevoItem.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function eliminarItem(btn) {
+    const item = btn.closest('.item-producto');
+    if (document.querySelectorAll('.item-producto').length > 1) {
+        if (confirm("¿Eliminar este producto de la orden?")) {
+            item.remove();
+            recalcular();
+            document.getElementById('btn-agregar-otro').classList.remove('d-none');
+        }
+    } else {
+        alert("La orden debe tener al menos un producto.");
+    }
+}
+
+// --- 3. CÁLCULOS Y CATÁLOGO ---
+
+function buscarPrecioCatalogo(index) {
+    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
     const inputProductoId = document.getElementById('currentProductoId');
-    const inputSubtotal = document.getElementById('inputPrecioProd');
-    const inputCantidadReal = document.getElementById('inputCantidadItem');
+    const inputPrecioItem = item.querySelector('.input-precio-item');
+    const inputCantReal = item.querySelector('.input-cantidad-real');
+    const h2Element = document.querySelector('h2');
 
-    if (!inputProductoId || !inputSubtotal || !inputProductoId.value) return;
+    if (!inputProductoId?.value || !inputPrecioItem) return;
 
     const nombreProducto = h2Element ? h2Element.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
     const esImpresion = nombreProducto.includes("impresion");
 
-    const inputsDinamicos = document.querySelectorAll('.input-dinamico');
     let detalles = {};
 
-    inputsDinamicos.forEach(input => {
-        let valor = null;
+    // Capturamos los campos dinámicos
+    item.querySelectorAll('.input-dinamico').forEach(input => {
+        const match = input.name.match(/detalles\[(.*?)\]/);
+        if (!match) return;
+
+        const nombreCampo = match[1];
+        let val = null;
+
         if (input.type === 'checkbox') {
-            valor = input.checked ? "on" : null;
+            // Mandamos true o false SIEMPRE para que el catálogo no falle
+            val = input.checked;
         } else if (input.type === 'radio') {
-            if (input.checked) valor = input.value;
+            if (input.checked) val = input.value;
         } else {
-            valor = input.value;
+            val = input.value;
         }
 
-        if (valor !== null && valor !== "") {
-            const key = input.name.replace('detalles[', '').replace(']', '');
-            detalles[key] = valor;
+        // Solo agregamos al JSON si el valor no es nulo
+        if (val !== null && val !== "") {
+            detalles[nombreCampo] = val;
         }
     });
 
+    // Lógica especial para impresiones
     if (esImpresion && detalles["cantidad_producto"]) {
         const paginas = parseInt(detalles["cantidad_producto"]) || 0;
         const limite = (detalles["tipo_faz"] === "DOBLE FAZ") ? 100 : 50;
         detalles["rango_impresion"] = (paginas <= limite) ? "1-LIMITE" : "LIMITE-MAS";
     }
 
+    console.log("Enviando al catálogo:", detalles); // Mirá esto en F12
+
     fetch('/api/catalogo/buscar-precio', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productoId: parseInt(inputProductoId.value), detalles: detalles })
     })
-    .then(response => response.json())
+    .then(r => r.json())
     .then(precioRecibido => {
+        // Si no hay precio (0), permitimos edición manual
         if (precioRecibido === 0) {
-            inputSubtotal.readOnly = false;
+            inputPrecioItem.readOnly = false;
             return;
         }
 
         let precioFinal;
-        const vCantFinal = parseInt(inputCantidadReal.value) || 1;
+        const vCantFinal = parseInt(inputCantReal.value) || 1;
 
         if (esImpresion) {
             const paginas = parseInt(detalles["cantidad_producto"]) || 1;
             const costoHojas = precioRecibido * paginas;
-            let costoAnillado = (detalles["es_anillado"] === "on") ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
-            precioFinal = costoHojas + costoAnillado;
+            let costoAnillado = (detalles["es_anillado"] === true) ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
+            precioFinal = (costoHojas + costoAnillado) * vCantFinal;
         } else {
-            const radioCantProd = document.querySelector('input[name="detalles[cantidad_producto]"]:checked');
-            precioFinal = (!radioCantProd || radioCantProd.value === "OTRA" || radioCantProd.value.includes("-"))
-                ? precioRecibido * vCantFinal : precioRecibido;
+            // Para sellos de madera, automáticos, etc.
+            const tienePackDefinido = detalles["cantidad_producto"] && detalles["cantidad_producto"] !== "OTRA";
+
+            if (tienePackDefinido) {
+                // Es un pack (ej: 100 tarjetas), el precio es el del pack total.
+                precioFinal = precioRecibido;
+            } else {
+                // Es precio base (ej: 1 sello), multiplicamos por la cantidad manual.
+                precioFinal = precioRecibido * vCantFinal;
+            }
         }
 
-        inputSubtotal.value = Math.ceil(precioFinal);
-        inputSubtotal.readOnly = true;
+        inputPrecioItem.value = Math.ceil(precioFinal);
+        inputPrecioItem.readOnly = true;
         recalcular();
     })
-    .catch(() => {
-        inputSubtotal.readOnly = false;
-        if(inputSubtotal.value === "") inputSubtotal.value = 0;
+    .catch(err => {
+        console.error("Error en catálogo:", err);
+        inputPrecioItem.readOnly = false;
     });
 }
 
-function manejarLogicaCantidadDinamica() {
-    const inputsRadioCant = document.querySelectorAll('input[name="detalles[cantidad_producto]"]');
-    const inputNumberCant = document.querySelector('input[name="detalles[cantidad_producto]"][type="number"]');
-    const contenedorManual = document.getElementById('contenedor-cantidad-item');
-    const inputManual = document.getElementById('inputCantidadItem');
-
-    if (!contenedorManual || !inputManual) return;
-
-    if (inputsRadioCant.length === 0 && !inputNumberCant) {
-        contenedorManual.style.display = 'block';
-        return;
-    }
-
-    if (inputNumberCant) {
-        contenedorManual.style.display = 'none';
-        inputManual.value = inputNumberCant.value || 1;
-        return;
-    }
-
-    const seleccionado = document.querySelector('input[name="detalles[cantidad_producto]"]:checked');
-    if (seleccionado) {
-        if (seleccionado.value === "OTRA" || seleccionado.value.includes("-")) {
-            contenedorManual.style.display = 'block';
-        } else {
-            contenedorManual.style.display = 'none';
-            inputManual.value = seleccionado.value;
-        }
-    } else {
-        contenedorManual.style.display = 'none';
-    }
-}
-
 function recalcular() {
-    const pSubtotal = document.getElementById('inputPrecioProd');
-    const pDis = document.getElementById('inputPrecioDisenio');
+    const pSubProdGral = document.getElementById('inputPrecioProd');
+    const pSubDisGral = document.getElementById('inputPrecioDisenio');
     const pImp = document.getElementById('inputPrecioImpuestos');
     const total = document.getElementById('inputTotal');
     const abonado = document.getElementById('inputAbonado');
     const resta = document.getElementById('inputResta');
-    const cDis = document.getElementById('checkDisenio');
     const cFac = document.getElementById('checkFactura');
-    const pBaseHidden = document.getElementById('precioDisenioBase');
     const checkCC = document.getElementById('esCC');
+    const vBaseFijaDisenio = parseFloat(document.getElementById('precioDisenioBase')?.value) || 0;
 
-    if (!pSubtotal) return;
+    let sumaProductos = 0;
+    let sumaDisenios = 0;
 
-    const vSubtotalProd = parseFloat(pSubtotal.value) || 0;
-    const vBaseFijaDisenio = pBaseHidden ? parseFloat(pBaseHidden.value) : 0;
+    document.querySelectorAll('.item-producto').forEach(item => {
+        const pProd = parseFloat(item.querySelector('.input-precio-item').value) || 0;
+        const checkD = item.querySelector('.check-disenio-item');
+        const inputD = item.querySelector('.input-disenio-item');
 
-    // Lógica Diseño
-    if (cDis && cDis.checked) {
-        if ((parseFloat(pDis.value) || 0) === 0 && vBaseFijaDisenio > 0) {
-            pDis.value = Math.ceil(vBaseFijaDisenio);
+        if (checkD && checkD.checked) {
+            inputD.readOnly = false;
+            if (document.activeElement !== inputD && (parseFloat(inputD.value) === 0 || !inputD.value)) {
+                inputD.value = Math.ceil(vBaseFijaDisenio);
+            }
+        } else if (inputD) {
+            inputD.value = 0;
+            inputD.readOnly = true;
         }
-        pDis.readOnly = false;
-    } else if (pDis) {
-        pDis.value = 0;
-        pDis.readOnly = true;
-    }
 
-    const subtotalBase = vSubtotalProd + (parseFloat(pDis?.value) || 0);
+        sumaProductos += pProd;
+        sumaDisenios += parseFloat(inputD?.value) || 0;
+    });
+
+    if (pSubProdGral) pSubProdGral.value = Math.ceil(sumaProductos);
+    if (pSubDisGral) pSubDisGral.value = Math.ceil(sumaDisenios);
+
+    const subtotalBase = sumaProductos + sumaDisenios;
     let totalCorriendo = subtotalBase;
-    let impuestosAcumulados = 0;
+    let impuestos = 0;
 
-    // Lógica Factura (IVA 21%)
-    if (cFac && cFac.checked) {
-        const iva = subtotalBase * 0.21;
-        impuestosAcumulados += iva;
-        totalCorriendo += iva;
-    }
+    if (cFac?.checked) { impuestos += (subtotalBase * 0.21); totalCorriendo += (subtotalBase * 0.21); }
 
-    // Lógica Mercado Pago (Recargo 10%)
     const radioPago = document.querySelector('input[name="idMedioPago"]:checked');
     if (radioPago && parseInt(radioPago.value) === 2) {
         const recargo = totalCorriendo * 0.10;
-        impuestosAcumulados += recargo;
+        impuestos += recargo;
         totalCorriendo += recargo;
     }
 
-    const totalFinal = Math.ceil(totalCorriendo);
+    const tFinal = Math.ceil(totalCorriendo);
     const vAbo = parseFloat(abonado?.value) || 0;
-    const vResta = totalFinal - vAbo;
 
-    if (pImp) pImp.value = Math.ceil(impuestosAcumulados);
-    if (total) total.value = totalFinal;
-    if (resta) {
-        resta.value = Math.ceil(vResta);
-        // Feedback visual Resta Negativa
-        vResta < 0 ? resta.classList.add('text-danger', 'fw-bold') : resta.classList.remove('text-danger', 'fw-bold');
-    }
+    if (pImp) pImp.value = Math.ceil(impuestos);
+    if (total) total.value = tFinal;
+    if (resta) resta.value = tFinal - vAbo;
 
-    // Feedback visual Seña (50%)
-    if (abonado) {
-        if (checkCC && !checkCC.checked && totalFinal > 0) {
-            vAbo < (totalFinal / 2) ? abonado.classList.add('border-danger', 'text-danger') : abonado.classList.remove('border-danger', 'text-danger');
-        } else {
-            abonado.classList.remove('border-danger', 'text-danger');
-        }
+    // Validación visual de seña
+    if (abonado && checkCC && !checkCC.checked && tFinal > 0) {
+        vAbo < (tFinal / 2) ? abonado.classList.add('border-danger', 'text-danger') : abonado.classList.remove('border-danger', 'text-danger');
     }
 }
 
-function inicializarLogicaCondicional() {
-    const contenedor = document.getElementById('contenedor-dinamico');
-    if (!contenedor) return;
+// --- 4. FUNCIONES AUXILIARES ---
 
-    contenedor.addEventListener('input', (e) => {
-        if (e.target.classList.contains('input-dinamico')) {
-            const nombrePadre = e.target.name.replace('detalles[', '').replace(']', '');
-            let valorActual = e.target.type === 'checkbox' ? (e.target.checked ? "on" : "off") : e.target.value;
+function debounceBuscarPrecio(index) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => buscarPrecioCatalogo(index), 300);
+}
 
-            document.querySelectorAll(`[data-depends-on="${nombrePadre}"]`).forEach(bloque => {
-                const valorReq = bloque.getAttribute('data-show-if');
-                bloque.style.display = (String(valorActual) === String(valorReq)) ? 'block' : 'none';
-            });
+function calcularLogicaAnillado(paginas, faz) {
+    let hojas = (faz === "DOBLE FAZ") ? Math.ceil(paginas / 2) : paginas;
+    if (hojas === 0) return 0;
+    const escalas = [
+        { hasta: 20, precio: 1000 }, { hasta: 40, precio: 1200 }, { hasta: 60, precio: 1300 },
+        { hasta: 100, precio: 1500 }, { hasta: 150, precio: 1700 }, { hasta: 200, precio: 2500 },
+        { hasta: 300, precio: 2800 }, { hasta: 400, precio: 3300 }
+    ];
+    const cantAnillados = Math.ceil(hojas / 400);
+    const escala = escalas.find(p => Math.ceil(hojas / cantAnillados) <= p.hasta) || escalas[7];
+    return escala.precio * cantAnillados;
+}
 
-            if (e.target.name === 'detalles[cantidad_producto]') manejarLogicaCantidadDinamica();
-            debounceBuscarPrecio();
-        }
+function manejarLogicaCantidadDinamica(index) {
+    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
+    const seleccionado = item.querySelector(`input[name="items[${index}].detalles[cantidad_producto]"]:checked`);
+    const contenedorManual = document.getElementById(`contenedor-cantidad-real-${index}`);
+    const inputManual = item.querySelector('.input-cantidad-real');
+
+    if (!seleccionado || !contenedorManual) return;
+
+    if (seleccionado.value === "OTRA" || seleccionado.value.includes("-")) {
+        contenedorManual.style.display = 'block';
+        if (!isNaN(seleccionado.value)) inputManual.value = 1;
+    } else {
+        contenedorManual.style.display = 'none';
+        inputManual.value = parseInt(seleccionado.value) || 1;
+    }
+}
+
+// --- 5. EVENTOS INICIALES ---
+
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Activar items existentes
+    document.querySelectorAll('.item-producto').forEach(item => {
+        const idx = item.getAttribute('data-index');
+        inicializarLogicaItem(idx);
     });
-}
 
-document.addEventListener("DOMContentLoaded", function () {
-    inicializarLogicaCondicional();
-    manejarLogicaCantidadDinamica();
     recalcular();
 
-    // Listener para inputs de precio y abono
-    document.addEventListener('input', function (e) {
-        const ids = ['inputPrecioProd', 'inputPrecioDisenio', 'inputAbonado', 'inputCantidadItem'];
-        if (ids.includes(e.target.id)) {
-            if (e.target.id === 'inputCantidadItem') debounceBuscarPrecio();
-            recalcular();
-        }
-    });
-
-    // Listener para cambios de estado (Checks, Radios)
-    document.addEventListener('change', function (e) {
+    // 2. Escuchar cambios globales (Checkboxes, inputs generales)
+    document.addEventListener('change', (e) => {
         if (e.target.id === 'checkMuestra') {
             const fila = document.getElementById('filaFechaMuestra');
-            if (fila) e.target.checked ? fila.classList.remove('d-none') : fila.classList.add('d-none');
+            if(fila) e.target.checked ? fila.classList.remove('d-none') : fila.classList.add('d-none');
         }
-        if (['checkDisenio', 'checkFactura', 'esCC'].includes(e.target.id) || e.target.name === 'idMedioPago') {
-            recalcular();
-        }
+        if (['checkFactura', 'esCC'].includes(e.target.id) || e.target.name === 'idMedioPago') recalcular();
     });
 
-    document.addEventListener('submit', function (e) {
-            const total = parseFloat(document.getElementById('inputTotal')?.value) || 0;
-            const abonado = parseFloat(document.getElementById('inputAbonado')?.value) || 0;
-            const esCC = document.getElementById('esCC')?.checked;
+    document.addEventListener('input', (e) => {
+        if (e.target.id === 'inputAbonado') recalcular();
+    });
 
-            if (!esCC && total > 0 && abonado < (total / 2)) {
-                e.preventDefault();
-                alert("Se requiere una seña mínima del 50% para continuar.");
+    // 3. BLOQUEO DE ENVÍO (Validación 50% y Medio de Pago)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('#btnGuardar');
+        if (btn) {
+            const form = document.getElementById('formOrden');
+            if (!form) return;
+
+            // Referencia al elemento
+            const inputAboElement = document.getElementById('inputAbonado');
+
+            // Si está vacío o no es un número, lo seteamos en 0 en el HTML
+            if (!inputAboElement.value || isNaN(inputAboElement.value)) {
+                inputAboElement.value = 0;
             }
-        });
+
+            const total = parseFloat(document.getElementById('inputTotal')?.value) || 0;
+            const abonado = parseFloat(inputAboElement.value) || 0;
+            const checkCC = document.getElementById('esCC');
+            const esCC = checkCC ? checkCC.checked : false;
+            const medioSeleccionado = document.querySelector('input[name="idMedioPago"]:checked');
+
+            // Validación Seña
+            if (!esCC && total > 0) {
+                const minimo = total / 2;
+                if (abonado < minimo) {
+                    e.preventDefault();
+                    alert(`Falta seña. El mínimo es $${minimo} (50%).`);
+                    return;
+                }
+            }
+
+            // Validación Medio de Pago
+            if (abonado > 0 && !medioSeleccionado) {
+                e.preventDefault();
+                alert("Si el cliente abonó, tenés que elegir el Medio de Pago.");
+                return;
+            }
+        }
+    });
 });

@@ -28,17 +28,29 @@ public class OrdenItem {
 
     private int cantidad;
 
+    private int precioUnitario;
+
+    private boolean conAdicionalDisenio;
+
+    private int precioDisenio;
+
     @Column(columnDefinition = "json")
     private String detallePersonalizado;
- 
-    public Map<String, Object> getDetallesMap() {
+
+    @Transient
+    private Map<String, String> detalles = new HashMap<>();
+
+    public Map<String, String> getDetallesMap() {
+        if (this.detallePersonalizado == null || this.detallePersonalizado.isEmpty()) {
+            return new HashMap<>();
+        }
         try {
-            if (this.detallePersonalizado == null || this.detallePersonalizado.isEmpty()) {
-                return new HashMap<>();
-            }
-            return new ObjectMapper().readValue(this.detallePersonalizado, new TypeReference<Map<String, Object>>() {});
+            return new ObjectMapper().readValue(this.detallePersonalizado, new MapTypeReference());
         } catch (Exception e) {
             return new HashMap<>();
         }
     }
+
+    // Clase interna rápida para Jackson
+    private static class MapTypeReference extends com.fasterxml.jackson.core.type.TypeReference<Map<String, String>> {}
 }

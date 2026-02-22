@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,95 +59,35 @@ public class OrdenController {
     }
 
     @PostMapping("/guardar-orden")
-    public String guardar(@ModelAttribute("orden") Orden orden,
-                          @RequestParam Map<String, String> allParams,
-                          @RequestParam(value = "idMedioPago", required = false) Long idMedioPago) {
-
-        // 1. Extraer detalles dinámicos del Map global
-        Map<String, String> detallesMap = new HashMap<>();
-        allParams.forEach((key, value) -> {
-            if (key.startsWith("detalles[") && value != null && !value.isEmpty()) {
-                String cleanKey = key.replace("detalles[", "").replace("]", "");
-                detallesMap.put(cleanKey, value);
-            }
-        });
-
-        OrdenItem item;
-        if (orden.getId() != null) {
-            // --- CASO EDICIÓN ---
-            Orden ordenExistente = ordenService.buscarPorId(orden.getId());
-            item = ordenExistente.getItems().get(0);
-
-            orden.setFechaPedido(ordenExistente.getFechaPedido());
-            orden.setEstadoOrden(ordenExistente.getEstadoOrden());
-            orden.setPagos(ordenExistente.getPagos());
-
-            if (orden.getItems() == null) orden.setItems(new ArrayList<>());
-            orden.getItems().add(item);
-        } else {
-            // --- CASO NUEVA ORDEN ---
-            item = new OrdenItem();
-            item.setOrden(orden);
-            if (orden.getItems() == null) orden.setItems(new ArrayList<>());
-            orden.getItems().add(item);
-        }
-
-        // 2. Actualizar datos del Ítem
-        String cantDinamicaStr = detallesMap.get("cantidad_producto");
-        int cantidadFinal;
-
-        // Si NO existe, o es "OTRA", o es un rango (contiene guion), usamos el input manual
-        if (cantDinamicaStr == null || cantDinamicaStr.equals("OTRA") || cantDinamicaStr.contains("-")) {
-            cantidadFinal = Integer.parseInt(allParams.getOrDefault("cantidadItem", "1"));
-        } else {
-            // Es un valor fijo numérico (50, 100, etc.)
-            cantidadFinal = Integer.parseInt(cantDinamicaStr);
-        }
-
-        item.setCantidad(cantidadFinal);
-
-        if (allParams.containsKey("productoId")) {
-            Producto p = new Producto();
-            p.setId(Integer.parseInt(allParams.get("productoId")));
-            item.setProducto(p);
-        }
-
+    public String guardarOrden(@ModelAttribute Orden orden,
+                               @RequestParam("productoId") Integer productoId,
+                               @RequestParam(required = false) Long idMedioPago) {
         try {
-            item.setDetallePersonalizado(new ObjectMapper().writeValueAsString(detallesMap));
-        } catch (JsonProcessingException e) {
-            item.setDetallePersonalizado("{}");
-        }
-
-        // 3. Procesar Subtotal y Diseño
-        if (allParams.containsKey("subtotal")) {
-            double subtotalExtraido = Double.parseDouble(allParams.get("subtotal"));
-            orden.setSubtotal((int) Math.ceil(subtotalExtraido));
-        }
-        if (allParams.containsKey("precioDisenio")) {
-            try {
-                double disenioExtraido = Double.parseDouble(allParams.get("precioDisenio"));
-                orden.setPrecioDisenio((int) Math.ceil(disenioExtraido));
-            } catch (NumberFormatException e) {
-                orden.setPrecioDisenio(0);
+            // Solo convertimos el Map a String JSON en el Controller porque es un tema de "mapeo de datos"
+            ObjectMapper mapper = new ObjectMapper();
+            for (OrdenItem item : orden.getItems()) {
+                if (item.getDetalles() != null) {
+                    item.setDetallePersonalizado(mapper.writeValueAsString(item.getDetalles()));
+                }
             }
+
+            // Le pasamos la pelota al Service con los datos extra
+            Orden ordenGuardada = ordenService.guardar(orden, productoId, idMedioPago);
+
+            return "redirect:/ordenes/exito/" + ordenGuardada.getId();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "redirect:/ordenes/error";
         }
-
-        // --- 4. FLUJO DE GUARDADO (CREACIÓN / EDICIÓN) ---
-        ordenService.guardar(orden);
-
-        if (idMedioPago != null) {
-            pagoService.guardar(orden, idMedioPago);
-        } else {
-            pagoService.actualizarSaldosYEstados(orden);
-        }
-
-        ordenRepository.save(orden);
-
-        return "redirect:/ordenes/exito/" + orden.getId();
     }
 
     @GetMapping("/formulario-producto/{id}")
-    public String obtenerFragmento(@PathVariable Integer id, Model model, HttpSession session) {
+    public String obtenerFragmento(
+            @PathVariable Integer id,
+            @RequestParam(value = "index", defaultValue = "0") int index, // <--- Recibimos el índice
+            Model model,
+            HttpSession session) {
+
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID de producto inválido:" + id));
@@ -155,23 +96,22 @@ public class OrdenController {
 
         try {
             List<Map<String, Object>> esquema = mapper.readValue(
-                producto.getEsquemaConfiguracion(),
-                new TypeReference<List<Map<String, Object>>>() {}
+                    producto.getEsquemaConfiguracion(),
+                    new TypeReference<List<Map<String, Object>>>() {}
             );
-
             model.addAttribute("campos", esquema);
-
         } catch (Exception e) {
             model.addAttribute("campos", new ArrayList<>());
         }
 
-        List<MedioPago> listaMediosDePago = medioPagoService.buscarTodos();
-        model.addAttribute("listaMediosDePago", listaMediosDePago);
+        model.addAttribute("index", index); // <--- Lo pasamos a la vista
+        model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
         model.addAttribute("producto", producto);
         model.addAttribute("orden", new Orden());
         model.addAttribute("empleado", empleado);
 
-        return "fragments/formulario-dinamico :: cuerpo-formulario";
+        return (index == 0) ? "fragments/formulario-dinamico :: cuerpo-formulario"
+                : "fragments/formulario-dinamico :: bloque-item-card";
     }
 
     @GetMapping("/exito/{id}")
@@ -183,25 +123,14 @@ public class OrdenController {
         }
 
         Orden orden = ordenService.buscarPorId(id);
-        OrdenItem item = orden.getItems().get(0);
-        Map<String, Object> detalles = new HashMap<>();
-        try {
-            detalles = new ObjectMapper().readValue(
-                    item.getDetallePersonalizado(),
-                    new TypeReference<Map<String, Object>>() {}
-            );
-        } catch (Exception e) {
-            System.out.println("Hubo un error al mostrar la orden: " + e.getMessage());
-        }
 
         model.addAttribute("empleado", empleado);
         model.addAttribute("ordenTrabajo", orden);
-        model.addAttribute("detalles", detalles);
-        model.addAttribute("item", item);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         model.addAttribute("fechaPedido", orden.getFechaPedido().format(formatter));
         model.addAttribute("fechaEntrega", orden.getFechaEntrega().format(formatter));
+
         if (orden.getFechaMuestra() != null) {
             model.addAttribute("fechaMuestra", orden.getFechaMuestra().format(formatter));
         }
@@ -223,9 +152,10 @@ public class OrdenController {
         if (empleado == null) return "redirect:/";
 
         Orden orden = ordenService.buscarPorId(id);
-
+        // Asumimos que todos los items de la orden son del mismo producto base
         Producto producto = orden.getItems().get(0).getProducto();
 
+        // IMPORTANTE: Necesitamos cargar los campos para que el fragmento sepa qué mostrar
         ObjectMapper mapper = new ObjectMapper();
         try {
             List<Map<String, Object>> esquema = mapper.readValue(
@@ -243,7 +173,7 @@ public class OrdenController {
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
         model.addAttribute("esEdicion", true);
 
-        return "nueva-orden";
+        return "nueva-orden"; // Aseguráte que este sea el nombre de tu página principal de formulario
     }
 
     @GetMapping("/eliminar/{id}")

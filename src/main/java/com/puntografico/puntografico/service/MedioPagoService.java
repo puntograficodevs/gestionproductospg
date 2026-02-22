@@ -17,4 +17,8 @@ public class MedioPagoService {
     public List<MedioPago> buscarTodos() {
         return medioPagoRepository.findAll();
     }
+
+    public MedioPago buscarPorId(Long id) {
+        return medioPagoRepository.findById(id).get();
+    }
 }

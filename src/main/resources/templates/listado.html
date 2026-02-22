@@ -14,7 +14,6 @@
     }
   </style>
 </head>
-</head>
 <body th:classappend="${filtroSeleccionado != null and filtroSeleccionado != 'todas'} ? 'con-filtro' : ''">
 <div th:replace="fragments/navbar :: navbar"></div>
 
@@ -41,116 +40,72 @@
   <div class="container-fluid contenedor-kanban-ordenes">
     <div class="row flex-nowrap overflow-auto">
 
-      <div class="col-3 columna-sin-hacer">
-        <div class="titulo-columna-contenedor"><p class="titulo-columna">SIN HACER</p></div>
-        <div th:each="orden : ${ordenesSinHacer}" class="card mb-2 position-relative shadow-sm tarjeta-orden"
-             th:attr="data-producto=${orden.items[0].producto.nombre}">
-          <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
-          <div class="card-body">
-            <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="mb-2">
-              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
-              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
-            </ul>
-            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
-            <b th:if="${orden.total - orden.abonado != 0}">
-              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
-            </b>
+      <th:block th:each="columna : ${ {'Sin Hacer', 'En Proceso', 'Lista para Retirar', 'Corregir'} }">
+        <div th:class="'col-3 columna-' + ${#strings.toLowerCase(#strings.replace(columna, ' ', '-'))}">
+          <div class="titulo-columna-contenedor"><p class="titulo-columna" th:text="${#strings.toUpperCase(columna)}"></p></div>
 
-            <div class="row g-1">
-              <div class="col-6">
-                <button class="btn btn-columna-sin-hacer btn-correccion btn-sm w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalEnviarACorregir-' + ${orden.id}">Corregir</button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-columna-sin-hacer btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
-              </div>
-            </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-sin-hacer btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
+          <div th:with="listaOrdenes=${columna == 'Sin Hacer' ? ordenesSinHacer : (columna == 'En Proceso' ? ordenesEnProceso : (columna == 'Lista para Retirar' ? ordenesListaParaRetirar : ordenesCorregir))}">
 
-            <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
-            <div th:replace="fragments/enviar-a-corregir :: enviar-a-corregir(${orden.id})"></div>
-          </div>
-        </div>
-      </div>
+            <div th:each="orden : ${listaOrdenes}" class="card mb-2 position-relative shadow-sm tarjeta-orden"
+                 th:attr="data-producto=${orden.items != null and !#lists.isEmpty(orden.items) ? orden.items[0].producto.nombre : ''}">
 
-      <div class="col-3 columna-en-proceso">
-        <div class="titulo-columna-contenedor"><p class="titulo-columna">EN PROCESO</p></div>
-        <div th:each="orden : ${ordenesEnProceso}" class="card mb-2 position-relative shadow-sm tarjeta-orden"
-             th:attr="data-producto=${orden.items[0].producto.nombre}">
-          <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
-          <div class="card-body">
-            <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="mb-2">
-              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
-              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
-            </ul>
-            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
-            <b th:if="${orden.total - orden.abonado != 0}">
-              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
-            </b>
+              <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
 
-            <div class="row g-1">
-              <div class="col-6">
-                <button class="btn btn-sm w-100 btn-columna-en-proceso  btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="sin-hacer">Sin hacer</button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-sm w-100 btn-columna-en-proceso btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="hecha">Hecha</button>
-              </div>
-            </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-en-proceso btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
-            <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
-          </div>
-        </div>
-      </div>
+              <div class="card-body">
+                <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id}"></p></b>
+                <ul class="mb-2 list-unstyled" style="font-size: 0.85rem;">
+                  <li><b>Cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
+                  <li th:if="${orden.telefonoCliente != null and orden.telefonoCliente != ''}"><b>Tel:</b> <span th:text="${orden.telefonoCliente}"></span></li>
+                  <li th:if="${orden.fechaMuestra != null}"><b>Muestra:</b> <span th:text="${orden.fechaMuestra}"></span></li>
+                  <li><b>Entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
+                </ul>
 
-      <div class="col-3 columna-listas-para-retirar">
-        <div class="titulo-columna-contenedor"><p class="titulo-columna">LISTAS PARA RETIRAR</p></div>
-        <div th:each="orden : ${ordenesListaParaRetirar}" class="card mb-2 position-relative shadow-sm tarjeta-orden"
-             th:attr="data-producto=${orden.items[0].producto.nombre}">
-          <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
-          <div class="card-body">
-            <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="mb-2">
-              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
-              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
-            </ul>
-            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
-            <b th:if="${orden.total - orden.abonado != 0}">
-              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
-            </b>
+                <b><p class="mb-1">Total: $<span th:text="${orden.total}"></span></p></b>
+                <b th:if="${orden.total - orden.abonado != 0}">
+                  <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
+                </b>
 
-            <div class="row g-1">
-              <div class="col-6">
-                <button class="btn  btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
-              </div>
-              <div class="col-6">
-                <button class="btn  btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" th:data-resta="${orden.total - orden.abonado}" data-accion="entregado">Entregado</button>
+                <div class="row g-1">
+                  <th:block th:if="${columna == 'Sin Hacer'}">
+                    <div class="col-6">
+                      <button class="btn btn-columna-sin-hacer btn-correccion btn-sm w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalEnviarACorregir-' + ${orden.id}">Corregir</button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn btn-columna-sin-hacer btn-sm w-100 btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
+                    </div>
+                  </th:block>
+
+                  <th:block th:if="${columna == 'En Proceso'}">
+                    <div class="col-6">
+                      <button class="btn btn-sm w-100 btn-columna-en-proceso btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="sin-hacer">Sin hacer</button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn btn-sm w-100 btn-columna-en-proceso btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="hecha">Hecha</button>
+                    </div>
+                  </th:block>
+
+                  <th:block th:if="${columna == 'Lista para Retirar'}">
+                    <div class="col-6">
+                      <button class="btn btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" data-accion="proceso">En proceso</button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn btn-sm w-100 btn-columna-lista-para-retirar btn-cambio-estado" th:data-idorden="${orden.id}" th:data-resta="${orden.total - orden.abonado}" data-accion="entregado">Entregado</button>
+                    </div>
+                  </th:block>
+                </div>
+
+                <button th:if="${orden.total - orden.abonado != 0 and columna != 'Corregir'}"
+                        class="btn btn-sm mt-2 w-100"
+                        th:classappend="'btn-columna-' + ${#strings.toLowerCase(#strings.replace(columna, ' ', '-'))}"
+                        data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
+
+                <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
+                <div th:if="${columna == 'Sin Hacer'}" th:replace="fragments/enviar-a-corregir :: enviar-a-corregir(${orden.id})"></div>
               </div>
             </div>
-            <button th:if="${orden.total - orden.abonado != 0}" class="btn btn-columna-lista-para-retirar btn-sm mt-2 w-100" data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
-            <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
           </div>
         </div>
-      </div>
-
-      <div class="col-3 columna-corregir">
-        <div class="titulo-columna-contenedor"><p class="titulo-columna">CORREGIR</p></div>
-        <div th:each="orden : ${ordenesCorregir}" class="card mb-2 position-relative shadow-sm tarjeta-orden"
-             th:attr="data-producto=${orden.items[0].producto.nombre}">
-          <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
-          <div class="card-body">
-            <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id} + ' - ' + ${orden.items[0].producto.nombre}"></p></b>
-            <ul class="mb-2">
-              <li><b>Nombre del cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
-              <li><b>Fecha de entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
-            </ul>
-            <b><p class="mb-2">Total: $<span th:text="${orden.total}"></span></p></b>
-            <b th:if="${orden.total - orden.abonado != 0}">
-              <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
-            </b>
-          </div>
-        </div>
-      </div>
+      </th:block>
 
     </div>
   </div>
@@ -167,7 +122,6 @@
     </div>
   </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
