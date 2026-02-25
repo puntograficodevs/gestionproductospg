@@ -76,7 +76,7 @@ p {
     background-color: #ffef8b;
 }
 
-.columna-listas-para-retirar .titulo-columna  {
+.columna-lista-para-retirar .titulo-columna  {
     background-color: #abf28c;
 }
 
@@ -97,7 +97,7 @@ p {
     border: 3px solid #ffef8b;
 }
 
-.columna-listas-para-retirar .card {
+.columna-lista-para-retirar .card {
     border: 3px solid #abf28c;
 }
 
@@ -168,12 +168,12 @@ p {
     background-color: #ffef8b;
 }
 
-.columna-listas-para-retirar .btn-marcar-abonado {
+.columna-lista-para-retirar .btn-marcar-abonado {
     background-color: #ffffff;
     border: 3px solid #abf28c;
 }
 
-.columna-listas-para-retirar .btn-marcar-abonado:hover {
+.columna-lista-para-retirar .btn-marcar-abonado:hover {
     background-color: #abf28c;
 }
 

@@ -71,7 +71,6 @@ public class OrdenController {
                 }
             }
 
-            // Le pasamos la pelota al Service con los datos extra
             Orden ordenGuardada = ordenService.guardar(orden, productoId, idMedioPago);
 
             return "redirect:/ordenes/exito/" + ordenGuardada.getId();

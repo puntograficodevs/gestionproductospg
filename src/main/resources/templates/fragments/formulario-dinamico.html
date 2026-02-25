@@ -1,5 +1,5 @@
 <div th:fragment="cuerpo-formulario" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="container mt-2">
+    <div class="container mt-4">
         <h2 th:text="${orden.id != null ? 'Editar orden #' + orden.id + ' - ' + producto.nombre : 'Crear orden - ' + producto.nombre}"></h2>
     </div>
 
@@ -134,8 +134,10 @@
                     <div class="d-flex flex-wrap gap-3">
                         <div th:each="medio : ${listaMediosDePago}" class="form-check mx-3">
                             <input type="radio" name="idMedioPago" class="form-check-input input-medio-pago"
-                                   th:id="'medio-' + ${medio.id}" th:value="${medio.id}"
-                                   th:checked="false"> <label class="form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
+                                   th:id="'medio-' + ${medio.id}"
+                                   th:value="${medio.id}"
+                                   th:checked="${orden.pagos != null and !orden.pagos.isEmpty() and orden.pagos[orden.pagos.size() - 1].medioPago.id == medio.id}">
+                            <label class="form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
                         </div>
                     </div>
                 </div>
