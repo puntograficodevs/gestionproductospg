@@ -63,3 +63,8 @@ h5 {
     color: #E52987;
     padding: 18px;
 }
+
+/* Oculta las opciones deshabilitadas en el select */
+select option:disabled {
+    display: none !important;
+}

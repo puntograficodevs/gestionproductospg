@@ -38,4 +38,8 @@ public class ProductoCatalogoService {
 
         return null;
     }
+
+    public List<ProductoCatalogo> buscarTodasLasCopiasEscolaresEnCatalogo() {
+        return catalogoRepository.findByProductoId(34);
+    }
 }

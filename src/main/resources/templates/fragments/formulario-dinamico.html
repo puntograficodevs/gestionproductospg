@@ -161,10 +161,72 @@
 
     <div th:id="'collapse-' + ${index}" class="collapse show">
         <div class="card-body bg-white">
+            <div th:if="${producto.id == 34}" class="seccion-copia-escolar mb-4">
+                <h6 class="fw-bold">Filtrar por...</h6>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <select class="form-select filtro-escolar" data-campo="escuela" th:id="'escuela-' + ${index}">
+                            <option value="">Escuela (Todas)</option>
+                            <option th:each="opt : ${campos.?[name == 'escuela'][0].opciones}" th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select filtro-escolar" data-campo="docente" th:id="'docente-' + ${index}">
+                            <option value="">Docente (Todos)</option>
+                            <option th:each="opt : ${campos.?[name == 'docente'][0].opciones}" th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <select class="form-select filtro-escolar" data-campo="anio" th:id="'anio-' + ${index}">
+                            <option value="">Año (Todos)</option>
+                            <option th:each="opt : ${campos.?[name == 'anio'][0].opciones}" th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <select class="form-select filtro-escolar" data-campo="materia" th:id="'materia-' + ${index}">
+                            <option value="">Materia (Todas)</option>
+                            <option th:each="opt : ${campos.?[name == 'materia'][0].opciones}" th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <select class="form-select filtro-escolar" data-campo="orientacion" th:id="'orientacion-' + ${index}">
+                            <option value="">Orientación (Todas)</option>
+                            <option th:each="opt : ${campos.?[name == 'orientacion'][0].opciones}" th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Material</label>
+                        <select class="form-select selector-material-final"
+                                th:id="'material-' + ${index}"
+                                th:name="'items[' + ${index} + '].detalles[nombre_negocio]'">
+                            <option value="">-- Seleccione un material --</option>
+                            <option th:each="mat : ${listaMateriales}"
+                                    th:value="${mat.nombreNegocio}"
+                                    th:text="${mat.nombreNegocio}"
+                                    th:data-precio="${mat.precio}"
+                                    th:data-detalles="${mat.detallesProducto}"
+                                    style="display: none;"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <h6 class="fw-bold">Detalles del producto</h6>
+            </div>
+
             <div class="row contenedor-dinamico-item"
                  th:with="mapaDetalles=${orden.id != null && orden.items != null && orden.items.size() > index ? orden.items[index].getDetallesMap() : null}">
 
                 <div th:each="campo : ${campos}" class="col-md-12 mb-3 bloque-campo"
+                     th:if="${producto.id != 34 or
+                        (campo.name != 'escuela' and
+                         campo.name != 'docente' and
+                         campo.name != 'anio' and
+                         campo.name != 'materia' and
+                         campo.name != 'orientacion')}"
                      th:data-depends-on="${campo['dependsOn']}"
                      th:data-show-if="${campo['showIf']}"
                      th:style="${campo['dependsOn'] != null ? 'display: none;' : ''}">

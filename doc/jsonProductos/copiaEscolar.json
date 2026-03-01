@@ -1,0 +1,70 @@
+[
+  {
+    "name": "escuela",
+    "tipo": "select",
+    "label": "Escuela o institución",
+    "opciones": ["FAPE", "HOME"],
+    "required": false
+  },
+  {
+    "name": "docente",
+    "tipo": "select",
+    "label": "Docente",
+    "opciones": ["ROMINA CÓRDOBA", "LORENA TRAID"],
+    "required": false
+  },
+  {
+    "name": "anio",
+    "tipo": "select",
+    "label": "Año",
+    "opciones": ["4°", "NO APLICA"],
+    "required": false
+  },
+  {
+    "name": "materia",
+    "tipo": "select",
+    "label": "Materia",
+    "opciones": ["LENGUA Y LITERATURA", "NO APLICA"],
+    "required": false
+  },
+  {
+    "name": "orientacion",
+    "tipo": "select",
+    "label": "Orientación",
+    "opciones": ["CIENCIAS NATURALES", "HUMANIDADES", "NO APLICA"],
+    "required": false
+  },
+  {
+    "name": "tipo_color",
+    "tipo": "select",
+    "label": "Tipo de color * ",
+    "opciones": ["BLANCO Y NEGRO", "A COLOR"],
+    "required": true
+  },
+  {
+    "name": "tipo_faz",
+    "tipo": "select",
+    "label": "Tipo de faz * ",
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "required": true
+  },
+  {
+    "name": "es_anillado",
+    "tipo": "checkbox",
+    "label": "Anillado"
+  },
+  {
+    "name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Información adicional de la copia escolar"
+  }
+]
+
+

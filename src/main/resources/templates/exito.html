@@ -91,7 +91,7 @@
 
                                 <p class="mb-1" style="font-size: 0.9rem;">
                                     <strong th:with="label=${#strings.replace(#strings.replace(#strings.toLowerCase(entry.key), 'tamanio', 'tamaño'), 'disenio', 'diseño')}"
-                                            th:text="${#strings.capitalize(#strings.replace(label, '_', ' '))} + ': '">
+                                            th:text="${entry.key == 'nombre_negocio' ? 'Material: ' : (#strings.capitalize(#strings.replace(label, '_', ' ')) + ': ')}">
                                     </strong>
 
                                     <span th:text="${entry.value == 'on' or entry.value == true} ? 'Sí' :

@@ -9,6 +9,7 @@ import com.puntografico.puntografico.repository.ProductoRepository;
 import com.puntografico.puntografico.service.MedioPagoService;
 import com.puntografico.puntografico.service.OrdenService;
 import com.puntografico.puntografico.service.PagoService;
+import com.puntografico.puntografico.service.ProductoCatalogoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class OrdenController {
     private final ProductoRepository productoRepository;
     private final OrdenRepository ordenRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
+    private final ProductoCatalogoService productoCatalogoService;
 
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
@@ -99,6 +101,7 @@ public class OrdenController {
 
         model.addAttribute("index", index); // <--- Lo pasamos a la vista
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
+        model.addAttribute("listaMateriales", productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo());
         model.addAttribute("producto", producto);
         model.addAttribute("orden", new Orden());
         model.addAttribute("empleado", empleado);

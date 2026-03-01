@@ -158,6 +158,11 @@ function buscarPrecioCatalogo(index) {
     const inputCantReal = item.querySelector('.input-cantidad-real');
     const h2Element = document.querySelector('h2');
 
+    if (inputPrecioItem.hasAttribute('data-precio-base')) {
+        recalcular();
+        return;
+    }
+
     if (!inputProductoId?.value || !inputPrecioItem) return;
 
     const nombreProducto = h2Element ? h2Element.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
@@ -256,7 +261,19 @@ function recalcular() {
     let sumaDisenios = 0;
 
     document.querySelectorAll('.item-producto').forEach(item => {
-        const pProd = parseFloat(item.querySelector('.input-precio-item').value) || 0;
+        // 1. Buscamos los elementos necesarios
+        const inputPrecioItem = item.querySelector('.input-precio-item');
+        const inputCantReal = item.querySelector('.input-cantidad-real');
+
+        // 2. LÓGICA NUEVA: Si es un libro escolar, actualizamos su precio según la cantidad
+        const precioBase = parseFloat(inputPrecioItem.getAttribute('data-precio-base'));
+        if (!isNaN(precioBase)) {
+            const cantidad = parseInt(inputCantReal.value) || 1;
+            inputPrecioItem.value = Math.ceil(precioBase * cantidad);
+        }
+
+        // 3. Tu lógica de siempre (leer el precio ya actualizado y sumar)
+        const pProd = parseFloat(inputPrecioItem.value) || 0;
         const checkD = item.querySelector('.check-disenio-item');
         const inputD = item.querySelector('.input-disenio-item');
 
@@ -403,4 +420,81 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+});
+
+// 1. Filtrar el selector de Material
+// Filtra el select de Materiales según Escuela, Docente, etc.
+$(document).on('change', '.filtro-escolar', function() {
+    const card = $(this).closest('.item-producto');
+    const selectMaterial = card.find('.selector-material-final');
+
+    const f = {
+        escuela: card.find('[data-campo="escuela"]').val(),
+        docente: card.find('[data-campo="docente"]').val(),
+        anio: card.find('[data-campo="anio"]').val(),
+        materia: card.find('[data-campo="materia"]').val(),
+        orientacion: card.find('[data-campo="orientacion"]').val()
+    };
+
+    selectMaterial.find('option').each(function() {
+        const opt = $(this);
+        if (opt.val() === "") return;
+
+        const det = JSON.parse(opt.attr('data-detalles'));
+        let coincide = true;
+
+        // Si el filtro tiene algo seleccionado, comparamos
+        if (f.escuela && det.escuela !== f.escuela) coincide = false;
+        if (f.docente && det.docente !== f.docente) coincide = false;
+        if (f.anio && det.anio !== f.anio) coincide = false;
+        if (f.materia && det.materia !== f.materia) coincide = false;
+        if (f.orientacion && det.orientacion !== f.orientacion) coincide = false;
+
+        if (coincide) {
+            // Si está envuelto en un span, lo sacamos para que sea visible
+            if (opt.parent().is('span')) {
+                opt.unwrap();
+            }
+            opt.prop('disabled', false).show();
+        } else {
+            // Si NO está envuelto, lo envolvemos en un span oculto
+            if (!opt.parent().is('span')) {
+                opt.wrap('<span style="display:none"></span>');
+            }
+            opt.prop('disabled', true).hide();
+
+            if (opt.is(':selected')) selectMaterial.val("");
+        }
+    });
+});
+
+// 2. Al elegir el Material: Pre-cargar campos técnicos y precio
+// Cuando elegís un libro, llena el precio y los detalles técnicos de abajo
+$(document).on('change', '.selector-material-final', function() {
+    const opt = $(this).find(':selected');
+    if (opt.val() === "") return;
+
+    const card = $(this).closest('.item-producto');
+    const det = JSON.parse(opt.attr('data-detalles'));
+    const precioBase = parseFloat(opt.attr('data-precio'));
+
+    // Guardamos el precio unitario en un atributo propio para no perderlo al multiplicar
+    const inputPrecio = card.find('.input-precio-item');
+    inputPrecio.attr('data-precio-base', precioBase);
+    inputPrecio.prop('readonly', true);
+
+    // 2. Marca los radios (color, faz) y el checkbox (anillado)
+    Object.keys(det).forEach(key => {
+        const valor = det[key];
+        const input = card.find(`[name*="detalles[${key}]"]`);
+
+        if (input.attr('type') === 'radio') {
+            card.find(`[name*="detalles[${key}]"][value="${valor}"]`).prop('checked', true);
+        } else if (input.attr('type') === 'checkbox') {
+            input.prop('checked', valor === "true" || valor === "on" || valor === true);
+        }
+    });
+
+    // 3. Actualiza los totales de la orden
+    recalcular();
 });
