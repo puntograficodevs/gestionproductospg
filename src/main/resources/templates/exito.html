@@ -103,8 +103,12 @@
                     </div>
 
                     <hr class="divider mt-auto">
-                    <p class="mb-1" style="font-size: 0.85rem;"><strong>Entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
-                    <p th:if="${ordenCorrecta.fechaMuestra}" class="mb-0" style="font-size: 0.85rem;"><strong>Muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
+                    <p class="mb-1" style="font-size: 0.95rem;">
+                        <strong class="text-dark">Precio: </strong>
+                        <span class="fw-bold text-success"
+                              th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0) + (item.precioDisenio ?: 0), 0)}">
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
