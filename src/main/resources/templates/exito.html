@@ -118,10 +118,30 @@
                 <strong>Corregir ahora</strong>
             </a>
         </div>
+
+        <div th:if="${param.esModal}" class="modal-footer mt-3 p-0 border-0">
+            <div class="row w-100 g-2 justify-content-center">
+                <div class="col-5 p-0 m-2" th:if="${ordenCorrecta.estadoPago?.id != 3}">
+                    <button class="btn btn-warning w-100 shadow-sm"
+                            data-bs-toggle="modal"
+                            th:attr="data-bs-target='#modalCargarPago-' + ${ordenCorrecta.id}">
+                        <strong>Cargar pago</strong>
+                    </button>
+                </div>
+
+                <div class="col-5 p-0 m-2" th:if="${ordenCorrecta.estadoOrden?.id != 5}">
+                    <a th:href="@{/ordenes/pasar-retirada-desde-buscador/{id}(id=${ordenCorrecta.id})}"
+                       class="btn btn-success w-100 shadow-sm"
+                       th:onclick="'return confirm(\'¿Estás seguro de marcar la orden #' + ${ordenCorrecta.id} + ' como retirada?\');'">
+                        <strong>Marcar retirada</strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${param.esModal}" th:replace="fragments/cargar-pago :: cargar-pago(${ordenCorrecta.id}, ${listaMediosDePago})"></div>
     </th:block>
 </div>
-
-
 
 </body>
 </html>

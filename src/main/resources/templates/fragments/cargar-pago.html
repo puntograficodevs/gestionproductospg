@@ -12,6 +12,7 @@
                 </div>
                 <div class="modal-body text-start">
                     <input type="hidden" name="ordenId" th:value="${ordenId}">
+                    <input type="hidden" name="desdeModal" th:value="${param.esModal != null}">
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">Monto a cobrar ($):</label>

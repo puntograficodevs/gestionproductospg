@@ -1,11 +1,9 @@
 package com.puntografico.puntografico.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.repository.EstadoOrdenRepository;
-import com.puntografico.puntografico.repository.EstadoPagoRepository;
 import com.puntografico.puntografico.repository.OrdenRepository;
 import com.puntografico.puntografico.repository.ProductoRepository;
 import com.puntografico.puntografico.service.MedioPagoService;
@@ -17,10 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +32,6 @@ public class OrdenController {
     private final ProductoRepository productoRepository;
     private final OrdenRepository ordenRepository;
     private final EstadoOrdenRepository estadoOrdenRepository;
-    private final EstadoPagoRepository estadoPagoRepository;
 
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
@@ -140,6 +135,7 @@ public class OrdenController {
     public String obtenerFragmentoDetalle(@PathVariable Long id, Model model) {
         Orden orden = ordenRepository.findById(id).orElseThrow();
         model.addAttribute("orden", orden);
+        model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
 
         return "exito :: detalle-orden";
     }
@@ -219,6 +215,12 @@ public class OrdenController {
         return "redirect:/listado?producto=" + producto;
     }
 
+    @GetMapping("/pasar-retirada-desde-buscador/{id}")
+    public String pasarRetiradaDesdeBuscador(@PathVariable Long id) {
+        cambiarEstado(id, 5L);
+        return "redirect:/buscador";
+    }
+
     private void cambiarEstado(Long ordenId, Long estadoId) {
         Orden orden = ordenRepository.findById(ordenId)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + ordenId));
@@ -256,10 +258,15 @@ public class OrdenController {
     @PostMapping("/registrar-pago")
     public String registrarPago(@RequestParam("ordenId") Long ordenId,
                                 @RequestParam("importe") Integer importe,
-                                @RequestParam("idMedioPago") Long idMedioPago) {
+                                @RequestParam("idMedioPago") Long idMedioPago,
+                                @RequestParam(value = "desdeModal", defaultValue = "false") boolean desdeModal) {
 
         pagoService.registrarPagoExtra(ordenId, importe, idMedioPago);
 
-        return "redirect:/listado";
+        if (desdeModal) {
+            return "redirect:/buscador";
+        } else {
+            return "redirect:/listado";
+        }
     }
 }

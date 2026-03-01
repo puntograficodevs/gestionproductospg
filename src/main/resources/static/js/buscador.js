@@ -75,13 +75,20 @@ window.verDetalle = function(ordenId) {
     const contenedorModalBody = document.getElementById('modalBody');
     contenedorModalBody.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>`;
 
-    const elementoModal = document.getElementById('ordenModal');
-    const instanciaModal = new bootstrap.Modal(elementoModal);
-    instanciaModal.show();
+    const elementoModalDetalle = document.getElementById('ordenModal');
+    const instanciaModalDetalle = new bootstrap.Modal(elementoModalDetalle);
+    instanciaModalDetalle.show();
 
-    fetch(`/ordenes/detalle-fragmento/${ordenId}`)
+    fetch(`/ordenes/detalle-fragmento/${ordenId}?esModal=true`)
         .then(res => res.text())
-        .then(html => contenedorModalBody.innerHTML = html)
+        .then(html => {
+            contenedorModalBody.innerHTML = html;
+
+            const modalPago = contenedorModalBody.querySelector('.modal');
+            if (modalPago) {
+                document.body.appendChild(modalPago);
+            }
+        })
         .catch(err => contenedorModalBody.innerHTML = `<div class="alert alert-danger">${err.message}</div>`);
 }
 
