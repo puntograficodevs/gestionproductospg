@@ -63,11 +63,10 @@ public class OrdenController {
                                @RequestParam("productoId") Integer productoId,
                                @RequestParam(required = false) Long idMedioPago) {
         try {
-            // Solo convertimos el Map a String JSON en el Controller porque es un tema de "mapeo de datos"
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapperDeItems = new ObjectMapper();
             for (OrdenItem item : orden.getItems()) {
                 if (item.getDetalles() != null) {
-                    item.setDetallePersonalizado(mapper.writeValueAsString(item.getDetalles()));
+                    item.setDetallePersonalizado(mapperDeItems.writeValueAsString(item.getDetalles()));
                 }
             }
 
