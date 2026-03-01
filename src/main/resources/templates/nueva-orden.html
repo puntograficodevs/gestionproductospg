@@ -11,21 +11,25 @@
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<div id="selector-productos" class="container-fluid contenedor-botones-creacion" th:if="${esEdicion == null}">
+<div id="selector-productos" class="container contenedor-botones-creacion" th:if="${esEdicion == null}">
 
-    <div class="row mx-auto justify-content-center align-items-center fila-botones-creacion">
-        <div class="col-2 mb-3" th:each="p : ${productos}" th:if="${p.nombre != 'Sin categoria'}">
-            <button class="btn boton-creacion w-100" th:onclick="'seleccionarProducto(' + ${p.id} + ')'">
-                <div th:utext="${p.iconoSvg}"></div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 justify-content-center fila-botones-creacion">
+
+        <div class="col d-flex" th:each="p : ${productos}" th:if="${p.nombre != 'Sin categoria' and p.id != 33}">
+
+            <button class="btn boton-creacion w-100 h-100 d-flex flex-column align-items-center justify-content-center"
+                    th:onclick="'seleccionarProducto(' + ${p.id} + ')'">
+                <div class="icono-svg" th:utext="${p.iconoSvg}"></div>
                 <span th:text="${#strings.toUpperCase(p.nombre)}"></span>
             </button>
         </div>
     </div>
 
-    <div class="row mx-auto justify-content-center fila-botones-creacion mt-4">
-        <div class="col-2" th:each="p : ${productos}" th:if="${p.nombre == 'Sin categoria'}">
-            <button class="btn boton-creacion w-100" th:onclick="'seleccionarProducto(' + ${p.id} + ')'">
-                <div th:utext="${p.iconoSvg}"></div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 justify-content-center fila-botones-creacion mt-2">
+        <div class="col d-flex" th:each="p : ${productos}" th:if="${p.nombre == 'Sin categoria' and p.id != 33}">
+            <button class="btn boton-creacion w-100 h-100 d-flex flex-column align-items-center justify-content-center"
+                    th:onclick="'seleccionarProducto(' + ${p.id} + ')'">
+                <div class="icono-svg" th:utext="${p.iconoSvg}"></div>
                 <span th:text="${#strings.toUpperCase(p.nombre)}"></span>
             </button>
         </div>
