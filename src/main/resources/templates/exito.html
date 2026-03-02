@@ -80,27 +80,21 @@
                 <div class="card border contenedor-datos-orden-impresion h-100">
                     <div class="d-flex justify-content-between align-items-start">
                         <h6 th:text="${item.producto.nombre}" class="capitalize text-primary">Nombre Producto</h6>
-                        <span class="badge bg-light text-dark border">Cant: <span th:text="${item.cantidad}"></span></span>
+                        <span class="badge bg-light text-dark border" style="font-size: 18px">Cant: <span th:text="${item.cantidad}"></span></span>
                     </div>
                     <hr class="divider">
 
                     <div th:if="${item.getDetallesMap() != null}">
-                        <div th:each="entry : ${item.getDetallesMap()}">
-                            <th:block th:if="${entry.key != 'cantidad_producto' and
-                           entry.value != null and
-                           entry.value != '' and
-                           entry.value != 'OTRO' and
-                           entry.value != 'OTRA'}">
+                        <div th:each="campoDef : ${item.producto.getCamposList()}">
+                            <th:block th:with="valor=${item.getDetallesMap().get(campoDef.name)}">
 
-                                <p class="mb-1" style="font-size: 0.9rem;">
-                                    <strong th:with="label=${#strings.replace(#strings.replace(#strings.toLowerCase(entry.key), 'tamanio', 'tamaño'), 'disenio', 'diseño')}"
-                                            th:text="${entry.key == 'nombre_negocio' ? 'Material: ' : (#strings.capitalize(#strings.replace(label, '_', ' ')) + ': ')}">
-                                    </strong>
+                                <th:block th:if="${valor != null and valor != '' and valor != 'OTRO' and valor != 'OTRA'}">
+                                    <p class="mb-1" style="font-size: 0.9rem;">
+                                        <strong th:text="${campoDef.label.replace('*', '').trim() + ': '}"></strong>
 
-                                    <span th:text="${entry.value == 'on' or entry.value == true} ? 'Sí' :
-                                        (${entry.value == 'off' or entry.value == false} ? 'No' : ${entry.value})">
-                                    </span>
-                                </p>
+                                        <span th:text="${valor == 'on' or valor == true} ? 'Sí' : (${valor == 'off' or valor == false} ? 'No' : ${valor})"></span>
+                                    </p>
+                                </th:block>
                             </th:block>
                         </div>
                     </div>
