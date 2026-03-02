@@ -10,28 +10,28 @@
     "name": "docente",
     "tipo": "select",
     "label": "Docente",
-    "opciones": ["ROMINA CÓRDOBA", "LORENA TRAID"],
+    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY","LORENA TRAID", "LUCAS ESCUDERO", "MARISA AVARO", "ROMINA CÓRDOBA", "ROMINA VILLALBA"],
     "required": false
   },
   {
     "name": "anio",
     "tipo": "select",
     "label": "Año",
-    "opciones": ["4°", "NO APLICA"],
+    "opciones": ["1°", "2°", "3°", "4°", "NO APLICA"],
     "required": false
   },
   {
     "name": "materia",
     "tipo": "select",
     "label": "Materia",
-    "opciones": ["LENGUA Y LITERATURA", "NO APLICA"],
+    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS", "LENGUA Y LITERATURA", "QUÍMICA", "NO APLICA"],
     "required": false
   },
   {
     "name": "orientacion",
     "tipo": "select",
     "label": "Orientación",
-    "opciones": ["CIENCIAS NATURALES", "HUMANIDADES", "NO APLICA"],
+    "opciones": ["CIENCIAS NATURALES", "CIENCIAS SOCIALES" ,"HUMANIDADES", "NO APLICA"],
     "required": false
   },
   {

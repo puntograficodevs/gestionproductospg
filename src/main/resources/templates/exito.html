@@ -57,6 +57,7 @@
                     <p><strong>Vendedor/a: </strong><span th:text="${ordenCorrecta.empleado.nombre}"></span></p>
                     <p th:if="${ordenCorrecta.fechaMuestra != null}"><strong>Fecha de muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
                     <p><strong>Fecha de entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
+                    <p th:if="${ordenCorrecta.horaEntrega != ''}"><strong>Hora de entrega: </strong><span th:text="${ordenCorrecta.horaEntrega} + ' hs.'"></span></p>
                 </div>
             </div>
         </div>
