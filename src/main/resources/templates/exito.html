@@ -111,7 +111,8 @@
                               th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0), 0)}">
                         </span>
                     </p>
-                    <p class="mb-1" style="font-size: 0.95rem;">
+                    <p class="mb-1" style="font-size: 0.95rem;"
+                       th:if="${(item.precioDisenio ?: 0) != 0}">
                         <strong class="text-dark">Precio del diseño: </strong>
                         <span class="fw-bold text-success"
                               th:text="'$' + ${#numbers.formatInteger((item.precioDisenio ?: 0), 0)}">

@@ -56,7 +56,7 @@
                   <p th:if="${orden.items != null and !#lists.isEmpty(orden.items)}"
                       class="fw-bold mb-0"
                       style="font-size: 0.75rem; letter-spacing: 1px;"
-                      th:text="${#strings.toUpperCase(orden.items[0].producto.nombre)} + ' - #' + ${orden.id} ">
+                     th:text="'#' + ${orden.id} + ' - ' + ${#strings.toUpperCase(orden.items[0].producto.nombre)}">
                   </p>
                   <hr class="divider mt-auto w-75 ms-0">
                 </b>
