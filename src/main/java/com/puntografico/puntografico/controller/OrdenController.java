@@ -168,6 +168,7 @@ public class OrdenController {
         model.addAttribute("producto", producto);
         model.addAttribute("empleado", empleado);
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
+        model.addAttribute("listaMateriales", productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo());
         model.addAttribute("esEdicion", true);
 
         return "nueva-orden"; // Aseguráte que este sea el nombre de tu página principal de formulario

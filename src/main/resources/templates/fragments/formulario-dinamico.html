@@ -102,7 +102,7 @@
                     <input type="number" class="form-control" id="inputPrecioProd" name="subtotal"
                            th:value="${orden.subtotal}" placeholder="0" readonly>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" th:unless="${producto.id == 34}">
                     <label class="form-label">Precio diseño</label>
                     <input type="number" class="form-control" id="inputPrecioDisenio" name="precioDisenio"
                            th:value="${orden.precioDisenio}" placeholder="0" readonly>
@@ -152,7 +152,10 @@
     </form>
 </div>
 
-<div th:fragment="bloque-item-card(index)" class="card mb-3 item-producto" th:data-index="${index}">
+<div th:fragment="bloque-item-card(index)" class="card mb-3 item-producto"
+     th:data-index="${index}"
+     th:with="mapaDetalles=${orden.id != null && orden.items != null && orden.items.size() > index ? orden.items[index].getDetallesMap() : null}">
+
     <div class="card-header bg-light d-flex justify-content-between align-items-center"
          role="button" data-bs-toggle="collapse" th:data-bs-target="'#collapse-' + ${index}">
         <span class="fw-bold titulo-item" th:text="${producto.nombre}"></span>
@@ -195,20 +198,23 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col-12">
                         <label class="form-label fw-bold">Material</label>
+
+                        <input type="hidden" class="input-material-guardado" th:value="${mapaDetalles != null ? mapaDetalles['nombre_negocio'] : ''}">
+
                         <select class="form-select selector-material-final"
                                 th:id="'material-' + ${index}"
                                 th:name="'items[' + ${index} + '].detalles[nombre_negocio]'">
                             <option value="">-- Seleccione un material --</option>
-                            <option th:each="mat : ${listaMateriales}"
-                                    th:value="${mat.nombreNegocio}"
-                                    th:text="${mat.nombreNegocio}"
-                                    th:data-precio="${mat.precio}"
-                                    th:data-detalles="${mat.detallesProducto}"
-                                    style="display: none;"></option>
+                            <th:block th:each="mat : ${listaMateriales}">
+                                <option th:value="${mat.nombreNegocio}"
+                                        th:text="${mat.nombreNegocio}"
+                                        th:attr="data-precio=${mat.precio}, data-detalles=${mat.detallesProducto}"
+                                        th:selected="${mapaDetalles != null and mapaDetalles['nombre_negocio'] == mat.nombreNegocio}">
+                                </option>
+                            </th:block>
                         </select>
                     </div>
                 </div>
@@ -273,9 +279,9 @@
                            th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].cantidad : 1}" required>
                 </div>
 
-                <div class="col-md-12 border-top pt-3 mt-2 mb-3">
+                <div class="col-md-12 border-top pt-3 mt-2 mb-3" th:unless="${producto.id == 34}">
                     <div class="row align-items-end">
-                        <div class="col-md-6">
+                        <div class="col-md-6" >
                             <div class="form-check mb-2">
                                 <input class="form-check-input check-disenio-item" type="checkbox"
                                        th:name="'items[' + ${index} + '].conAdicionalDisenio'"

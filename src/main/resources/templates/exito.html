@@ -55,6 +55,8 @@
                     <p><strong>Total: </strong>$<span th:text="${ordenCorrecta.total}"></span></p>
                     <p><strong>Abonado: </strong>$<span th:text="${ordenCorrecta.abonado}"></span></p>
                     <p><strong>Vendedor/a: </strong><span th:text="${ordenCorrecta.empleado.nombre}"></span></p>
+                    <p th:if="${ordenCorrecta.fechaMuestra != null}"><strong>Fecha de muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
+                    <p><strong>Fecha de entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
                 </div>
             </div>
         </div>
@@ -104,7 +106,19 @@
 
                     <hr class="divider mt-auto">
                     <p class="mb-1" style="font-size: 0.95rem;">
-                        <strong class="text-dark">Precio: </strong>
+                        <strong class="text-dark">Precio del producto: </strong>
+                        <span class="fw-bold text-success"
+                              th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0), 0)}">
+                        </span>
+                    </p>
+                    <p class="mb-1" style="font-size: 0.95rem;">
+                        <strong class="text-dark">Precio del diseño: </strong>
+                        <span class="fw-bold text-success"
+                              th:text="'$' + ${#numbers.formatInteger((item.precioDisenio ?: 0), 0)}">
+                        </span>
+                    </p>
+                    <p class="mb-1" style="font-size: 0.95rem;">
+                        <strong class="text-dark">Precio final: </strong>
                         <span class="fw-bold text-success"
                               th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0) + (item.precioDisenio ?: 0), 0)}">
                         </span>
@@ -118,7 +132,7 @@
         </div>
 
         <div th:if="${ordenCorrecta.estadoOrden?.id == 4 and (session.empleadoLogueado?.rol?.id == 1 or session.empleadoLogueado?.rol?.id == 2)}" class="modal-footer mt-3">
-            <a th:href="@{/ordenes/editar-orden/{id}(id=${ordenCorrecta.id})}" class="btn btn-warning w-100 shadow-sm">
+            <a th:href="@{/ordenes/editar-orden/{id}(id=${ordenCorrecta.id})}" class="btn btn-danger w-100 shadow-sm">
                 <strong>Corregir ahora</strong>
             </a>
         </div>

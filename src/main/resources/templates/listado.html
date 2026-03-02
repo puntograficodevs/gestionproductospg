@@ -52,15 +52,22 @@
               <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
 
               <div class="card-body">
-                <b><p class="uppercase mb-1" th:text="'Orden #' + ${orden.id}"></p></b>
-                <ul class="mb-2 list-unstyled" style="font-size: 0.85rem;">
+                <b>
+                  <p th:if="${orden.items != null and !#lists.isEmpty(orden.items)}"
+                      class="fw-bold mb-0"
+                      style="font-size: 0.75rem; letter-spacing: 1px;"
+                      th:text="${#strings.toUpperCase(orden.items[0].producto.nombre)} + ' - #' + ${orden.id} ">
+                  </p>
+                  <hr class="divider mt-auto w-75 ms-0">
+                </b>
+                <ul class="mb-2 p-0" style="font-size: 0.85rem;">
                   <li><b>Cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
                   <li th:if="${orden.telefonoCliente != null and orden.telefonoCliente != ''}"><b>Tel:</b> <span th:text="${orden.telefonoCliente}"></span></li>
                   <li th:if="${orden.fechaMuestra != null}"><b>Muestra:</b> <span th:text="${orden.fechaMuestra}"></span></li>
                   <li><b>Entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
+                  <li><b>Total: </b><span th:text="'$' + ${orden.total}"></span></li>
                 </ul>
 
-                <b><p class="mb-1">Total: $<span th:text="${orden.total}"></span></p></b>
                 <b th:if="${orden.total - orden.abonado != 0}">
                   <p class="falta-abonar mb-2">Falta: $<span th:text="${orden.total - orden.abonado}"></span></p>
                 </b>

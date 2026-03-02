@@ -360,15 +360,46 @@ function manejarLogicaCantidadDinamica(index) {
 // --- 5. EVENTOS INICIALES ---
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Activar items existentes
+    // 1. LIMPIEZA INICIAL
+    document.querySelectorAll('.selector-material-final option').forEach(opt => {
+        if (opt.parentElement.tagName === 'SPAN') $(opt).unwrap();
+        $(opt).show().prop('disabled', false);
+    });
+
+    // 2. INICIALIZAR ITEMS EXISTENTES
     document.querySelectorAll('.item-producto').forEach(item => {
         const idx = item.getAttribute('data-index');
         inicializarLogicaItem(idx);
+        $(item).find('.filtro-escolar').first().trigger('change');
     });
 
-    recalcular();
+    // 3. FORZAR VALOR GUARDADO (El "Salvavidas")
+    setTimeout(() => {
+        document.querySelectorAll('.item-producto').forEach(item => {
+            const valorReal = item.querySelector('.input-material-guardado')?.value;
+            const select = item.querySelector('.selector-material-final');
 
-    // 2. Escuchar cambios globales (Checkboxes, inputs generales)
+            if (valorReal && valorReal !== "") {
+                console.log("Forzando selección de:", valorReal);
+                let opt = $(select).find(`option[value="${valorReal}"]`);
+
+                if (opt.length === 0) {
+                    opt = $(select).find(`option`).filter(function() {
+                        return $(this).text().trim() === valorReal.trim();
+                    });
+                }
+
+                if (opt.length > 0) {
+                    if (opt.parent().is('span')) opt.unwrap();
+                    opt.prop('disabled', false).show();
+                    $(select).val(opt.val()).trigger('change');
+                }
+            }
+        });
+        recalcular();
+    }, 400);
+
+    // 4. LISTENERS DE CAMBIOS GENERALES
     document.addEventListener('change', (e) => {
         if (e.target.id === 'checkMuestra') {
             const fila = document.getElementById('filaFechaMuestra');
@@ -381,42 +412,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.id === 'inputAbonado') recalcular();
     });
 
-    // 3. BLOQUEO DE ENVÍO (Validación 50% y Medio de Pago)
+    // 5. VALIDACIÓN ANTES DE GUARDAR
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('#btnGuardar');
         if (btn) {
-            const form = document.getElementById('formOrden');
-            if (!form) return;
-
-            // Referencia al elemento
             const inputAboElement = document.getElementById('inputAbonado');
-
-            // Si está vacío o no es un número, lo seteamos en 0 en el HTML
-            if (!inputAboElement.value || isNaN(inputAboElement.value)) {
-                inputAboElement.value = 0;
-            }
+            if (!inputAboElement.value || isNaN(inputAboElement.value)) inputAboElement.value = 0;
 
             const total = parseFloat(document.getElementById('inputTotal')?.value) || 0;
             const abonado = parseFloat(inputAboElement.value) || 0;
-            const checkCC = document.getElementById('esCC');
-            const esCC = checkCC ? checkCC.checked : false;
+            const esCC = document.getElementById('esCC')?.checked || false;
             const medioSeleccionado = document.querySelector('input[name="idMedioPago"]:checked');
 
-            // Validación Seña
-            if (!esCC && total > 0) {
-                const minimo = total / 2;
-                if (abonado < minimo) {
-                    e.preventDefault();
-                    alert(`Falta seña. El mínimo es $${minimo} (50%).`);
-                    return;
-                }
+            if (!esCC && total > 0 && abonado < (total / 2)) {
+                e.preventDefault();
+                alert(`Falta seña. El mínimo es $${total / 2} (50%).`);
+                return;
             }
 
-            // Validación Medio de Pago
             if (abonado > 0 && !medioSeleccionado) {
                 e.preventDefault();
                 alert("Si el cliente abonó, tenés que elegir el Medio de Pago.");
-                return;
             }
         }
     });
@@ -440,30 +456,26 @@ $(document).on('change', '.filtro-escolar', function() {
         const opt = $(this);
         if (opt.val() === "") return;
 
-        const det = JSON.parse(opt.attr('data-detalles'));
-        let coincide = true;
+        // Si el JSON falla, que no rompa el resto del código
+        let det = {};
+        try {
+            det = JSON.parse(opt.attr('data-detalles'));
+        } catch (e) { console.error("Error en JSON de material:", opt.val()); }
 
-        // Si el filtro tiene algo seleccionado, comparamos
+        let coincide = true;
         if (f.escuela && det.escuela !== f.escuela) coincide = false;
         if (f.docente && det.docente !== f.docente) coincide = false;
         if (f.anio && det.anio !== f.anio) coincide = false;
         if (f.materia && det.materia !== f.materia) coincide = false;
         if (f.orientacion && det.orientacion !== f.orientacion) coincide = false;
 
-        if (coincide) {
-            // Si está envuelto en un span, lo sacamos para que sea visible
-            if (opt.parent().is('span')) {
-                opt.unwrap();
-            }
-            opt.prop('disabled', false).show();
+        // REGLA: Si coincide O si es la que ya está seleccionada, la mostramos
+        if (coincide || opt.is(':selected')) {
+            opt.show().prop('disabled', false);
+            // Si estaba en un span (por el código viejo), la sacamos
+            if (opt.parent().is('span')) opt.unwrap();
         } else {
-            // Si NO está envuelto, lo envolvemos en un span oculto
-            if (!opt.parent().is('span')) {
-                opt.wrap('<span style="display:none"></span>');
-            }
-            opt.prop('disabled', true).hide();
-
-            if (opt.is(':selected')) selectMaterial.val("");
+            opt.hide().prop('disabled', true);
         }
     });
 });
