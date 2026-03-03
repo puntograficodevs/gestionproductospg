@@ -85,15 +85,25 @@
                     <hr class="divider">
 
                     <div th:if="${item.getDetallesMap() != null}">
+
+                        <th:block th:with="material=${item.getDetallesMap().get('nombre_negocio')}">
+                            <th:block th:if="${material != null and material != ''}">
+                                <p class="mb-1" style="font-size: 0.9rem;">
+                                    <strong class="text-dark">Material a imprimir: </strong>
+                                    <span th:text="${material}"></span>
+                                </p>
+                            </th:block>
+                        </th:block>
+
                         <div th:each="campoDef : ${item.producto.getCamposList()}">
-                            <th:block th:with="valor=${item.getDetallesMap().get(campoDef.name)}">
-
-                                <th:block th:if="${valor != null and valor != '' and valor != 'OTRO' and valor != 'OTRA'}">
-                                    <p class="mb-1" style="font-size: 0.9rem;">
-                                        <strong th:text="${campoDef.label.replace('*', '').trim() + ': '}"></strong>
-
-                                        <span th:text="${valor == 'on' or valor == true} ? 'Sí' : (${valor == 'off' or valor == false} ? 'No' : ${valor})"></span>
-                                    </p>
+                            <th:block th:if="${campoDef.name != 'nombre_negocio'}">
+                                <th:block th:with="valor=${item.getDetallesMap().get(campoDef.name)}">
+                                    <th:block th:if="${valor != null and valor != '' and valor != 'OTRO' and valor != 'OTRA'}">
+                                        <p class="mb-1" style="font-size: 0.9rem;">
+                                            <strong th:text="${campoDef.label.replace('*', '').trim() + ': '}"></strong>
+                                            <span th:text="${valor == 'on' or valor == true} ? 'Sí' : (${valor == 'off' or valor == false} ? 'No' : ${valor})"></span>
+                                        </p>
+                                    </th:block>
                                 </th:block>
                             </th:block>
                         </div>
