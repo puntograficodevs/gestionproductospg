@@ -24,14 +24,14 @@
     "name": "materia",
     "tipo": "select",
     "label": "Materia",
-    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS", "LENGUA Y LITERATURA", "QUÍMICA", "NO APLICA"],
+    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS C", "LENGUA Y LITERATURA", "QUÍMICA", "NO APLICA"],
     "required": false
   },
   {
     "name": "orientacion",
     "tipo": "select",
     "label": "Orientación",
-    "opciones": ["CIENCIAS NATURALES", "CIENCIAS SOCIALES" ,"HUMANIDADES", "NO APLICA"],
+    "opciones": ["1°1°", "1°2°","CIENCIAS NATURALES", "CIENCIAS SOCIALES" ,"HUMANIDADES", "NO APLICA"],
     "required": false
   },
   {

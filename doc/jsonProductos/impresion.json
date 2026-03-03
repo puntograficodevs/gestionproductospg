@@ -59,7 +59,7 @@
     "placeholder": "Ej: Que las hojas sean cuadriculadas"
   },
   {
-    "name": "cantidad_producto",
+    "name": "cantidad_paginas",
     "tipo": "number",
     "label": "Cantidad de páginas *",
     "placeholder": "Ej: 200",
