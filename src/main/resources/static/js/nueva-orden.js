@@ -93,7 +93,7 @@ function confirmarItem(index) {
     const inputPrecio = item.querySelector('.input-precio-item');
 
     if ((parseFloat(inputPrecio.value) || 0) <= 0) {
-        alert("Cargá un precio válido antes de confirmar.");
+        alert("Cargá un precio de producto válido antes de confirmar.");
         return;
     }
 
@@ -194,8 +194,8 @@ function buscarPrecioCatalogo(index) {
     });
 
     // Lógica especial para impresiones
-    if (esImpresion && detalles["cantidad_producto"]) {
-        const paginas = parseInt(detalles["cantidad_producto"]) || 0;
+    if (esImpresion && detalles["cantidad_paginas"]) {
+        const paginas = parseInt(detalles["cantidad_paginas"]) || 0;
         const limite = (detalles["tipo_faz"] === "DOBLE FAZ") ? 100 : 50;
         detalles["rango_impresion"] = (paginas <= limite) ? "1-LIMITE" : "LIMITE-MAS";
     }
@@ -219,7 +219,7 @@ function buscarPrecioCatalogo(index) {
         const vCantFinal = parseInt(inputCantReal.value) || 1;
 
         if (esImpresion) {
-            const paginas = parseInt(detalles["cantidad_producto"]) || 1;
+            const paginas = parseInt(detalles["cantidad_paginas"]) || 1;
             const costoHojas = precioRecibido * paginas;
             let costoAnillado = (detalles["es_anillado"] === true) ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
             precioFinal = (costoHojas + costoAnillado) * vCantFinal;
