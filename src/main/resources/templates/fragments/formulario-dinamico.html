@@ -300,7 +300,7 @@
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">Precio ($) *</label>
+                    <label class="form-label fw-bold">Precio del producto ($) *</label>
                     <input type="number" class="form-control input-precio-item" placeholder="0"
                            th:name="'items[' + ${index} + '].precioUnitario'"
                            th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].precioUnitario : ''}" required>
