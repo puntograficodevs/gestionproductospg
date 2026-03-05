@@ -471,12 +471,18 @@ $(document).on('change', '.filtro-escolar', function() {
 
         // REGLA: Si coincide O si es la que ya está seleccionada, la mostramos
         if (coincide || opt.is(':selected')) {
-            opt.show().prop('disabled', false);
-            // Si estaba en un span (por el código viejo), la sacamos
-            if (opt.parent().is('span')) opt.unwrap();
-        } else {
-            opt.hide().prop('disabled', true);
-        }
+                // MOSTRAR: Si está envuelta en un span, la liberamos
+                if (opt.parent().is('span')) {
+                    opt.unwrap();
+                }
+                opt.show().prop('disabled', false);
+            } else {
+                // OCULTAR: La deshabilitamos y la envolvemos en un span invisible
+                opt.prop('disabled', true).hide();
+                if (!opt.parent().is('span')) {
+                    opt.wrap('<span style="display:none;"></span>');
+                }
+            }
     });
 });
 

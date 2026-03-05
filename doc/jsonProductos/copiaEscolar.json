@@ -3,28 +3,28 @@
     "name": "escuela",
     "tipo": "select",
     "label": "Escuela o institución",
-    "opciones": ["FAPE", "HOME"],
+    "opciones": ["ESC. 710", "ESC. 750","ESC. 789","ESC. DE LA COSTA","FAPE", "HOME"],
     "required": false
   },
   {
     "name": "docente",
     "tipo": "select",
     "label": "Docente",
-    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY","LORENA TRAID", "LUCAS ESCUDERO", "MARISA AVARO", "ROMINA CÓRDOBA", "ROMINA VILLALBA"],
+    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY", "DIEGO CACCIAVILLANI","LORENA TRAID", "LUCAS ESCUDERO", "MARISA AVARO", "PAZ RIVERA", "ROMINA CÓRDOBA", "ROMINA VILLALBA", "SOLANA GUICHANDUT"],
     "required": false
   },
   {
     "name": "anio",
     "tipo": "select",
     "label": "Año",
-    "opciones": ["1°", "2°", "3°", "4°", "NO APLICA"],
+    "opciones": ["1°", "2°", "3°", "4°", "5°", "6°", "NO APLICA"],
     "required": false
   },
   {
     "name": "materia",
     "tipo": "select",
     "label": "Materia",
-    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS C", "LENGUA Y LITERATURA", "QUÍMICA", "NO APLICA"],
+    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS B","INGLÉS C", "LENGUA Y LITERATURA", "PROBLEMÁTICA DEL MUNDO CONTEMPORÁNEO", "PROYECTO DE INVESTIGACIÓN", "PROYECTO SOLIDARIO", "PROYECTO VOCACIONAL","QUÍMICA", "NO APLICA"],
     "required": false
   },
   {
@@ -49,9 +49,11 @@
     "required": true
   },
   {
-    "name": "es_anillado",
-    "tipo": "checkbox",
-    "label": "Anillado"
+    "name": "terminacion",
+    "tipo": "select",
+    "label": "Terminación * ",
+    "opciones": ["ANILLADO", "ABROCHADO", "COPIAS SUELTAS"],
+    "required": true
   },
   {
     "name": "enlace_archivo",
