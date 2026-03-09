@@ -10,7 +10,7 @@
     "name": "docente",
     "tipo": "select",
     "label": "Docente",
-    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY", "DIEGO CACCIAVILLANI","LORENA TRAID", "LUCAS ESCUDERO", "MARISA AVARO", "PAZ RIVERA", "ROMINA CÓRDOBA", "ROMINA VILLALBA", "SOLANA GUICHANDUT"],
+    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY", "DAGMAR ELSA BOTARO", "DIEGO CACCIAVILLANI","JESUS PAYOTTE", "LORENA TRAID", "LUCAS ESCUDERO", "MACARENA GONZALEZ", "MARISA AVARO", "NATALIA CAINELLI", "NORALI VIZCAY", "PAZ RIVERA", "ROMINA CÓRDOBA", "ROMINA VILLALBA", "SOLANA GUICHANDUT", "TERESITA"],
     "required": false
   },
   {
@@ -24,14 +24,14 @@
     "name": "materia",
     "tipo": "select",
     "label": "Materia",
-    "opciones": ["ARTES VISUALES", "FÍSICO QUÍMICA", "HISTORIA", "INGLÉS B","INGLÉS C", "LENGUA Y LITERATURA", "PROBLEMÁTICA DEL MUNDO CONTEMPORÁNEO", "PROYECTO DE INVESTIGACIÓN", "PROYECTO SOLIDARIO", "PROYECTO VOCACIONAL","QUÍMICA", "NO APLICA"],
+    "opciones": ["ARTES VISUALES", "CIENCIAS SOCIALES", "FILOSOFÍA", "FÍSICO QUÍMICA", "FRANCÉS", "HISTORIA", "INGLÉS A", "INGLÉS B","INGLÉS C", "LENGUA Y LITERATURA", "MATEMÁTICA", "PROBLEMÁTICA DEL MUNDO CONTEMPORÁNEO", "PROYECTO DE INVESTIGACIÓN", "PROYECTO SOLIDARIO", "PROYECTO VOCACIONAL", "PSICOLOGÍA", "QUÍMICA", "NO APLICA"],
     "required": false
   },
   {
     "name": "orientacion",
     "tipo": "select",
     "label": "Orientación",
-    "opciones": ["1°1°", "1°2°","CIENCIAS NATURALES", "CIENCIAS SOCIALES" ,"HUMANIDADES", "NO APLICA"],
+    "opciones": ["1°1°", "1°2°", "2°1°", "2°2°","3°1°", "3°2°", "CIENCIAS NATURALES", "CIENCIAS SOCIALES" ,"HUMANIDADES", "NO APLICA"],
     "required": false
   },
   {
@@ -45,7 +45,7 @@
     "name": "tipo_faz",
     "tipo": "select",
     "label": "Tipo de faz * ",
-    "opciones": ["SIMPLE FAZ", "DOBLE FAZ"],
+    "opciones": ["SIMPLE FAZ", "DOBLE FAZ", "DOS PÁGINAS POR CARILLA"],
     "required": true
   },
   {

@@ -98,7 +98,7 @@
                         <div th:each="campoDef : ${item.producto.getCamposList()}">
                             <th:block th:if="${campoDef.name != 'nombre_negocio'}">
                                 <th:block th:with="valor=${item.getDetallesMap().get(campoDef.name)}">
-                                    <th:block th:if="${valor != null and valor != '' and valor != 'OTRO' and valor != 'OTRA'}">
+                                    <th:block th:if="${valor != null and valor != '' and valor != 'OTRO' and valor != 'OTRA' and valor != 'NO APLICA'}">
                                         <p class="mb-1" style="font-size: 0.9rem;">
                                             <strong th:text="${campoDef.label.replace('*', '').trim() + ': '}"></strong>
                                             <span th:text="${valor == 'on' or valor == true} ? 'Sí' : (${valor == 'off' or valor == false} ? 'No' : ${valor})"></span>

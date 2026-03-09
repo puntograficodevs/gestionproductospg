@@ -489,30 +489,53 @@ $(document).on('change', '.filtro-escolar', function() {
 // 2. Al elegir el Material: Pre-cargar campos técnicos y precio
 // Cuando elegís un libro, llena el precio y los detalles técnicos de abajo
 $(document).on('change', '.selector-material-final', function() {
-    const opt = $(this).find(':selected');
+    const select = $(this);
+    const opt = select.find(':selected');
     if (opt.val() === "") return;
 
-    const card = $(this).closest('.item-producto');
+    const card = select.closest('.item-producto');
+    const index = card.attr('data-index');
+
+    // 1. Extraemos la data del catálogo
     const det = JSON.parse(opt.attr('data-detalles'));
     const precioBase = parseFloat(opt.attr('data-precio'));
 
-    // Guardamos el precio unitario en un atributo propio para no perderlo al multiplicar
-    const inputPrecio = card.find('.input-precio-item');
-    inputPrecio.attr('data-precio-base', precioBase);
-    inputPrecio.prop('readonly', true);
+    // 2. Limpiamos campos automáticos previos (para que no se acumulen si cambia de libro)
+    card.find('.detalle-automatico-catalogo').remove();
 
-    // 2. Marca los radios (color, faz) y el checkbox (anillado)
+    // 3. Procesamos cada detalle del libro
     Object.keys(det).forEach(key => {
         const valor = det[key];
-        const input = card.find(`[name*="detalles[${key}]"]`);
 
-        if (input.attr('type') === 'radio') {
-            card.find(`[name*="detalles[${key}]"][value="${valor}"]`).prop('checked', true);
-        } else if (input.attr('type') === 'checkbox') {
-            input.prop('checked', valor === "true" || valor === "on" || valor === true);
+        // Buscamos si ya existe un input en el HTML para este detalle
+        // Tu HTML usa el formato: items[0].detalles[nombre]
+        let inputExistente = card.find(`[name="items[${index}].detalles[${key}]"]`);
+
+        if (inputExistente.length > 0) {
+            // Si ya existe (ej: tipo_faz), lo actualizamos
+            if (inputExistente.attr('type') === 'radio') {
+                card.find(`[name="items[${index}].detalles[${key}]"][value="${valor}"]`).prop('checked', true);
+            } else if (inputExistente.attr('type') === 'checkbox') {
+                inputExistente.prop('checked', (valor === "on" || valor === true || valor === "true"));
+            } else {
+                inputExistente.val(valor);
+            }
+        } else {
+            // SI NO EXISTE (ej: escuela, docente), lo creamos oculto
+            // Esto hace que Spring lo agregue al Map de detalles automáticamente
+            $('<input>').attr({
+                type: 'hidden',
+                name: `items[${index}].detalles[${key}]`,
+                value: valor,
+                class: 'detalle-automatico-catalogo'
+            }).appendTo(card);
         }
     });
 
-    // 3. Actualiza los totales de la orden
+    // 4. Sincronizamos el precio
+    const inputPrecio = card.find('.input-precio-item');
+    inputPrecio.attr('data-precio-base', precioBase);
+
+    // Llamamos a recalcular para que aplique Precio * Cantidad
     recalcular();
 });
