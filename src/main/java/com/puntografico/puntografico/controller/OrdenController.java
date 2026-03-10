@@ -61,10 +61,10 @@ public class OrdenController {
                                @RequestParam(required = false) Long idMedioPago) {
         try {
             ObjectMapper mapperDeItems = new ObjectMapper();
+            orden.getItems().removeIf(item -> item.getDetalles() == null || item.getDetalles().isEmpty());
+
             for (OrdenItem item : orden.getItems()) {
-                if (item.getDetalles() != null) {
-                    item.setDetallePersonalizado(mapperDeItems.writeValueAsString(item.getDetalles()));
-                }
+                item.setDetallePersonalizado(mapperDeItems.writeValueAsString(item.getDetalles()));
             }
 
             Orden ordenGuardada = ordenService.guardar(orden, productoId, idMedioPago);
@@ -86,6 +86,10 @@ public class OrdenController {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID de producto inválido:" + id));
+        List<ProductoCatalogo> listaMateriales = productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo();
+        listaMateriales.sort((m1, m2) ->
+                m1.getNombreNegocio().compareToIgnoreCase(m2.getNombreNegocio())
+        );
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -101,7 +105,7 @@ public class OrdenController {
 
         model.addAttribute("index", index); // <--- Lo pasamos a la vista
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
-        model.addAttribute("listaMateriales", productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo());
+        model.addAttribute("listaMateriales", listaMateriales);
         model.addAttribute("producto", producto);
         model.addAttribute("orden", new Orden());
         model.addAttribute("empleado", empleado);

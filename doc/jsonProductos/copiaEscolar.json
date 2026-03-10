@@ -3,28 +3,28 @@
     "name": "escuela",
     "tipo": "select",
     "label": "Escuela o institución",
-    "opciones": ["ESC. 710", "ESC. 750","ESC. 789","ESC. DE LA COSTA","FAPE", "HOME"],
+    "opciones": ["ESC. 710", "ESC. 750","ESC. 789", "ESC. DE LA COSTA","FAPE", "HIGH STREET INSTITUTE", "HOME", "IMI - INSTITUTO MUNICIPAL DE INGLÉS", "INGLÉS VARIOS", "INICIAL", "UNIVERSIDAD DEL CHUBUT"],
     "required": false
   },
   {
     "name": "docente",
     "tipo": "select",
     "label": "Docente",
-    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY", "DAGMAR ELSA BOTARO", "DIEGO CACCIAVILLANI","JESUS PAYOTTE", "LORENA TRAID", "LUCAS ESCUDERO", "MACARENA GONZALEZ", "MARISA AVARO", "NATALIA CAINELLI", "NORALI VIZCAY", "PAZ RIVERA", "ROMINA CÓRDOBA", "ROMINA VILLALBA", "SOLANA GUICHANDUT", "TERESITA"],
+    "opciones": ["BERTERREIX SILVINA", "CECILIA LARREGUY", "DAGMAR ELSA BOTARO", "DIEGO CACCIAVILLANI","JESUS PAYOTTE", "LORENA TRAID", "LUCAS ESCUDERO", "MACARENA GONZALEZ", "MARISA AVARO", "NATALIA CAINELLI", "NORALI VIZCAY", "PAZ RIVERA", "ROMINA CÓRDOBA", "ROMINA VILLALBA", "SOLANA GUICHANDUT", "TERESITA", "NO APLICA"],
     "required": false
   },
   {
     "name": "anio",
     "tipo": "select",
     "label": "Año",
-    "opciones": ["1°", "2°", "3°", "4°", "5°", "6°", "NO APLICA"],
+    "opciones": ["1°", "2°", "3°", "4°", "5°", "6°", "INICIAL", "NO APLICA"],
     "required": false
   },
   {
     "name": "materia",
     "tipo": "select",
     "label": "Materia",
-    "opciones": ["ARTES VISUALES", "CIENCIAS SOCIALES", "FILOSOFÍA", "FÍSICO QUÍMICA", "FRANCÉS", "HISTORIA", "INGLÉS A", "INGLÉS B","INGLÉS C", "LENGUA Y LITERATURA", "MATEMÁTICA", "PROBLEMÁTICA DEL MUNDO CONTEMPORÁNEO", "PROYECTO DE INVESTIGACIÓN", "PROYECTO SOLIDARIO", "PROYECTO VOCACIONAL", "PSICOLOGÍA", "QUÍMICA", "NO APLICA"],
+    "opciones": ["ARTES VISUALES", "CIENCIAS SOCIALES", "ENFERMERÍA", "FILOSOFÍA", "FÍSICO QUÍMICA", "FRANCÉS", "HISTORIA", "INGLÉS A", "INGLÉS B","INGLÉS C", "LENGUA Y LITERATURA", "MATEMÁTICA", "PROBLEMÁTICA DEL MUNDO CONTEMPORÁNEO", "PROYECTO DE INVESTIGACIÓN", "PROYECTO SOLIDARIO", "PROYECTO VOCACIONAL", "PSICOLOGÍA", "QUÍMICA", "NO APLICA"],
     "required": false
   },
   {
