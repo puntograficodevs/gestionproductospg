@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +52,10 @@ public class ListadoController {
 
     private List<Orden> filtrarYOrdenar(List<Orden> ordenes, Long estadoId, Empleado empleado) {
         return ordenes.stream()
+                // 1. Filtrar por el estado (Pendiente, En Proceso, etc.)
                 .filter(o -> o.getEstadoOrden() != null && o.getEstadoOrden().getId().equals(estadoId))
+
+                // 2. Mantener la restricción del Rol 5 (no ve Producto ID 12)
                 .filter(o -> {
                     if (empleado.getRol().getId() == 5L) {
                         return o.getItems().stream()
@@ -59,8 +63,50 @@ public class ListadoController {
                     }
                     return true;
                 })
-                .sorted(Comparator.comparing(Orden::getId).reversed())
+
+                // 3. Ordenar por Próximo a Vencer (Fecha DESC + Hora DESC)
+                .sorted(Comparator.comparing(Orden::getFechaEntrega)
+                        .thenComparing(o -> parsearHora(o.getHoraEntrega())))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Normaliza los Strings de hora para que Java pueda compararlos.
+     * Formatos aceptados: "11:30", "1130", "9:00", "9".
+     */
+    private LocalTime parsearHora(String horaStr) {
+        if (horaStr == null || horaStr.trim().isEmpty()) {
+            // Si no tiene hora, lo ponemos al final del día (23:59)
+            // para que no tape a las que sí tienen horario definido.
+            return LocalTime.MAX;
+        }
+
+        try {
+            // Limpiamos puntos, dos puntos y espacios
+            String limpia = horaStr.replace(":", "").replace(".", "").trim();
+
+            int horas, minutos = 0;
+
+            if (limpia.length() <= 2) {
+                // Caso "9", "11", "20"
+                horas = Integer.parseInt(limpia);
+            } else if (limpia.length() == 3) {
+                // Caso "930" -> 9:30
+                horas = Integer.parseInt(limpia.substring(0, 1));
+                minutos = Integer.parseInt(limpia.substring(1));
+            } else {
+                // Caso "1130" -> 11:30
+                horas = Integer.parseInt(limpia.substring(0, 2));
+                minutos = Integer.parseInt(limpia.substring(2));
+            }
+
+            // Validación básica de rangos
+            return LocalTime.of(Math.min(horas, 23), Math.min(minutos, 59));
+
+        } catch (Exception e) {
+            // Ante cualquier error de formato, lo mandamos al final del día
+            return LocalTime.MAX;
+        }
     }
 
     private Comparator<Producto> crearComparadorProductos() {

@@ -64,7 +64,14 @@
                   <li><b>Cliente:</b> <span th:text="${orden.nombreCliente}"></span></li>
                   <li th:if="${orden.telefonoCliente != null and orden.telefonoCliente != ''}"><b>Tel:</b> <span th:text="${orden.telefonoCliente}"></span></li>
                   <li th:if="${orden.fechaMuestra != null}"><b>Muestra:</b> <span th:text="${orden.fechaMuestra}"></span></li>
-                  <li><b>Entrega:</b> <span th:text="${orden.fechaEntrega}"></span></li>
+                  <li><b>Fecha entrega:</b> <span th:text="${#temporals.format(orden.fechaEntrega, 'dd/MM/yyyy')}"></span></span></li>
+                  <li th:if="${orden.horaEntrega != ''}"><b>Hora entrega: </b>
+                    <span th:with="limpia=${orden.horaEntrega.replace(':', '').trim()},
+                      h=${limpia.length() <= 2 ? limpia : (limpia.length() == 3 ? limpia.substring(0,1) : limpia.substring(0,2))},
+                      m=${limpia.length() <= 2 ? '00' : (limpia.length() == 3 ? limpia.substring(1) : limpia.substring(2))}"
+                      th:text="${(h.startsWith('0') && h.length() > 1 ? h.substring(1) : h) + ':' + m + ' hs.'}">
+                    </span>
+                  </li>
                   <li><b>Total: </b><span th:text="'$' + ${orden.total}"></span></li>
                 </ul>
 

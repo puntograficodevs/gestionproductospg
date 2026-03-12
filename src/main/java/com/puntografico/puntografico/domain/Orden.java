@@ -38,6 +38,7 @@ public class Orden {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaEntrega;
 
+    @Column(nullable = false)
     private String horaEntrega;
 
     @Column(nullable = false)
