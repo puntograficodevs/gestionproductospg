@@ -113,7 +113,7 @@
                         th:classappend="'btn-columna-' + ${#strings.toLowerCase(#strings.replace(columna, ' ', '-'))}"
                         data-bs-toggle="modal" th:attr="data-bs-target='#modalCargarPago-' + ${orden.id}">Cargar Pago</button>
 
-                <div th:replace="fragments/cargar-pago :: cargar-pago(${orden.id}, ${listaMediosDePago})"></div>
+                <div th:replace="fragments/cargar-pago :: cargar-pago(${orden}, ${listaMediosDePago})"></div>
                 <div th:if="${columna == 'Sin Hacer'}" th:replace="fragments/enviar-a-corregir :: enviar-a-corregir(${orden.id})"></div>
               </div>
             </div>

@@ -163,7 +163,7 @@
             </div>
         </div>
 
-        <div th:if="${param.esModal}" th:replace="fragments/cargar-pago :: cargar-pago(${ordenCorrecta.id}, ${listaMediosDePago})"></div>
+        <div th:if="${param.esModal}" th:replace="fragments/cargar-pago :: cargar-pago(${ordenCorrecta}, ${listaMediosDePago})"></div>
     </th:block>
 </div>
 
