@@ -52,10 +52,10 @@ public class ListadoController {
 
     private List<Orden> filtrarYOrdenar(List<Orden> ordenes, Long estadoId, Empleado empleado) {
         return ordenes.stream()
-                // 1. Filtrar por el estado (Pendiente, En Proceso, etc.)
+                // 1. Filtrado por estado
                 .filter(o -> o.getEstadoOrden() != null && o.getEstadoOrden().getId().equals(estadoId))
 
-                // 2. Mantener la restricción del Rol 5 (no ve Producto ID 12)
+                // 2. Restricción Rol 5 (no ve Producto ID 12)
                 .filter(o -> {
                     if (empleado.getRol().getId() == 5L) {
                         return o.getItems().stream()
@@ -64,9 +64,19 @@ public class ListadoController {
                     return true;
                 })
 
-                // 3. Ordenar por Próximo a Vencer (Fecha DESC + Hora DESC)
-                .sorted(Comparator.comparing(Orden::getFechaEntrega)
-                        .thenComparing(o -> parsearHora(o.getHoraEntrega())))
+                // 3. Ordenamiento Diferenciado
+                .sorted((o1, o2) -> {
+                    // EXCEPCIÓN: Si es maricommunity, ordenamos por ID descendente (lo último primero)
+                    if ("maricommunity".equalsIgnoreCase(empleado.getUsername())) {
+                        return o2.getId().compareTo(o1.getId());
+                    }
+
+                    // PARA TODOS LOS DEMÁS: Orden por Fecha y Hora (Próximo a vencer)
+                    int fechaComp = o1.getFechaEntrega().compareTo(o2.getFechaEntrega());
+                    if (fechaComp != 0) return fechaComp;
+
+                    return parsearHora(o1.getHoraEntrega()).compareTo(parsearHora(o2.getHoraEntrega()));
+                })
                 .collect(Collectors.toList());
     }
 
