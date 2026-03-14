@@ -102,7 +102,7 @@
                     <input type="number" class="form-control" id="inputPrecioProd" name="subtotal"
                            th:value="${orden.subtotal}" placeholder="0" readonly>
                 </div>
-                <div class="col-md-4" th:unless="${producto.id == 34}">
+                <div class="col-md-4" th:unless="${producto.id == 34 or producto.id == 35}">
                     <label class="form-label">Precio diseño</label>
                     <input type="number" class="form-control" id="inputPrecioDisenio" name="precioDisenio"
                            th:value="${orden.precioDisenio}" placeholder="0" readonly>
@@ -279,7 +279,7 @@
                            th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].cantidad : 1}" required>
                 </div>
 
-                <div class="col-md-12 border-top pt-3 mt-2 mb-3" th:unless="${producto.id == 34}">
+                <div class="col-md-12 border-top pt-3 mt-2 mb-3" th:unless="${producto.id == 34 or producto.id == 35}">
                     <div class="row align-items-end">
                         <div class="col-md-6" >
                             <div class="form-check mb-2">

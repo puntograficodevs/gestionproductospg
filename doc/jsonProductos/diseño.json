@@ -1,0 +1,20 @@
+[
+  {
+    "name": "disenio",
+    "tipo": "text",
+    "label": "Tipo de diseño *",
+    "placeholder": "Ingresá el tipo de diseño aquí"
+  },
+  {
+    "name": "detalle",
+    "tipo": "text",
+    "label": "Detalle",
+    "placeholder": "Ingresá el detalle de este diseño"
+  },
+  {
+    "name": "enlace",
+    "tipo": "text",
+    "label": "Enlace",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  }
+]
