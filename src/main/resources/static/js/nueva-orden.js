@@ -91,26 +91,67 @@ function inicializarLogicaItem(index) {
 function confirmarItem(index) {
     const item = document.querySelector(`.item-producto[data-index="${index}"]`);
     const inputPrecio = item.querySelector('.input-precio-item');
+    const inputProductoId = document.getElementById('currentProductoId');
 
     if ((parseFloat(inputPrecio.value) || 0) <= 0) {
         alert("Cargá un precio de producto válido antes de confirmar.");
         return;
     }
 
+    // 1. Colapsamos la tarjeta
     const collapseEl = item.querySelector('.collapse');
     if (collapseEl) bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
 
     document.getElementById('btn-agregar-otro').classList.remove('d-none');
 
+    // 2. Calculamos el total (Producto + Diseño)
     const pProd = parseFloat(inputPrecio.value) || 0;
     const pDis = parseFloat(item.querySelector('.input-disenio-item')?.value) || 0;
     const sumaItem = Math.ceil(pProd + pDis);
 
+    // 3. Lógica para el TÍTULO DINÁMICO
     const tit = item.querySelector('.titulo-item');
-    if (!tit.dataset.baseText) tit.dataset.baseText = tit.innerText.split(' - $')[0];
-    tit.innerText = `${tit.dataset.baseText} - $${sumaItem}`;
+    let nombreAMostrar = "";
 
+    // Si es Copias Escolares (ID 34), intentamos sacar el nombre del material
+    if (inputProductoId.value == "34") {
+        const selectMaterial = item.querySelector('.selector-material-final');
+        const materialSeleccionado = selectMaterial.options[selectMaterial.selectedIndex]?.text;
+
+        // Si eligió un material, usamos ese nombre. Si no, el genérico.
+        nombreAMostrar = (materialSeleccionado && selectMaterial.value !== "")
+                         ? materialSeleccionado
+                         : "Copias Escolares";
+    } else {
+        // Para el resto de los productos, usamos el nombre base que ya tenía
+        if (!tit.dataset.baseText) {
+            tit.dataset.baseText = tit.innerText.split(' - $')[0];
+        }
+        nombreAMostrar = tit.dataset.baseText;
+    }
+
+    // 4. Actualizamos el HTML con el nombre y el precio (con el salto de línea)
+    // Usamos innerHTML para que tome el <br>
+    tit.innerHTML = `${nombreAMostrar} - <span class="text-success">Precio: $${sumaItem}</span>`;
+
+    recolorarTarjetaConfirmada(item); // Opcional: una pintadita para saber que está OK
     recalcular();
+}
+
+function recolorarTarjetaConfirmada(item) {
+    const header = item.querySelector('.card-header');
+
+    // Le quitamos las clases por defecto y le ponemos un verde sutil
+    header.classList.remove('bg-light');
+    header.style.backgroundColor = '#e8f5e9'; // Un verde muy clarito (Material Design)
+    header.style.borderBottom = '2px solid #a5d6a7'; // Una línea verde un poco más fuerte
+
+    // Cambiamos el ícono de "flechita" por un tilde de éxito (opcional)
+    const icon = header.querySelector('i');
+    if (icon) {
+        icon.classList.remove('bi-chevron-down');
+        icon.classList.add('bi-check-circle-fill', 'text-success');
+    }
 }
 
 function duplicarItemActual() {

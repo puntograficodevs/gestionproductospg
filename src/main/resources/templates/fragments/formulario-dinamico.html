@@ -22,41 +22,41 @@
             <h5 class="mt-4 datos-del-cliente">Datos del Cliente</h5>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Nombre del cliente *</label>
+                    <label class="fw-bold form-label">Nombre del cliente *</label>
                     <input type="text" class="form-control" th:field="*{nombreCliente}" placeholder="Ej: Juan Pérez" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Teléfono *</label>
+                    <label class="fw-bold form-label">Teléfono *</label>
                     <input type="number" class="form-control" th:field="*{telefonoCliente}" placeholder="2804112233" required>
                 </div>
                 <div class="col-md-2 d-flex align-items-end" th:unless="${producto.id == 33}">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" th:field="*{esCuentaCorriente}" id="esCC">
-                        <label class="form-check-label" for="esCC">¿CC?</label>
+                        <label class="fw-bold form-check-label" for="esCC">¿CC?</label>
                     </div>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Fecha de entrega *</label>
+                    <label class="fw-bold form-label">Fecha de entrega *</label>
                     <input type="date" class="form-control" th:field="*{fechaEntrega}" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Hora de entrega *</label>
+                    <label class="fw-boldform-label">Hora de entrega *</label>
                     <input type="text" class="form-control" th:field="*{horaEntrega}" placeholder="Ej: 18:00" required>
                 </div>
                 <div class="col-md-2 d-flex align-items-end" th:unless="${producto.id == 33}">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="checkMuestra" th:checked="${orden.fechaMuestra != null}">
-                        <label class="form-check-label" for="checkMuestra">¿Muestra?</label>
+                        <label class="fw-bold form-check-label" for="checkMuestra">¿Muestra?</label>
                     </div>
                 </div>
             </div>
 
             <div class="row mb-3" th:classappend="${orden.fechaMuestra == null ? 'd-none' : ''}" id="filaFechaMuestra">
                 <div class="col-md-6">
-                    <label class="form-label">Fecha de muestra</label>
+                    <label class="fw-bold form-label">Fecha de muestra</label>
                     <input type="date" class="form-control" th:field="*{fechaMuestra}">
                 </div>
             </div>
@@ -91,53 +91,53 @@
                 <div class="col-md-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="checkFactura" th:field="*{necesitaFactura}">
-                        <label class="form-check-label" for="checkFactura">¿Necesita factura?</label>
+                        <label class="fw-bold form-check-label" for="checkFactura">¿Necesita factura?</label>
                     </div>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label class="form-label">Subtotal producto *</label>
+                    <label class="fw-bold form-label">Subtotal producto *</label>
                     <input type="number" class="form-control" id="inputPrecioProd" name="subtotal"
                            th:value="${orden.subtotal}" placeholder="0" readonly>
                 </div>
                 <div class="col-md-4" th:unless="${producto.id == 34 or producto.id == 35}">
-                    <label class="form-label">Precio diseño</label>
+                    <label class="fw-bold form-label">Precio diseño</label>
                     <input type="number" class="form-control" id="inputPrecioDisenio" name="precioDisenio"
                            th:value="${orden.precioDisenio}" placeholder="0" readonly>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Precio impuestos</label>
+                    <label class="fw-bold form-label">Precio impuestos</label>
                     <input type="number" class="form-control" id="inputPrecioImpuestos" value="0" readonly>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Total *</label>
+                    <label class="fw-bold form-label fw-bold">Total *</label>
                     <input type="number" class="form-control fw-bold bg-warning-subtle" th:field="*{total}" id="inputTotal" readonly>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label text-success fw-bold">Abonado *</label>
+                    <label class="fw-bold form-label text-success fw-bold">Abonado *</label>
                     <input type="number" class="form-control border-success" th:field="*{abonado}" id="inputAbonado">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Resta</label>
+                    <label class="fw-bold form-label">Resta</label>
                     <input type="number" class="form-control bg-danger-subtle" id="inputResta" readonly>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <label class="form-label d-block">Medio de pago *</label>
+                    <label class="fw-bold form-label d-block">Medio de pago *</label>
                     <div class="d-flex flex-wrap gap-3">
                         <div th:each="medio : ${listaMediosDePago}" class="form-check mx-3">
                             <input type="radio" name="idMedioPago" class="form-check-input input-medio-pago"
                                    th:id="'medio-' + ${medio.id}"
                                    th:value="${medio.id}"
                                    th:checked="${orden.pagos != null and !orden.pagos.isEmpty() and orden.pagos[orden.pagos.size() - 1].medioPago.id == medio.id}">
-                            <label class="form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
+                            <label class="fw-bold form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
                         </div>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-12">
-                        <label class="form-label fw-bold">Material</label>
+                        <label class="fw-bold form-label fw-bold">Material</label>
 
                         <input type="hidden" class="input-material-guardado" th:value="${mapaDetalles != null ? mapaDetalles['nombre_negocio'] : ''}">
 
@@ -237,7 +237,7 @@
                      th:data-show-if="${campo['showIf']}"
                      th:style="${campo['dependsOn'] != null ? 'display: none;' : ''}">
 
-                    <label th:if="${campo['tipo'] != 'checkbox'}" class="form-label" th:text="${campo['label']}"></label>
+                    <label th:if="${campo['tipo'] != 'checkbox'}" class="fw-bold form-label" th:text="${campo['label']}"></label>
 
                     <div th:switch="${campo['tipo']}">
                         <input th:case="'text'" type="text" class="form-control input-dinamico"
@@ -250,14 +250,18 @@
                                th:placeholder="${campo['placeholder']}"
                                th:value="${mapaDetalles != null ? mapaDetalles[campo['name']] : ''}">
 
-                        <div th:case="'select'" class="d-flex flex-wrap gap-3 p-2 border rounded bg-light">
-                            <div th:each="opt : ${campo['opciones']}" class="form-check">
-                                <input type="radio" class="form-check-input input-dinamico"
+                        <div th:case="'select'" class="d-flex flex-wrap gap-2 p-1">
+                            <div th:each="opt : ${campo['opciones']}" class="opcion-boton-custom">
+                                <input type="radio" class="btn-check input-dinamico shadow-none"
                                        th:name="'items[' + ${index} + '].detalles[' + ${campo['name']} + ']'"
                                        th:id="'radio-' + ${index} + '-' + ${campo['name']} + '-' + ${opt}"
                                        th:value="${opt}"
-                                       th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == opt}">
-                                <label class="form-check-label" th:for="'radio-' + ${index} + '-' + ${campo['name']} + '-' + ${opt}" th:text="${opt}"></label>
+                                       th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == opt}"
+                                       autocomplete="off">
+                                <label class="fw-bold btn btn-outline-secondary w-100 text-uppercase fw-semibold btn-custom-radio"
+                                       th:for="'radio-' + ${index} + '-' + ${campo['name']} + '-' + ${opt}"
+                                       th:text="${opt}">
+                                </label>
                             </div>
                         </div>
 
@@ -265,7 +269,7 @@
                             <input type="checkbox" class="form-check-input input-dinamico"
                                    th:name="'items[' + ${index} + '].detalles[' + ${campo['name']} + ']'"
                                    th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == 'on'}">
-                            <label class="form-check-label" th:text="${campo['label']}"></label>
+                            <label class="fw-bold form-check-label" th:text="${campo['label']}"></label>
                         </div>
                     </div>
                 </div>
@@ -273,7 +277,7 @@
                 <div class="col-md-12 mb-3"
                      th:id="'contenedor-cantidad-real-' + ${index}"
                      th:style="${#lists.isEmpty(campos.?[name == 'cantidad_producto']) ? 'display: block;' : 'display: none;'}">
-                    <label class="form-label">Cantidad *</label>
+                    <label class="fw-bold form-label">Cantidad *</label>
                     <input type="number" class="form-control input-cantidad-real"
                            th:name="'items[' + ${index} + '].cantidad'"
                            th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].cantidad : 1}" required>
@@ -287,11 +291,11 @@
                                        th:name="'items[' + ${index} + '].conAdicionalDisenio'"
                                        th:id="'checkDis-' + ${index}"
                                        th:checked="${orden.id != null && orden.items.size() > index ? orden.items[index].conAdicionalDisenio : false}">
-                                <label class="form-check-label fw-bold" th:for="'checkDis-' + ${index}">Adicional diseño</label>
+                                <label class="fw-bold form-check-label fw-bold" th:for="'checkDis-' + ${index}">Adicional diseño</label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Precio diseño ($)</label>
+                            <label class="fw-bold form-label">Precio diseño ($)</label>
                             <input type="number" class="form-control input-disenio-item"
                                    th:name="'items[' + ${index} + '].precioDisenio'"
                                    th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].precioDisenio : 0}" readonly>
@@ -300,7 +304,7 @@
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label class="form-label fw-bold">Precio del producto ($) *</label>
+                    <label class="fw-bold form-label fw-bold">Precio del producto ($) *</label>
                     <input type="number" class="form-control input-precio-item" placeholder="0"
                            th:name="'items[' + ${index} + '].precioUnitario'"
                            th:value="${orden.id != null && orden.items.size() > index ? orden.items[index].precioUnitario : ''}" required>
@@ -308,7 +312,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-2 gap-2">
-                <button th:if="${index > 0}" type="button" class="btn btn-outline-danger" onclick="eliminarItem(this)">Eliminar</button>
+                <button type="button" class="btn btn-outline-danger" onclick="eliminarItem(this)">Eliminar</button>
                 <button type="button" class="btn btn-success" th:onclick="'confirmarItem(' + ${index} + ')'">Confirmar</button>
             </div>
         </div>

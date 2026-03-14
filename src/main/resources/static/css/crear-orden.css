@@ -30,3 +30,33 @@
     flex-direction: row;
     gap: 18px;
 }
+
+/* Ocultamos el radio original pero mantenemos la lógica */
+.btn-check:checked + .btn-custom-radio {
+    background-color: #d1e7dd !important; /* El bg-success-subtle */
+    border-color: #198754 !important;     /* Verde de éxito de Bootstrap */
+    color: #0f5132 !important;           /* Texto verde oscuro */
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); /* Efecto de enfoque verde */
+}
+
+.btn-custom-radio {
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    color: #495057;
+}
+
+.btn-custom-radio:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    color: #212529;
+}
+
+/* Para que ocupen un ancho parejo si son pocas opciones */
+.opcion-boton-custom {
+    flex: 1 1 auto;
+    min-width: 100px;
+}
