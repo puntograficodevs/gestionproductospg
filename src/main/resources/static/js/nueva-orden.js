@@ -440,50 +440,111 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 1. Filtrar el selector de Material
 // Filtra el select de Materiales según Escuela, Docente, etc.
+// --- NUEVA LÓGICA DE FILTRADO CRUZADO ---
 $(document).on('change', '.filtro-escolar', function() {
     const card = $(this).closest('.item-producto');
+    const todosLosSelectsFiltro = card.find('.filtro-escolar');
     const selectMaterial = card.find('.selector-material-final');
 
-    const f = {
-        escuela: card.find('[data-campo="escuela"]').val(),
-        docente: card.find('[data-campo="docente"]').val(),
-        anio: card.find('[data-campo="anio"]').val(),
-        materia: card.find('[data-campo="materia"]').val(),
-        orientacion: card.find('[data-campo="orientacion"]').val()
+    // 1. Capturamos qué filtros eligió el usuario hasta ahora
+    const filtrosActivos = {};
+    todosLosSelectsFiltro.each(function() {
+        const campo = $(this).data('campo');
+        const valor = $(this).val();
+        if (valor && valor !== "") {
+            filtrosActivos[campo] = valor;
+        }
+    });
+
+    // 2. Analizamos el catálogo completo para ver qué combinaciones existen
+    const opcionesValidas = {
+        escuela: new Set(),
+        docente: new Set(),
+        anio: new Set(),
+        materia: new Set(),
+        orientacion: new Set()
     };
 
     selectMaterial.find('option').each(function() {
-        const opt = $(this);
-        if (opt.val() === "") return;
-
-        // Si el JSON falla, que no rompa el resto del código
+        if ($(this).val() === "") return;
         let det = {};
-        try {
-            det = JSON.parse(opt.attr('data-detalles'));
-        } catch (e) { console.error("Error en JSON de material:", opt.val()); }
+        try { det = JSON.parse($(this).attr('data-detalles')); } catch (e) { return; }
 
-        let coincide = true;
-        if (f.escuela && det.escuela !== f.escuela) coincide = false;
-        if (f.docente && det.docente !== f.docente) coincide = false;
-        if (f.anio && det.anio !== f.anio) coincide = false;
-        if (f.materia && det.materia !== f.materia) coincide = false;
-        if (f.orientacion && det.orientacion !== f.orientacion) coincide = false;
+        let cumpleConFiltros = true;
+        for (let campo in filtrosActivos) {
+            let valFiltro = String(filtrosActivos[campo]).trim().toUpperCase();
+            let valCatalogo = String(det[campo] || "").trim().toUpperCase();
+            if (valFiltro !== valCatalogo) { cumpleConFiltros = false; break; }
+        }
 
-        // REGLA: Si coincide O si es la que ya está seleccionada, la mostramos
-        if (coincide || opt.is(':selected')) {
-                // MOSTRAR: Si está envuelta en un span, la liberamos
-                if (opt.parent().is('span')) {
-                    opt.unwrap();
-                }
+        if (cumpleConFiltros) {
+            Object.keys(opcionesValidas).forEach(key => {
+                if (det[key]) opcionesValidas[key].add(String(det[key]).trim().toUpperCase());
+            });
+        }
+    });
+
+    // 3. ACTUALIZAMOS LOS SELECTS DE FILTRO (Mostrar/Ocultar opciones)
+    todosLosSelectsFiltro.each(function() {
+        const selectActual = $(this);
+        const campoActual = selectActual.data('campo');
+        const valorSeleccionadoActual = selectActual.val();
+
+        selectActual.find('option').each(function() {
+            const opt = $(this);
+            const optVal = opt.val();
+            if (optVal === "") return;
+
+            const optValNormalizado = optVal.trim().toUpperCase();
+            if (opcionesValidas[campoActual].has(optValNormalizado) || optVal === valorSeleccionadoActual) {
+                if (opt.parent().is('span')) opt.unwrap();
                 opt.show().prop('disabled', false);
             } else {
-                // OCULTAR: La deshabilitamos y la envolvemos en un span invisible
                 opt.prop('disabled', true).hide();
-                if (!opt.parent().is('span')) {
-                    opt.wrap('<span style="display:none;"></span>');
-                }
+                if (!opt.parent().is('span')) opt.wrap('<span style="display:none;"></span>');
             }
+        });
     });
+
+    // 4. FILTRAR EL SELECT FINAL (El libro)
+    selectMaterial.find('option').each(function() {
+        const opt = $(this);
+        if (opt.val() === "") return;
+        let det = {};
+        try { det = JSON.parse(opt.attr('data-detalles')); } catch(e) { return; }
+
+        let coincide = true;
+        for (let campo in filtrosActivos) {
+            if (String(det[campo] || "").trim().toUpperCase() !== String(filtrosActivos[campo]).trim().toUpperCase()) {
+                coincide = false;
+                break;
+            }
+        }
+
+        if (coincide || opt.is(':selected')) {
+            if (opt.parent().is('span')) opt.unwrap();
+            opt.show().prop('disabled', false);
+        } else {
+            opt.prop('disabled', true).hide();
+            if (!opt.parent().is('span')) opt.wrap('<span style="display:none;"></span>');
+        }
+    });
+
+    // 5. LÓGICA VISUAL: Pintar de verde lo seleccionado (FUERA DE LOS BUCLES ANTERIORES)
+    todosLosSelectsFiltro.each(function() {
+        const sel = $(this);
+        if (sel.val() && sel.val() !== "") {
+            sel.addClass('is-valid bg-success-subtle').removeClass('border-secondary');
+        } else {
+            sel.removeClass('is-valid bg-success-subtle');
+        }
+    });
+
+    if (selectMaterial.val() !== "") {
+        selectMaterial.addClass('is-valid');
+    } else {
+        selectMaterial.removeClass('is-valid');
+    }
 });
 
 // 2. Al elegir el Material: Pre-cargar campos técnicos y precio
