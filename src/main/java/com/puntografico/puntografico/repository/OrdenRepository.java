@@ -34,4 +34,17 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
             "  (:idRol != 2L AND o.empleado.rol.id != 2L)" +
             ")")
     List<Orden> buscarFacturasPendientesSegunRol(@Param("idRol") Long idRol);
+
+    @Query("SELECT o FROM Orden o WHERE o.estadoOrden.id = :idEstado " +
+            "AND (" +
+            "  :rolId <> 5L " +
+            "  OR NOT EXISTS (" +
+            "    SELECT i FROM OrdenItem i WHERE i.orden = o AND i.producto.id = 12L" +
+            "  )" +
+            ") " +
+            "AND (" +
+            "  (:rolId = 2L AND o.empleado.rol.id = 2L) " + // Caso Rol 2
+            "  OR (:rolId <> 2L AND o.empleado.rol.id <> 2L)" + // Otros Roles
+            ")")
+    List<Orden> buscarOrdenesEficientesParaListado(@Param("idEstado") Long idEstado, @Param("rolId") Long rolId);
 }

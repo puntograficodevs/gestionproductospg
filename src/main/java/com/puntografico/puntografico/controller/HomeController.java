@@ -12,13 +12,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-
-        if (empleado == null) {
-            return "redirect:/"; // Si no hay sesión, lo manda al login
-        }
-
-        model.addAttribute("empleado", empleado);
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         return "home";
     }
 }

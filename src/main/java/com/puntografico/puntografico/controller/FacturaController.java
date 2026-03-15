@@ -21,10 +21,9 @@ public class FacturaController {
     @GetMapping
     public String listarPendientes(Model model, HttpSession session) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-        if (empleado == null) return "redirect:/";
 
-        List<Orden> pendientes = ordenRepository.buscarFacturasPendientesSegunRol(empleado.getRol().getId());
-        model.addAttribute("ordenes", pendientes);
+        List<Orden> pendientesDeHacer = ordenRepository.buscarFacturasPendientesSegunRol(empleado.getRol().getId());
+        model.addAttribute("ordenes", pendientesDeHacer);
         model.addAttribute("empleado", empleado);
 
         return "facturas-pendientes";

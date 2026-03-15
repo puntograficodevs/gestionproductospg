@@ -2,7 +2,7 @@ package com.puntografico.puntografico.controller;
 
 import com.puntografico.puntografico.domain.Empleado;
 import com.puntografico.puntografico.domain.Orden;
-import com.puntografico.puntografico.repository.OrdenRepository;
+import com.puntografico.puntografico.service.OrdenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,34 +16,24 @@ import java.util.List;
 @AllArgsConstructor
 public class BuscadorController {
  
-    private final OrdenRepository ordenRepository;
+    private final OrdenService ordenService;
 
     @GetMapping("/buscador")
     public String verBuscador(Model model, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-
-        if (empleado == null) {
-            return "redirect:/";
-        }
-
         model.addAttribute("ordenesEncontradas", new ArrayList<Orden>());
-        model.addAttribute("empleado", empleado);
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         return "buscador";
     }
 
     @PostMapping("/buscar-orden")
     public String buscar(@RequestParam("datoOrden") String datoOrden, Model model, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-
-        if (empleado == null) {
-            return "redirect:/";
-        }
+        Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
 
         List<Orden> resultados = (datoOrden == null || datoOrden.isBlank())
                 ? new ArrayList<>()
-                : ordenRepository.buscarPorCriterioGenerico(datoOrden, empleado.getRol().getId());
+                : ordenService.buscarPorCriterioGenerico(datoOrden, empleadoLogueado.getRol().getId());
 
-        model.addAttribute("empleado", empleado);
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         model.addAttribute("ordenesEncontradas", resultados);
         model.addAttribute("datoBusqueda", datoOrden);
         return "buscador";

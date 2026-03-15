@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service @Transactional
 @AllArgsConstructor
@@ -16,5 +17,9 @@ public class ProductoService {
 
     public List<Producto> buscarTodos() {
         return productoRepository.findAll();
+    }
+
+    public Optional<Producto> buscarPorId(Integer id) {
+        return productoRepository.findById(id);
     }
 }

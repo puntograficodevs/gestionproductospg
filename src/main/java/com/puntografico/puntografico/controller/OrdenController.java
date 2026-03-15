@@ -3,13 +3,7 @@ package com.puntografico.puntografico.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puntografico.puntografico.domain.*;
-import com.puntografico.puntografico.repository.EstadoOrdenRepository;
-import com.puntografico.puntografico.repository.OrdenRepository;
-import com.puntografico.puntografico.repository.ProductoRepository;
-import com.puntografico.puntografico.service.MedioPagoService;
-import com.puntografico.puntografico.service.OrdenService;
-import com.puntografico.puntografico.service.PagoService;
-import com.puntografico.puntografico.service.ProductoCatalogoService;
+import com.puntografico.puntografico.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,34 +24,30 @@ public class OrdenController {
     private final OrdenService ordenService;
     private final MedioPagoService medioPagoService;
     private final PagoService pagoService;
-    private final ProductoRepository productoRepository;
-    private final OrdenRepository ordenRepository;
-    private final EstadoOrdenRepository estadoOrdenRepository;
+    private final ProductoService productoService;
     private final ProductoCatalogoService productoCatalogoService;
 
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-        if (empleado == null) return "redirect:/";
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
+        model.addAttribute("orden", new Orden());
+        model.addAttribute("productos", traerTodosLosProductosOrdenadosPorNombre());
+        return "nueva-orden";
+    }
 
-        // Ordenamos: A-Z y "Sin categoria" al final
-        List<Producto> productosOrdenados = productoRepository.findAll().stream()
-                .sorted((p1, p2) -> {
-                    if (p1.getNombre().equalsIgnoreCase("Sin categoria")) return 1;
-                    if (p2.getNombre().equalsIgnoreCase("Sin categoria")) return -1;
-                    return p1.getNombre().compareToIgnoreCase(p2.getNombre());
+    private List<Producto> traerTodosLosProductosOrdenadosPorNombre() {
+        return productoService.buscarTodos().stream()
+                .sorted((productoUno, productoDos) -> {
+                    if (productoUno.getNombre().equalsIgnoreCase("Sin categoria")) return 1;
+                    if (productoDos.getNombre().equalsIgnoreCase("Sin categoria")) return -1;
+                    return productoUno.getNombre().compareToIgnoreCase(productoDos.getNombre());
                 })
                 .collect(Collectors.toList());
-
-        model.addAttribute("empleado", empleado);
-        model.addAttribute("orden", new Orden());
-        model.addAttribute("productos", productosOrdenados);
-        return "nueva-orden";
     }
 
     @PostMapping("/guardar-orden")
     public String guardarOrden(@ModelAttribute Orden orden,
-                               @RequestParam("productoId") Integer productoId,
+                               @RequestParam("productoId") Integer idProducto,
                                @RequestParam(required = false) Long idMedioPago) {
         try {
             ObjectMapper mapperDeItems = new ObjectMapper();
@@ -67,7 +57,7 @@ public class OrdenController {
                 item.setDetallePersonalizado(mapperDeItems.writeValueAsString(item.getDetalles()));
             }
 
-            Orden ordenGuardada = ordenService.guardar(orden, productoId, idMedioPago);
+            Orden ordenGuardada = ordenService.guardar(orden, idProducto, idMedioPago);
 
             return "redirect:/ordenes/exito/" + ordenGuardada.getId();
         } catch (Exception e) {
@@ -83,14 +73,8 @@ public class OrdenController {
             Model model,
             HttpSession session) {
 
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-        Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("ID de producto inválido:" + id));
-        List<ProductoCatalogo> listaMateriales = productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo();
-        listaMateriales.sort((m1, m2) ->
-                m1.getNombreNegocio().compareToIgnoreCase(m2.getNombreNegocio())
-        );
-
+        Producto producto = productoService.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("ID de producto inválido:" + id));
+        List<ProductoCatalogo> listaMateriales = traerListaMaterialesOrdenada();
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -108,26 +92,29 @@ public class OrdenController {
         model.addAttribute("listaMateriales", listaMateriales);
         model.addAttribute("producto", producto);
         model.addAttribute("orden", new Orden());
-        model.addAttribute("empleado", empleado);
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
 
-        return (index == 0) ? "fragments/formulario-dinamico :: cuerpo-formulario"
+        return (index == 0)
+                ? "fragments/formulario-dinamico :: cuerpo-formulario"
                 : "fragments/formulario-dinamico :: bloque-item-card";
+    }
+
+    private List<ProductoCatalogo> traerListaMaterialesOrdenada() {
+        List<ProductoCatalogo> listaMateriales = productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo();
+        listaMateriales.sort((materialUno, materialDos) ->
+                materialUno.getNombreNegocio().compareToIgnoreCase(materialDos.getNombreNegocio())
+        );
+
+        return listaMateriales;
     }
 
     @GetMapping("/exito/{id}")
     public String mostrarExito(HttpSession session, Model model, @PathVariable Long id) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-
-        if (empleado == null) {
-            return "redirect:/";
-        }
-
         Orden orden = ordenService.buscarPorId(id);
-
-        model.addAttribute("empleado", empleado);
-        model.addAttribute("ordenTrabajo", orden);
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
+        model.addAttribute("ordenTrabajo", orden);
         model.addAttribute("fechaPedido", orden.getFechaPedido().format(formatter));
         model.addAttribute("fechaEntrega", orden.getFechaEntrega().format(formatter));
 
@@ -140,7 +127,7 @@ public class OrdenController {
 
     @GetMapping("/detalle-fragmento/{id}")
     public String obtenerFragmentoDetalle(@PathVariable Long id, Model model) {
-        Orden orden = ordenRepository.findById(id).orElseThrow();
+        Orden orden = ordenService.buscarPorId(id);
         model.addAttribute("orden", orden);
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
 
@@ -149,15 +136,10 @@ public class OrdenController {
 
     @GetMapping("/editar-orden/{id}")
     public String editarOrden(@PathVariable Long id, Model model, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-        if (empleado == null) return "redirect:/";
-
         Orden orden = ordenService.buscarPorId(id);
-        // Asumimos que todos los items de la orden son del mismo producto base
         Producto producto = orden.getItems().get(0).getProducto();
-
-        // IMPORTANTE: Necesitamos cargar los campos para que el fragmento sepa qué mostrar
         ObjectMapper mapper = new ObjectMapper();
+
         try {
             List<Map<String, Object>> esquema = mapper.readValue(
                     producto.getEsquemaConfiguracion(),
@@ -170,24 +152,24 @@ public class OrdenController {
 
         model.addAttribute("orden", orden);
         model.addAttribute("producto", producto);
-        model.addAttribute("empleado", empleado);
+        model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         model.addAttribute("listaMediosDePago", medioPagoService.buscarTodos());
         model.addAttribute("listaMateriales", productoCatalogoService.buscarTodasLasCopiasEscolaresEnCatalogo());
         model.addAttribute("esEdicion", true);
 
-        return "nueva-orden"; // Aseguráte que este sea el nombre de tu página principal de formulario
+        return "nueva-orden";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarOrden(@PathVariable Long id) {
-        ordenService.eliminar(id); // El service debe llamar a repository.deleteById(id)
-        return "redirect:/buscador"; // O a la ruta de tu buscador
+        ordenService.eliminar(id);
+        return "redirect:/buscador";
     }
 
     @PostMapping("/eliminar-varias")
-    public String eliminarVarias(@RequestParam("ids") String ids) {
-        if (ids != null && !ids.isEmpty()) {
-            String[] arrayIds = ids.split(",");
+    public String eliminarVarias(@RequestParam("ids") String idsAEliminar) {
+        if (idsAEliminar != null && !idsAEliminar.isEmpty()) {
+            String[] arrayIds = idsAEliminar.split(",");
             for (String idStr : arrayIds) {
                 try {
                     Long id = Long.parseLong(idStr.trim());
@@ -202,63 +184,38 @@ public class OrdenController {
 
     @GetMapping("/pasar-en-proceso/{id}")
     public String pasarEnProceso(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        cambiarEstado(id, 2L);
+        ordenService.cambiarEstadoOrden(id, 2L);
         return "redirect:/listado?producto=" + producto;
     }
+
     @GetMapping("/volver-sin-hacer/{id}")
     public String volverSinHacer(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        cambiarEstado(id, 1L); // Supongamos que ID 1 es "Sin Hacer"
+        ordenService.cambiarEstadoOrden(id, 1L);
         return "redirect:/listado?producto=" + producto;
     }
 
     @GetMapping("/pasar-lista-para-retirar/{id}")
     public String pasarAListaParaRetirar(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        cambiarEstado(id, 3L); // Supongamos que ID 3 es "Lista para retirar"
+        ordenService.cambiarEstadoOrden(id, 3L);
         return "redirect:/listado?producto=" + producto;
     }
 
     @GetMapping("/pasar-retirada/{id}")
     public String pasarRetirada(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        cambiarEstado(id, 5L); // Supongamos que ID 4 es "Entregada"
+        ordenService.cambiarEstadoOrden(id, 5L);
         return "redirect:/listado?producto=" + producto;
     }
 
     @GetMapping("/pasar-retirada-desde-buscador/{id}")
     public String pasarRetiradaDesdeBuscador(@PathVariable Long id) {
-        cambiarEstado(id, 5L);
+        ordenService.cambiarEstadoOrden(id, 5L);
         return "redirect:/buscador";
     }
 
-    private void cambiarEstado(Long ordenId, Long estadoId) {
-        Orden orden = ordenRepository.findById(ordenId)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + ordenId));
-
-        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(estadoId)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + estadoId));
-
-        orden.setEstadoOrden(nuevoEstado);
-        ordenRepository.save(orden);
-    }
-
     @PostMapping("/enviar-a-corregir")
-    public String enviarACorregir(@RequestParam("id") Long id,
+    public String enviarACorregir(@RequestParam("id") Long idOrden,
                                   @RequestParam("motivo") String motivo) {
-
-        Orden orden = ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
-
-        // 1. Guardamos el estado que tiene ahora (antes de pasar a 4)
-        // Usamos el ID del objeto EstadoOrden que ya tiene la orden
-        orden.setIdEstadoPrevio(orden.getEstadoOrden().getId().intValue());
-
-        // 2. Le seteamos el nuevo estado (4 = Corregir)
-        EstadoOrden estadoCorregir = estadoOrdenRepository.findById(4L).get();
-        orden.setEstadoOrden(estadoCorregir);
-
-        // 3. Guardamos el texto de la corrección
-        orden.setCorreccion(motivo);
-
-        ordenRepository.save(orden);
+        ordenService.enviarAColumnaCorreccion(idOrden, motivo);
 
         return "redirect:/listado";
     }

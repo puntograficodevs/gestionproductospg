@@ -1,16 +1,19 @@
 package com.puntografico.puntografico.service;
 
+import com.puntografico.puntografico.domain.EstadoOrden;
 import com.puntografico.puntografico.domain.Orden;
 import com.puntografico.puntografico.domain.Producto;
 import com.puntografico.puntografico.repository.EstadoOrdenRepository;
 import com.puntografico.puntografico.repository.OrdenRepository;
 import com.puntografico.puntografico.repository.ProductoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
@@ -103,5 +106,37 @@ public class OrdenService {
                 item.setProducto(producto);
             });
         }
+    }
+
+    public List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato, @Param("idRol") Long idRol) {
+        return ordenRepository.buscarPorCriterioGenerico(dato, idRol);
+    }
+
+    public List<Orden> buscarOrdenesEficientesParaListado(@Param("idEstado") Long idEstado, @Param("rolId") Long idRol) {
+        return ordenRepository.buscarOrdenesEficientesParaListado(idEstado, idRol);
+    }
+
+    public List<Orden> buscarTodasSegunRol(@Param("idRol") Long idRol) {
+        return ordenRepository.buscarTodasSegunRol(idRol);
+    }
+
+    public void cambiarEstadoOrden(Long idOrden, Long idEstado) {
+        Orden orden = ordenRepository.findById(idOrden)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + idOrden));
+
+        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idEstado)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
+
+        orden.setEstadoOrden(nuevoEstado);
+        ordenRepository.save(orden);
+    }
+
+    public void enviarAColumnaCorreccion(Long idOrden, String motivo) {
+        Orden orden = buscarPorId(idOrden);
+        orden.setIdEstadoPrevio(orden.getEstadoOrden().getId().intValue());
+        EstadoOrden estadoCorregir = estadoOrdenRepository.findById(4L).get();
+        orden.setEstadoOrden(estadoCorregir);
+        orden.setCorreccion(motivo);
+        ordenRepository.save(orden);
     }
 }

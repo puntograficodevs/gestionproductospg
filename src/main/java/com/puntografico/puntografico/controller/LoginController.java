@@ -2,7 +2,7 @@ package com.puntografico.puntografico.controller;
 
 import com.puntografico.puntografico.domain.Empleado;
 import com.puntografico.puntografico.service.EmpleadoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +13,10 @@ import javax.servlet.http.HttpSession;
 
 @SuppressWarnings("ALL")
 @Controller
+@AllArgsConstructor
 public class LoginController {
 
-    @Autowired
-    private EmpleadoService empleadoService;
+    private final EmpleadoService empleadoService;
 
     @GetMapping("/")
     public String login() {
