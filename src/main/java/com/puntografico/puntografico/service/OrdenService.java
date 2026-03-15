@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -24,9 +25,11 @@ public class OrdenService {
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final ProductoRepository productoRepository;
     private final PagoService pagoService;
+    private static final Long ID_ESTADO_SIN_HACER = 1L;
+    private static final Long ID_ESTADO_CORRECCION = 4L;
 
     public Orden buscarPorId(Long id) {
-        Assert.notNull(id, "Necesito que envíes un id para buscar.");
+        Assert.notNull(id, "El ID de la orden no puede venir nulo.");
         return ordenRepository.findById(id).orElseThrow(() -> new RuntimeException("Orden no encontrada con id: " + id));
     }
 
@@ -41,7 +44,7 @@ public class OrdenService {
     public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago) {
         if (esProcesoCreacion(ordenNueva.getId())) {
             ordenNueva.setFechaPedido(LocalDate.now());
-            ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(1L).get());
+            ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER).get());
             if (ordenNueva.getAbonado() > 0) pagoService.crearPagoDesdeFormularioOrden(ordenNueva, idMedioPago);
             pagoService.actualizarEstadoPago(ordenNueva);
         } else {
@@ -55,6 +58,34 @@ public class OrdenService {
 
         vincularItemsSiCorresponde(ordenNueva, idProducto);
         return ordenRepository.save(ordenNueva);
+    }
+
+    public List<Orden> buscarPorIdNombreClienteOTelefono(@Param("dato") String dato, @Param("idRol") Long idRol) {
+        return ordenRepository.buscarPorIdNombreClienteOTelefono(dato, idRol);
+    }
+
+    public List<Orden> buscarOrdenesConEstadoSegunRol(@Param("idEstado") Long idEstado, @Param("rolId") Long idRol) {
+        return ordenRepository.buscarOrdenesConEstadoSegunRol(idEstado, idRol);
+    }
+
+    public void cambiarEstadoOrden(Long idOrden, Long idEstado) {
+        Orden orden = ordenRepository.findById(idOrden)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + idOrden));
+
+        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idEstado)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
+
+        orden.setEstadoOrden(nuevoEstado);
+        ordenRepository.save(orden);
+    }
+
+    public void enviarAColumnaCorreccion(Long idOrden, String motivo) {
+        Orden orden = buscarPorId(idOrden);
+        orden.setIdEstadoPrevio(orden.getEstadoOrden().getId().intValue());
+        EstadoOrden estadoCorregir = estadoOrdenRepository.findById(ID_ESTADO_CORRECCION).get();
+        orden.setEstadoOrden(estadoCorregir);
+        orden.setCorreccion(motivo);
+        ordenRepository.save(orden);
     }
 
     private void asignarPagosSegunModificacionAbonado(Orden ordenPersistida, Orden ordenNueva, Long idMedioPago) {
@@ -79,7 +110,7 @@ public class OrdenService {
 
     private void asignarEstadoOrdenSegunProceso(Orden ordenPersistida, Orden ordenNueva) {
         if (esProcesoCorreccion(ordenPersistida)) {
-            Long idEstadoOrdenPrevio = (ordenPersistida.getIdEstadoPrevio() != null) ? ordenPersistida.getIdEstadoPrevio() : 1L;
+            Long idEstadoOrdenPrevio = (ordenPersistida.getIdEstadoPrevio() != null) ? ordenPersistida.getIdEstadoPrevio() : ID_ESTADO_SIN_HACER;
             ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(idEstadoOrdenPrevio).get());
             ordenNueva.setCorreccion(null);
             ordenNueva.setIdEstadoPrevio(null);
@@ -93,7 +124,7 @@ public class OrdenService {
     }
 
     private boolean esProcesoCorreccion(Orden ordenPersistida) {
-        return ordenPersistida.getEstadoOrden().getId() == 4L;
+        return Objects.equals(ordenPersistida.getEstadoOrden().getId(), ID_ESTADO_CORRECCION);
     }
 
     private void vincularItemsSiCorresponde(Orden orden, Integer idProducto) {
@@ -106,37 +137,5 @@ public class OrdenService {
                 item.setProducto(producto);
             });
         }
-    }
-
-    public List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato, @Param("idRol") Long idRol) {
-        return ordenRepository.buscarPorCriterioGenerico(dato, idRol);
-    }
-
-    public List<Orden> buscarOrdenesEficientesParaListado(@Param("idEstado") Long idEstado, @Param("rolId") Long idRol) {
-        return ordenRepository.buscarOrdenesEficientesParaListado(idEstado, idRol);
-    }
-
-    public List<Orden> buscarTodasSegunRol(@Param("idRol") Long idRol) {
-        return ordenRepository.buscarTodasSegunRol(idRol);
-    }
-
-    public void cambiarEstadoOrden(Long idOrden, Long idEstado) {
-        Orden orden = ordenRepository.findById(idOrden)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + idOrden));
-
-        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idEstado)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
-
-        orden.setEstadoOrden(nuevoEstado);
-        ordenRepository.save(orden);
-    }
-
-    public void enviarAColumnaCorreccion(Long idOrden, String motivo) {
-        Orden orden = buscarPorId(idOrden);
-        orden.setIdEstadoPrevio(orden.getEstadoOrden().getId().intValue());
-        EstadoOrden estadoCorregir = estadoOrdenRepository.findById(4L).get();
-        orden.setEstadoOrden(estadoCorregir);
-        orden.setCorreccion(motivo);
-        ordenRepository.save(orden);
     }
 }

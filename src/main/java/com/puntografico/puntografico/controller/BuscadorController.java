@@ -31,7 +31,7 @@ public class BuscadorController {
 
         List<Orden> resultados = (datoOrden == null || datoOrden.isBlank())
                 ? new ArrayList<>()
-                : ordenService.buscarPorCriterioGenerico(datoOrden, empleadoLogueado.getRol().getId());
+                : ordenService.buscarPorIdNombreClienteOTelefono(datoOrden, empleadoLogueado.getRol().getId());
 
         model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         model.addAttribute("ordenesEncontradas", resultados);

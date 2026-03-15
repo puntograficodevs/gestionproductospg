@@ -4,6 +4,7 @@ import com.puntografico.puntografico.domain.MedioPago;
 import com.puntografico.puntografico.repository.MedioPagoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -19,6 +20,7 @@ public class MedioPagoService {
     }
 
     public MedioPago buscarPorId(Long id) {
+        Assert.notNull(id, "El id del medio de pago no puede venir nulo.");
         return medioPagoRepository.findById(id).get();
     }
 }

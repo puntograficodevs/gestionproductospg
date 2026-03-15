@@ -1,6 +1,6 @@
 package com.puntografico.puntografico.controller.rest;
 
-import com.puntografico.puntografico.domain.ConsultaPrecioDTO;
+import com.puntografico.puntografico.dto.ConsultaPrecioDTO;
 import com.puntografico.puntografico.service.ProductoCatalogoService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

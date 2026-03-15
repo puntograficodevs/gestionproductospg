@@ -1,4 +1,4 @@
-package com.puntografico.puntografico.domain;
+package com.puntografico.puntografico.dto;
 
 import lombok.Data;
 

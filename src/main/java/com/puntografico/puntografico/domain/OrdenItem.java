@@ -1,6 +1,5 @@
 package com.puntografico.puntografico.domain;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,6 +50,5 @@ public class OrdenItem {
         }
     }
 
-    // Clase interna rápida para Jackson
     private static class MapTypeReference extends com.fasterxml.jackson.core.type.TypeReference<Map<String, String>> {}
 }

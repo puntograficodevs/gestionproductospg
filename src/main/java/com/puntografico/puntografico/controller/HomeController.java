@@ -1,6 +1,5 @@
 package com.puntografico.puntografico.controller;
 
-import com.puntografico.puntografico.domain.Empleado;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

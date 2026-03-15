@@ -20,13 +20,7 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
             "  OR " +
             "  (:idRol != 2L AND o.empleado.rol.id != 2L)" +
             ")")
-    List<Orden> buscarPorCriterioGenerico(@Param("dato") String dato, @Param("idRol") Long idRol);
-
-    @Query("SELECT o FROM Orden o WHERE " +
-            "(:idRol = 2L AND o.empleado.rol.id = 2L) OR " +
-            "(:idRol != 2L AND o.empleado.rol.id != 2L) " +
-            "ORDER BY o.id DESC")
-    List<Orden> buscarTodasSegunRol(@Param("idRol") Long idRol);
+    List<Orden> buscarPorIdNombreClienteOTelefono(@Param("dato") String dato, @Param("idRol") Long idRol);
 
     @Query("SELECT o FROM Orden o WHERE o.necesitaFactura = true AND o.facturaHecha = false " +
             "AND (" +
@@ -43,8 +37,8 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
             "  )" +
             ") " +
             "AND (" +
-            "  (:rolId = 2L AND o.empleado.rol.id = 2L) " + // Caso Rol 2
-            "  OR (:rolId <> 2L AND o.empleado.rol.id <> 2L)" + // Otros Roles
+            "  (:rolId = 2L AND o.empleado.rol.id = 2L) " +
+            "  OR (:rolId <> 2L AND o.empleado.rol.id <> 2L)" +
             ")")
-    List<Orden> buscarOrdenesEficientesParaListado(@Param("idEstado") Long idEstado, @Param("rolId") Long rolId);
+    List<Orden> buscarOrdenesConEstadoSegunRol(@Param("idEstado") Long idEstado, @Param("rolId") Long rolId);
 }

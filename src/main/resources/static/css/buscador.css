@@ -1,7 +1,3 @@
-.titulo-tabla-ordenes {
-    font-family: 'Lemon Milk';
-}
-
 .contenedor-pagina-en-proceso {
     width: 95%;
     height: 95%;
@@ -19,36 +15,36 @@
     border: none;
 }
 
-.ver-btn {
-    background-color: #009FE3;
+.ver-btn-buscador {
+    background-color: var(--color-azul);
 }
 
-.ver-btn:hover {
-    background-color: #0186BF;
+.ver-btn-buscador:hover {
+    background-color: var(--color-azul-hover);
 }
 
 .editar-btn {
-    background-color: #EFCF00;
+    background-color: var(--color-amarillo);
 }
 
 .editar-btn:hover {
-    background-color: #D4B803;
+    background-color: var(--color-amarillo-hover);
 }
 
 .eliminar-btn {
-    background-color: #E52987;
+    background-color: var(--color-magenta);
 }
 
 .eliminar-btn:hover {
-    background-color: #B41C68;
+    background-color: var(--color-magenta-hover);
 }
 
-.checkOrden, #checkAll {
+.checkbox-seleccionar-orden, #checkbox-seleccionar-todas-las-ordenes {
     cursor: pointer;
     transform: scale(1.2);
 }
 
-#btnEliminarMasivo {
+#btn-eliminar-masivo {
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }

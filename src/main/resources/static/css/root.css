@@ -1,0 +1,167 @@
+:root {
+    --color-magenta: #E52987;
+    --color-magenta-hover: #B41C68;
+    --color-amarillo: #EFCF00;
+    --color-amarillo-hover: #D4B803;
+    --color-azul: #009FE3;
+    --color-azul-hover: #0186BF;
+    --color-negro: #1D1D1B;
+    --color-blanco-puro: #FFFFFF;
+    --color-sin-hacer: #F4CFFF;
+    --color-en-proceso: #FFEF8B;
+    --color-lista-para-retirar: #ABF28C;
+    --color-corregir: #FF8F8F;
+    --color-divider: #A7A7A7;
+}
+
+@font-face {
+  font-family: 'Lemon Milk';
+  src: url('../fonts/LEMONMILK-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+/*==================================================================*/
+
+h1, h2, h3, h4, h5,
+.nav-nombre-usuario, .boton-home {
+    font-family: 'Lemon Milk';
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto';
+    font-size: 1.05rem;
+}
+
+body {
+    padding-top: 6%;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+/* NAVBAR */
+
+.navbar {
+    font-family: 'Montserrat';
+    padding: 0.15em 0.25em;
+    background-color: var(--color-magenta) !important;
+}
+
+.palabra-menu {
+    color: var(--color-blanco-puro);
+}
+
+.nav-nombre-usuario {
+    color: var(--color-amarillo);
+    font-size: 2rem;
+}
+
+.nav-nombre-usuario:hover {
+    color: var(--color-blanco-puro);
+}
+
+.bi-house-fill {
+    margin-top: -3px;
+}
+
+img.isologotipo {
+    width: 100px;
+}
+
+.navbar p {
+    margin-bottom: 0;
+}
+
+.custom-gap {
+  gap: 6px; 
+}
+
+.custom-nav .nav-item + .nav-item {
+  margin-left: 16px;
+}
+
+/* HOME */
+.contenedor-home {
+    width: 80%;
+    height: 90vh;
+}
+
+img.foco {
+    width: 60%;
+}
+
+.boton-home {
+    cursor: pointer;
+    width: 80%;
+    padding: 16px 0;
+    border-radius: 60px;
+    background-color: var(--color-azul);
+    color: var(--color-blanco-puro);
+    font-size: 1.5em;
+}
+
+.boton-home:hover {
+    color: var(--color-negro);
+    background-color: var(--color-amarillo);
+}
+
+/* BOTONES UNIVERSALES */
+.ver-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    text-align: center;
+    line-height: 40px;
+    background-color: var(--color-magenta);
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.ver-btn:hover {
+    background-color: var(--color-magenta-hover);
+}
+
+/* MODALES UNIVERSALES */
+.modal-title {
+    font-family: 'Lemon Milk';
+    font-size: 1.6em;
+    color: var(--color-azul);
+}
+
+/* FOOTER */
+.contenedor-footer-odt {
+    padding: 18px;
+}
+
+.texto-footer {
+    font-family: 'Roboto';
+}
+
+.texto-footer span {
+    font-family: 'Lemon Milk';
+    font-weight: bold;
+    color: var(--color-magenta);
+    margin-bottom: 16px;
+}
+
+.datos-empresa-footer {
+    font-size: 14px;
+}

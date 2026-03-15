@@ -5,8 +5,8 @@
 // 1. Delegación de eventos: Escuchamos cualquier cambio en el documento
 document.addEventListener('change', function(evento) {
     // Si lo que cambió es el checkbox maestro
-    if (evento.target.id === 'checkAll') {
-        const listaCheckboxesOrden = document.querySelectorAll('.checkOrden');
+    if (evento.target.id === 'checkbox-seleccionar-todas-las-ordenes') {
+        const listaCheckboxesOrden = document.querySelectorAll('.checkbox-seleccionar-orden');
         listaCheckboxesOrden.forEach(checkbox => {
             checkbox.checked = evento.target.checked;
         });
@@ -14,7 +14,7 @@ document.addEventListener('change', function(evento) {
     }
 
     // Si lo que cambió es un checkbox individual
-    if (evento.target.classList.contains('checkOrden')) {
+    if (evento.target.classList.contains('checkbox-seleccionar-orden')) {
         actualizarEstadoBotonMasivo();
     }
 });
@@ -23,10 +23,10 @@ document.addEventListener('change', function(evento) {
  * Controla la visibilidad del botón de eliminación masiva y el contador.
  */
 function actualizarEstadoBotonMasivo() {
-    const listaSeleccionados = document.querySelectorAll('.checkOrden:checked');
-    const botonEliminarMasivo = document.getElementById('btnEliminarMasivo');
+    const listaSeleccionados = document.querySelectorAll('.checkbox-seleccionar-orden:checked');
+    const botonEliminarMasivo = document.getElementById('btn-eliminar-masivo');
     const etiquetaCantidad = document.getElementById('cantSeleccionadas');
-    const checkboxMaestro = document.getElementById('checkAll');
+    const checkboxMaestro = document.getElementById('checkbox-seleccionar-todas-las-ordenes');
 
     if (!botonEliminarMasivo) return;
 
@@ -47,7 +47,7 @@ function actualizarEstadoBotonMasivo() {
  * Recopila los IDs y los envía por POST
  */
 window.eliminarSeleccionados = function() {
-    const listaSeleccionados = document.querySelectorAll('.checkOrden:checked');
+    const listaSeleccionados = document.querySelectorAll('.checkbox-seleccionar-orden:checked');
     const listaDeIds = Array.from(listaSeleccionados).map(checkbox => checkbox.value);
 
     if (listaDeIds.length === 0) return;

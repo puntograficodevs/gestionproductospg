@@ -24,10 +24,10 @@ public class ListadoController {
     @GetMapping("/listado")
     public String verListado(@RequestParam(value = "producto", required = false) String productoFiltro, HttpSession session, Model model) {
         Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
-        List<Orden> ordenesSinHacer = ordenService.buscarOrdenesEficientesParaListado(1L, empleado.getRol().getId());
-        List<Orden> ordenesEnProceso = ordenService.buscarOrdenesEficientesParaListado(2L, empleado.getRol().getId());
-        List<Orden> ordenesListaParaRetirar = ordenService.buscarOrdenesEficientesParaListado(3L, empleado.getRol().getId());
-        List<Orden> ordenesCorregir = ordenService.buscarOrdenesEficientesParaListado(4L, empleado.getRol().getId());
+        List<Orden> ordenesSinHacer = ordenService.buscarOrdenesConEstadoSegunRol(1L, empleado.getRol().getId());
+        List<Orden> ordenesEnProceso = ordenService.buscarOrdenesConEstadoSegunRol(2L, empleado.getRol().getId());
+        List<Orden> ordenesListaParaRetirar = ordenService.buscarOrdenesConEstadoSegunRol(3L, empleado.getRol().getId());
+        List<Orden> ordenesCorregir = ordenService.buscarOrdenesConEstadoSegunRol(4L, empleado.getRol().getId());
         List<MedioPago> listaMediosDePago = medioPagoService.buscarTodos();
         List<Producto> productos = productoService.buscarTodos().stream()
                 .sorted(crearComparadorProductos())

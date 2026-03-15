@@ -15,11 +15,12 @@ import java.util.Map;
 @AllArgsConstructor
 public class ProductoCatalogoService {
 
-    private final ProductoCatalogoRepostory catalogoRepository;
+    private final ProductoCatalogoRepostory productoCatalogoRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Integer ID_COPIAS_ESCOLARES = 34;
 
-    public Integer buscarPrecioCoincidente(Integer productoId, Map<String, String> detallesSeleccionados) {
-        List<ProductoCatalogo> variantes = catalogoRepository.findByProductoId(productoId);
+    public Integer buscarPrecioCoincidente(Integer idProducto, Map<String, String> detallesSeleccionados) {
+        List<ProductoCatalogo> variantes = productoCatalogoRepository.findByProductoId(idProducto);
 
         for (ProductoCatalogo variante : variantes) {
             try {
@@ -40,6 +41,6 @@ public class ProductoCatalogoService {
     }
 
     public List<ProductoCatalogo> buscarTodasLasCopiasEscolaresEnCatalogo() {
-        return catalogoRepository.findByProductoId(34);
+        return productoCatalogoRepository.findByProductoId(ID_COPIAS_ESCOLARES);
     }
 }

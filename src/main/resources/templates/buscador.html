@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/root.css}"/>
   <link rel="stylesheet" th:href="@{/css/buscador.css}"/>
-  <link rel="stylesheet" th:href="@{/css/mostrar-productos.css}"/>
+  <link rel="stylesheet" th:href="@{/css/exito.css}"/>
   <title>Buscador - Punto Gráfico</title>
 </head>
 <body>
@@ -34,14 +34,14 @@
       </div>
 
       <div th:if="${!#lists.isEmpty(ordenesEncontradas)}" class="table-responsive">
-        <button th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}" id="btnEliminarMasivo" class="btn btn-danger btn-sm mb-3" style="display: none;" onclick="eliminarSeleccionados()">
+        <button th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}" id="btn-eliminar-masivo" class="btn btn-danger btn-sm mb-3" style="display: none;" onclick="eliminarSeleccionados()">
           Eliminar seleccionadas (<span id="cantSeleccionadas">0</span>)
         </button>
         <table class="table table-striped">
           <thead>
           <tr>
             <th style="width: 40px;" th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}">
-              <input type="checkbox" id="checkAll">
+              <input type="checkbox" id="checkbox-seleccionar-todas-las-ordenes">
             </th>
             <th>N° de Orden</th>
             <th>Cliente</th>
@@ -56,7 +56,7 @@
           <tbody>
           <tr th:each="orden : ${ordenesEncontradas}">
             <td th:if="${empleado.rol.id == 1 or empleado.rol.id == 2}">
-              <input type="checkbox" class="checkOrden" th:value="${orden.id}">
+              <input type="checkbox" class="checkbox-seleccionar-orden" th:value="${orden.id}">
             </td>
             <td th:text="${orden.id}"></td>
             <td th:text="${orden.nombreCliente}"></td>
@@ -69,7 +69,7 @@
             <td th:text="${orden.estadoOrden.estadoDeOrden}"></td>
             <td th:text="${orden.estadoPago.estadoDePago}"></td>
             <td>
-              <button class="btn btn-primary btn-sm btn-buscador ver-btn"
+              <button class="btn btn-primary btn-sm btn-buscador ver-btn-buscador"
                       th:onclick="'verDetalle(' + ${orden.id} + ')'"
                       data-bs-title="Ver detalle">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff" class="bi bi-eye" viewBox="0 0 16 16">

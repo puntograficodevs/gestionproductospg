@@ -1,0 +1,127 @@
+h2 {
+    text-align: center;
+    font-weight: bold;
+    color: var(--color-azul);
+}
+
+h5 {
+    margin-bottom: 16px;
+}
+
+.contenedor-datos-odt {
+    padding: 12px 36px 24px 36px;
+    border-radius: 10px;
+    border: solid 1px var(--color-divider);
+    margin-top: 36px;
+}
+
+.contenedor-datos-orden-impresion {
+    padding: 18px;
+}
+
+.datos-del-cliente {
+    color: var(--color-magenta);
+}
+
+.datos-del-producto {
+    color: var(--color-amarillo);
+}
+
+.datos-de-pago {
+    color: var(--color-azul);
+}
+
+.btn-crear-odt {
+    background-color: var(--color-magenta);
+    font-family: 'Lemon Milk';
+    margin-bottom: 36px;
+    color: var(--color-blanco-puro);
+    transition: background-color 0.3s ease;
+}
+
+.btn-crear-odt:hover {
+    background-color: var(--color-magenta-hover);
+}
+
+.container form {
+    width: 85%;
+    margin: 0 auto;
+}
+
+
+.col-md-12 .form-label {
+    margin-bottom: 1em !important;
+}
+
+.contenedor-correccion-odt.border {
+    border: 2px solid var(--color-magenta) !important;
+    background-color: lightgoldenrodyellow;
+    color: var(--color-magenta);
+    padding: 18px;
+}
+
+select option:disabled {
+    display: none !important;
+}
+
+.contenedor-botones-creacion {
+    width: 95%;
+}
+
+.fila-botones-creacion {
+    padding: 0.5em 1em;
+}
+
+.boton-creacion {
+    background-color: var(--color-azul);
+    color: var(--color-blanco-puro);
+    font-family: 'Lemon Milk';
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.boton-creacion:hover {
+    color: var(--color-negro);
+    background-color: var(--color-amarillo);
+}
+
+.columna-otro-producto {
+    width: 20%;
+}
+
+.boton-otro-producto {
+    flex-direction: row;
+    gap: 18px;
+}
+
+.btn-check:checked + .btn-custom-radio {
+    background-color: #d1e7dd !important; 
+    border-color: var(--color-azul) !important;     
+    color: var(--color-azul) !important;           
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); 
+}
+
+.btn-custom-radio {
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    border: 1px solid #dee2e6;
+    background-color: var(--color-blanco-puro);
+    color: #495057;
+}
+
+.btn-custom-radio:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    color: #212529;
+}
+
+/* Para que ocupen un ancho parejo si son pocas opciones */
+.opcion-boton-custom {
+    flex: 1 1 auto;
+    min-width: 100px;
+}

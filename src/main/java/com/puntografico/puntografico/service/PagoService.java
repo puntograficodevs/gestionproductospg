@@ -20,6 +20,9 @@ public class PagoService {
     private final OrdenRepository ordenRepository;
     private final PagoRepository pagoRepository;
     private final MedioPagoService medioPagoService;
+    private static final Long ID_ESTADO_SIN_PAGAR = 1L;
+    private static final Long ID_ESTADO_SENIADO = 2L;
+    private static final Long ID_ESTADO_PAGADO = 3L;
 
     public void registrarPagoExtra(Long idOrden, Integer montoAbonado, Long idMedioPago) {
         Orden orden = ordenRepository.findById(idOrden).get();
@@ -55,11 +58,11 @@ public class PagoService {
         int pagoRestante = orden.getTotal() - totalAbonado;
 
         if (totalAbonado == 0) {
-            orden.setEstadoPago(estadoPagoRepository.findById(1L).get()); // Sin pagar
+            orden.setEstadoPago(estadoPagoRepository.findById(ID_ESTADO_SIN_PAGAR).get());
         } else if (pagoRestante != 0) {
-            orden.setEstadoPago(estadoPagoRepository.findById(2L).get()); // Señado
+            orden.setEstadoPago(estadoPagoRepository.findById(ID_ESTADO_SENIADO).get());
         } else {
-            orden.setEstadoPago(estadoPagoRepository.findById(3L).get()); // Pagado
+            orden.setEstadoPago(estadoPagoRepository.findById(ID_ESTADO_PAGADO).get());
         }
     }
 
