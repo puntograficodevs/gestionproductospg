@@ -100,7 +100,7 @@ select option:disabled {
 .btn-check:checked + .btn-custom-radio {
     background-color: #d1e7dd !important; 
     border-color: var(--color-azul) !important;     
-    color: var(--color-azul) !important;           
+    color: var(--color-negro) !important;           
     box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); 
 }
 

@@ -1,10 +1,4 @@
-/**
- * Lógica del Buscador de Ordenes
- */
-
-// 1. Delegación de eventos: Escuchamos cualquier cambio en el documento
 document.addEventListener('change', function(evento) {
-    // Si lo que cambió es el checkbox maestro
     if (evento.target.id === 'checkbox-seleccionar-todas-las-ordenes') {
         const listaCheckboxesOrden = document.querySelectorAll('.checkbox-seleccionar-orden');
         listaCheckboxesOrden.forEach(checkbox => {
@@ -13,15 +7,11 @@ document.addEventListener('change', function(evento) {
         actualizarEstadoBotonMasivo();
     }
 
-    // Si lo que cambió es un checkbox individual
     if (evento.target.classList.contains('checkbox-seleccionar-orden')) {
         actualizarEstadoBotonMasivo();
     }
 });
 
-/**
- * Controla la visibilidad del botón de eliminación masiva y el contador.
- */
 function actualizarEstadoBotonMasivo() {
     const listaSeleccionados = document.querySelectorAll('.checkbox-seleccionar-orden:checked');
     const botonEliminarMasivo = document.getElementById('btn-eliminar-masivo');
@@ -43,9 +33,6 @@ function actualizarEstadoBotonMasivo() {
     }
 }
 
-/**
- * Recopila los IDs y los envía por POST
- */
 window.eliminarSeleccionados = function() {
     const listaSeleccionados = document.querySelectorAll('.checkbox-seleccionar-orden:checked');
     const listaDeIds = Array.from(listaSeleccionados).map(checkbox => checkbox.value);
@@ -70,7 +57,6 @@ window.eliminarSeleccionados = function() {
     }
 }
 
-// Mantener las funciones de Detalle y Confirmar Individual
 window.verDetalle = function(ordenId) {
     const contenedorModalBody = document.getElementById('modalBody');
     contenedorModalBody.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>`;

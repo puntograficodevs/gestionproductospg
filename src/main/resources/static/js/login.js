@@ -1,10 +1,10 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const errorDiv = document.getElementById('error-message');
-    if (errorDiv) {
+    const existeErrorEnLogin = document.getElementById('error-message');
+    if (existeErrorEnLogin) {
         setTimeout(() => {
-            errorDiv.classList.remove('animate__fadeInUp');
-            errorDiv.classList.add('animate__fadeOutDown');
-            setTimeout(() => errorDiv.remove(), 1000); // Lo borra del DOM después de la animación
+            existeErrorEnLogin.classList.remove('animate__fadeInUp');
+            existeErrorEnLogin.classList.add('animate__fadeOutDown');
+            setTimeout(() => existeErrorEnLogin.remove(), 1000);
         }, 3000);
     }
 });
