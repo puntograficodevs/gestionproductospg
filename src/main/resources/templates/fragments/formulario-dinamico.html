@@ -275,6 +275,23 @@
                                    th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] == 'on'}">
                             <label class="fw-bold form-check-label" th:text="${campo['label']}"></label>
                         </div>
+
+                        <div th:case="'checkbox_group'" class="d-flex flex-wrap gap-2 p-1">
+                            <div th:each="opt : ${campo['opciones']}" class="opcion-boton-custom">
+                                <input type="checkbox"
+                                       class="btn-check input-dinamico shadow-none"
+                                       th:name="'items[' + ${index} + '].detalles[' + ${campo['name']} + ']'"
+                                       th:id="'check-' + ${index} + '-' + ${campo['name']} + '-' + ${opt}"
+                                       th:value="${opt}"
+                                       th:checked="${mapaDetalles != null && mapaDetalles[campo['name']] != null && mapaDetalles[campo['name']].contains(opt)}"
+                                       autocomplete="off">
+
+                                <label class="fw-bold btn btn-outline-secondary w-100 text-uppercase fw-semibold btn-custom-radio"
+                                       th:for="'check-' + ${index} + '-' + ${campo['name']} + '-' + ${opt}"
+                                       th:text="${opt}">
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
