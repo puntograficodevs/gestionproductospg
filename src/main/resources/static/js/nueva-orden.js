@@ -440,6 +440,39 @@ document.addEventListener("DOMContentLoaded", () => {
         recalcular();
     }, 400);
 
+    // --- VALIDACIÓN DE FECHAS (NUEVO) ---
+        const inputEntrega = document.getElementById('fechaEntrega');
+        const inputMuestra = document.getElementById('fechaMuestra');
+
+        // 1. Seteamos el mínimo de hoy para ambas fechas al cargar
+        const hoy = new Date().toISOString().split('T')[0];
+        if (inputEntrega) inputEntrega.setAttribute('min', hoy);
+        if (inputMuestra) inputMuestra.setAttribute('min', hoy);
+
+        // 2. Función para que la muestra no se pase de la entrega
+        function ajustarLimitesMuestra() {
+            if (!inputEntrega || !inputMuestra) return;
+
+            const fechaEntregaSeleccionada = inputEntrega.value;
+            if (fechaEntregaSeleccionada) {
+                inputMuestra.setAttribute('max', fechaEntregaSeleccionada);
+
+                if (inputMuestra.value && inputMuestra.value > fechaEntregaSeleccionada) {
+                    inputMuestra.value = ""; // Limpiamos para obligar a elegir bien
+                    inputMuestra.classList.add('border-warning');
+                } else {
+                    inputMuestra.classList.remove('border-warning');
+                }
+            }
+        }
+
+        if (inputEntrega) {
+            inputEntrega.addEventListener('change', ajustarLimitesMuestra);
+            // Ejecutamos una vez por si estamos editando una orden vieja
+            ajustarLimitesMuestra();
+        }
+        // --- FIN VALIDACIÓN DE FECHAS ---
+
     // 4. LISTENERS DE CAMBIOS GENERALES
     document.addEventListener('change', (e) => {
         if (e.target.id === 'checkMuestra') {
@@ -475,13 +508,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.preventDefault();
                 alert("Si el cliente abonó, tenés que elegir el Medio de Pago.");
             }
+
+            // --- DENTRO DEL LISTENER DE 'click' DEL #btnGuardar ---
+            const inputEntrega = document.getElementById('fechaEntrega');
+            const inputMuestra = document.getElementById('fechaMuestra');
+
+            if (inputEntrega && inputMuestra && inputMuestra.value) {
+                const fEntrega = new Date(inputEntrega.value);
+                const fMuestra = new Date(inputMuestra.value);
+
+                if (fMuestra > fEntrega) {
+                    e.preventDefault();
+                    // Le damos foco y pintamos de rojo para que se note el error
+                    inputMuestra.classList.add('is-invalid', 'border-danger');
+                    alert("La fecha de MUESTRA no puede ser después de la fecha de ENTREGA.");
+                    inputMuestra.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                } else {
+                    inputMuestra.classList.remove('is-invalid', 'border-danger');
+                }
+            }
         }
     });
 });
 
-// 1. Filtrar el selector de Material
-// Filtra el select de Materiales según Escuela, Docente, etc.
-// --- NUEVA LÓGICA DE FILTRADO CRUZADO ---
 $(document).on('change', '.filtro-escolar', function() {
     const card = $(this).closest('.item-producto');
     const todosLosSelectsFiltro = card.find('.filtro-escolar');

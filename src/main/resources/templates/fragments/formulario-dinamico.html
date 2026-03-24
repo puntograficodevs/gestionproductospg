@@ -40,7 +40,9 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="fw-bold form-label">Fecha de entrega *</label>
-                    <input type="date" class="form-control" th:field="*{fechaEntrega}" required>
+                    <input type="date" class="form-control" th:field="*{fechaEntrega}"
+                           th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                           id="fechaEntrega" required>
                 </div>
                 <div class="col-md-4">
                     <label class="fw-bold form-label">Hora de entrega *</label>
@@ -57,7 +59,9 @@
             <div class="row mb-3" th:classappend="${orden.fechaMuestra == null ? 'd-none' : ''}" id="filaFechaMuestra">
                 <div class="col-md-6">
                     <label class="fw-bold form-label">Fecha de muestra</label>
-                    <input type="date" class="form-control" th:field="*{fechaMuestra}">
+                    <input type="date" class="form-control" th:field="*{fechaMuestra}"
+                           th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                           id="fechaMuestra">
                 </div>
             </div>
         </div>
