@@ -5,15 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.service.*;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,18 +36,8 @@ public class OrdenController {
     public String formulario(HttpSession session, Model model) {
         model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         model.addAttribute("orden", new Orden());
-        model.addAttribute("productos", traerTodosLosProductosOrdenadosPorNombre());
+        model.addAttribute("productos", productoService.traerTodosLosProductosOrdenadosPorNombre());
         return "nueva-orden";
-    }
-
-    private List<Producto> traerTodosLosProductosOrdenadosPorNombre() {
-        return productoService.buscarTodos().stream()
-                .sorted((productoUno, productoDos) -> {
-                    if (productoUno.getNombre().equalsIgnoreCase("Sin categoria")) return 1;
-                    if (productoDos.getNombre().equalsIgnoreCase("Sin categoria")) return -1;
-                    return productoUno.getNombre().compareToIgnoreCase(productoDos.getNombre());
-                })
-                .collect(Collectors.toList());
     }
 
     @PostMapping("/guardar-orden")
@@ -182,34 +177,16 @@ public class OrdenController {
         return "redirect:/buscador";
     }
 
-    @GetMapping("/pasar-en-proceso/{id}")
-    public String pasarEnProceso(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        ordenService.cambiarEstadoOrden(id, 2L);
-        return "redirect:/listado?producto=" + producto;
-    }
-
-    @GetMapping("/volver-sin-hacer/{id}")
-    public String volverSinHacer(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        ordenService.cambiarEstadoOrden(id, 1L);
-        return "redirect:/listado?producto=" + producto;
-    }
-
-    @GetMapping("/pasar-lista-para-retirar/{id}")
-    public String pasarAListaParaRetirar(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        ordenService.cambiarEstadoOrden(id, 3L);
-        return "redirect:/listado?producto=" + producto;
-    }
-
-    @GetMapping("/pasar-retirada/{id}")
-    public String pasarRetirada(@PathVariable Long id, @RequestParam(value = "producto", defaultValue = "todas") String producto) {
-        ordenService.cambiarEstadoOrden(id, 5L);
-        return "redirect:/listado?producto=" + producto;
-    }
-
     @GetMapping("/pasar-retirada-desde-buscador/{id}")
     public String pasarRetiradaDesdeBuscador(@PathVariable Long id) {
         ordenService.cambiarEstadoOrden(id, 5L);
         return "redirect:/buscador";
+    }
+
+    @GetMapping("/cambiar-estado/{idOrden}")
+    public String cambiarEstado(@PathVariable Long idOrden, @RequestParam(value = "producto", defaultValue="todas") String producto, @RequestParam("nuevoEstado") Long idNuevoEstado) {
+        ordenService.cambiarEstadoOrden(idOrden, idNuevoEstado);
+        return "redirect:/listado?producto=" + producto;
     }
 
     @PostMapping("/enviar-a-corregir")
@@ -233,5 +210,35 @@ public class OrdenController {
         } else {
             return "redirect:/listado";
         }
+    }
+
+    @GetMapping("/calendario")
+    public String mostrarCalendario(
+            @RequestParam(defaultValue = "entrega") String tipo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate lunes,
+            Model model, HttpSession session) {
+
+        if (lunes == null) {
+            lunes = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        }
+
+        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+        List<Orden> ordenesSemana = ordenService.obtenerOrdenesPorSemana(lunes, tipo, empleado);
+
+        Map<LocalDate, List<Orden>> datosCalendario = ordenesSemana.stream()
+                .collect(Collectors.groupingBy(
+                        orden -> "muestra".equals(tipo) ? orden.getFechaMuestra() : orden.getFechaEntrega(),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+
+        model.addAttribute("datos", datosCalendario);
+        model.addAttribute("lunesActual", lunes);
+        model.addAttribute("tipoActual", tipo);
+        model.addAttribute("semanaPrevia", lunes.minusWeeks(1));
+        model.addAttribute("semanaSiguiente", lunes.plusWeeks(1));
+        model.addAttribute("empleado", empleado);
+
+        return "calendario";
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -41,4 +42,18 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
             "  OR (:rolId <> 2L AND o.empleado.rol.id <> 2L)" +
             ")")
     List<Orden> buscarOrdenesConEstadoSegunRol(@Param("idEstado") Long idEstado, @Param("rolId") Long rolId);
+
+    @Query("SELECT o FROM Orden o WHERE o.estadoOrden.id < 5 " +
+            "AND (CASE WHEN :tipo = 'muestra' THEN o.fechaMuestra ELSE o.fechaEntrega END) " +
+            "BETWEEN :inicio AND :fin " + // <-- Agregado espacio al final de esta línea
+            "AND (" +
+            "  (:rolId = 2L AND o.empleado.rol.id = 2L) " + // <-- Quitadas las 'L'
+            "  OR (:rolId <> 2L AND o.empleado.rol.id <> 2L)" +
+            ")")
+    List<Orden> buscarPorSemanaYTipo(
+            @Param("inicio") LocalDate inicio,
+            @Param("fin") LocalDate fin,
+            @Param("tipo") String tipo,
+            @Param("rolId") Long rolId
+    );
 }

@@ -32,20 +32,22 @@ function cambiarDeEstadoSegunClick() {
         const resta = parseFloat(botonClickeado.data('resta') || 0);
 
         if (quierenEntregarPeroFaltaAbonar(accion, resta)) {
-            let confirmar = pedirConfirmacionDeEntregaConRestante();
+            let confirmar = pedirConfirmacionDeEntregaConRestante(ordenId, resta);
             if (!confirmar) return;
         }
-
-        const rutas = {
-            'proceso':   `/ordenes/pasar-en-proceso/${ordenId}`,
-            'sin-hacer': `/ordenes/volver-sin-hacer/${ordenId}`,
-            'hecha':     `/ordenes/pasar-lista-para-retirar/${ordenId}`,
-            'entregado': `/ordenes/pasar-retirada/${ordenId}`
+        const estados = {
+            'sin-hacer': 1,
+            'proceso':   2,
+            'hecha':     3,
+            'entregado': 5
         };
 
-        const urlFinal = rutas[accion];
+        const estadoId = estados[accion];
+
+        const urlFinal = `/ordenes/cambiar-estado/${ordenId}?nuevoEstado=${estadoId}`;
+
         if (urlFinal) {
-            window.location.href = urlFinal + "?producto=" + encodeURIComponent(filtroActual);
+            window.location.href = urlFinal + "&producto=" + encodeURIComponent(filtroActual);
         }
     });
 }
@@ -54,7 +56,7 @@ function quierenEntregarPeroFaltaAbonar(accion, resta) {
     return accion === 'entregado' && resta > 0;
 }
 
-function pedirConfirmacionDeEntregaConRestante() {
+function pedirConfirmacionDeEntregaConRestante(ordenId, resta) {
     return confirm(`¡Atención! La orden #${ordenId} tiene un saldo pendiente de $${resta}.\n` +
                     `¿Deseás marcarla como ENTREGADA de todas formas?`);
 }

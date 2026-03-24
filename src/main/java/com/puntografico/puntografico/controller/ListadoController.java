@@ -34,10 +34,10 @@ public class ListadoController {
                 .collect(Collectors.toList());
 
         model.addAttribute("filtroSeleccionado", productoFiltro != null ? productoFiltro : "todas");
-        model.addAttribute("ordenesSinHacer", ordenarYFormatear(ordenesSinHacer, empleado));
-        model.addAttribute("ordenesEnProceso", ordenarYFormatear(ordenesEnProceso, empleado));
-        model.addAttribute("ordenesListaParaRetirar", ordenarYFormatear(ordenesListaParaRetirar, empleado));
-        model.addAttribute("ordenesCorregir", ordenarYFormatear(ordenesCorregir, empleado));
+        model.addAttribute("ordenesSinHacer", ordenService.ordenarYFormatear(ordenesSinHacer, empleado));
+        model.addAttribute("ordenesEnProceso", ordenService.ordenarYFormatear(ordenesEnProceso, empleado));
+        model.addAttribute("ordenesListaParaRetirar", ordenService.ordenarYFormatear(ordenesListaParaRetirar, empleado));
+        model.addAttribute("ordenesCorregir", ordenService.ordenarYFormatear(ordenesCorregir, empleado));
         model.addAttribute("listaMediosDePago", listaMediosDePago);
         model.addAttribute("productos", productos);
         model.addAttribute("empleado", empleado);
@@ -45,66 +45,7 @@ public class ListadoController {
         return "listado";
     }
 
-    private List<Orden> ordenarYFormatear(List<Orden> ordenes, Empleado empleado) {
-        return ordenes.stream()
-                .sorted(obtenerCriterioOrdenamiento(empleado))
-                .collect(Collectors.toList());
-    }
 
-    private Comparator<Orden> obtenerCriterioOrdenamiento(Empleado empleado) {
-        if ("maricommunity".equalsIgnoreCase(empleado.getUsername())) {
-            return Comparator.comparing(Orden::getId).reversed();
-        }
-
-        return Comparator.comparing(Orden::getFechaEntrega)
-                .thenComparing(orden -> parsearHora(orden.getHoraEntrega()));
-    }
-
-    private LocalTime parsearHora(String horaEntrega) {
-        if (esHoraEntregaInvalida(horaEntrega)) {
-            return LocalTime.MAX;
-        }
-
-        try {
-            String horaEntregaFormateada = formatearHoraEntrega(horaEntrega);
-            return construirLocalTime(horaEntregaFormateada);
-        } catch (Exception e) {
-            return LocalTime.MAX;
-        }
-    }
-
-    private boolean esHoraEntregaInvalida(String hora) {
-        return hora == null || hora.trim().isEmpty();
-    }
-
-    private String formatearHoraEntrega(String horaEntrega) {
-        return horaEntrega.replace(":", "").replace(".", "").trim();
-    }
-
-    private LocalTime construirLocalTime(String horaEntregaFormateada) {
-        int horas;
-        int minutos = 0;
-
-        if (horaEntregaFormateada.length() <= 2) {
-            horas = Integer.parseInt(horaEntregaFormateada);
-        } else if (horaEntregaFormateada.length() == 3) {
-            horas = Integer.parseInt(horaEntregaFormateada.substring(0, 1));
-            minutos = Integer.parseInt(horaEntregaFormateada.substring(1));
-        } else {
-            horas = Integer.parseInt(horaEntregaFormateada.substring(0, 2));
-            minutos = Integer.parseInt(horaEntregaFormateada.substring(2));
-        }
-
-        return LocalTime.of(normalizarHora(horas), normalizarMinutos(minutos));
-    }
-
-    private int normalizarHora(int horas) {
-        return Math.min(horas, 23);
-    }
-
-    private int normalizarMinutos(int minutos) {
-        return Math.min(minutos, 59);
-    }
 
     private Comparator<Producto> crearComparadorProductos() {
         return (productoUno, productoDos) -> {

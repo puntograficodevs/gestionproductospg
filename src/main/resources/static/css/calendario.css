@@ -1,0 +1,39 @@
+body { background-color: #f4f7f6; }
+        .kanban-board {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px 10px;
+            gap: 15px;
+            align-items: flex-start;
+            min-height: 80vh;
+        }
+
+        .kanban-col {
+            flex: 0 0 320px;
+            background-color: #ebedef;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .day-header {
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 15px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            transition: transform 0.1s;
+        }
+
+        .order-card:hover { transform: scale(1.02); cursor: pointer; }
+        .order-card.priority-warn { border-left-color: #ffc107; }
+        .order-card.unpaid { border-left-color: #dc3545; }
+
+        .kanban-board::-webkit-scrollbar { height: 10px; }
+        .kanban-board::-webkit-scrollbar-track { background: #f1f1f1; }
+        .kanban-board::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
