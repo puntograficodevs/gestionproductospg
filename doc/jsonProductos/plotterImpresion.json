@@ -1,0 +1,20 @@
+[
+  {
+    "name": "tipo_papel",
+    "tipo": "select",
+    "label": "Tipo de papel * ",
+    "opciones": ["OBRA 80 GRS", "FOTOGRÁFICO 115 GRS", "FOTOGRÁFICO 180 GRS", "BLUEBACK"],
+    "required": true
+  },
+  {"name": "enlace_archivo",
+    "tipo": "text",
+    "label": "Enlace del archivo",
+    "placeholder": "Ej: https://drive.com/archivo.pdf"
+  },
+  {
+    "name": "informacion_adicional",
+    "tipo": "text",
+    "label": "Información adicional",
+    "placeholder": "Ej: Que cada lona tenga dos bolsillos"
+  }
+]
