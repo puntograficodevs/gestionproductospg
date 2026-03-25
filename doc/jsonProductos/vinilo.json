@@ -3,7 +3,7 @@
     "name": "medida",
     "tipo": "select",
     "label": "Medida * ",
-    "opciones": ["5CM","6CM", "7CM", "OTRA"],
+    "opciones": ["5CM", "6CM", "7CM", "OTRA"],
     "required": true
   },
   {
@@ -25,8 +25,26 @@
     "name": "tipo_adicional_vinilo",
     "tipo": "select",
     "label": "Tipo de adicional *",
-    "opciones": ["LAMINADO", "IMÁN", "NINGUNO"],
+    "opciones": ["LAMINADO", "IMÁN", "PVC", "NINGUNO"],
     "required": true
+  },
+  {
+    "name": "terminacion",
+    "tipo": "select",
+    "label": "Terminación *",
+    "showIf": "PVC",
+    "opciones": ["CINTA BIFAZ", "PERFORACIÓN", "TANZA", "CHUPETES DE SILICONA", "CRUCES DE PVC DISTANCIADORAS" ,"NINGUNA"],
+    "required": true,
+    "dependsOn": "tipo_adicional_vinilo"
+  },
+  {
+    "name": "cantidad_cruces",
+    "tipo": "text",
+    "label": "Cantidad cruces de PVC distanciadoras *",
+    "showIf": "CRUCES DE PVC DISTANCIADORAS",
+    "placeholder": "Ej: 4",
+    "required": true,
+    "dependsOn": "terminacion"
   },
   {
     "name": "tipo_corte",
@@ -35,7 +53,8 @@
     "opciones": ["MANUAL", "TROQUELADO", "TROQUELADO CON CORTE INDIVIDUAL", "PLANCHA IMPRESA"],
     "required": true
   },
-  {"name": "enlace_archivo",
+  {
+    "name": "enlace_archivo",
     "tipo": "text",
     "label": "Enlace del archivo",
     "placeholder": "Ej: https://drive.com/archivo.pdf"
