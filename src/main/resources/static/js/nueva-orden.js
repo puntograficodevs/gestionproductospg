@@ -208,6 +208,7 @@ function buscarPrecioCatalogo(index) {
 
     const nombreProducto = h2Element ? h2Element.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
     const esImpresion = nombreProducto.includes("impresion");
+    const esSelloMadera = nombreProducto.includes("sellos madera");
 
     let detalles = {};
 
@@ -264,6 +265,16 @@ function buscarPrecioCatalogo(index) {
             const costoHojas = precioRecibido * paginas;
             let costoAnillado = (detalles["es_anillado"] === true) ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
             precioFinal = (costoHojas + costoAnillado) * vCantFinal;
+        } else if (esSelloMadera) {
+            const quiereAlmohadilla = item.querySelector('[name*="detalles[agrega_almohadilla]"]')?.checked;
+            const quiereTinta = item.querySelector('[name*="detalles[agrega_tinta]"]')?.checked;
+            const quiereRodillo = item.querySelector('[name*="detalles[agrega_rodillo]"]')?.checked;
+
+            const precioAlmohadilla = quiereAlmohadilla ? (parseInt(item.querySelector('[name*="precio_almohadilla"]')?.value) || 0) : 0;
+            const precioTinta = quiereTinta ? (parseInt(item.querySelector('[name*="precio_tinta"]')?.value) || 0) : 0;
+            const precioRodillo = quiereRodillo ? 3200 : 0;
+
+            precioFinal = (precioRecibido + precioAlmohadilla + precioTinta + precioRodillo) * vCantFinal;
         } else {
             // Para sellos de madera, automáticos, etc.
             const tienePackDefinido = detalles["cantidad_producto"] && detalles["cantidad_producto"] !== "OTRA";

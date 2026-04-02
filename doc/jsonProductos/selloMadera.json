@@ -18,8 +18,8 @@
     "name": "tipografia",
     "tipo": "text",
     "label": "Tipografía *",
-    "placeholder": "Ej: Helvetica",
-    "required": true
+    "required": true,
+    "placeholder": "Ej: Helvetica"
   },
   {
     "name": "detalle_del_sello",
@@ -31,6 +31,61 @@
     "name": "con_adicional_perilla",
     "tipo": "checkbox",
     "label": "¿Con adicional perilla?"
+  },
+  {
+    "name": "agrega_almohadilla",
+    "tipo": "checkbox",
+    "label": "¿Agrega almohadilla?"
+  },
+  {
+    "name": "medida_almohadilla",
+    "tipo": "text",
+    "label": "Medida de la almohadilla *",
+    "showIf": "on",
+    "dependsOn": "agrega_almohadilla",
+    "placeholder": "Ej: 5X9 CM"
+  },
+  {
+    "name": "tinta_almohadilla",
+    "tipo": "select",
+    "label": "Tinta de almohadilla *",
+    "showIf": "on",
+    "opciones": ["CON TINTA", "SIN TINTA"],
+    "dependsOn": "agrega_almohadilla"
+  },
+  {
+    "name": "precio_almohadilla",
+    "tipo": "number",
+    "label": "Precio almohadilla *",
+    "showIf": "on",
+    "dependsOn": "agrega_almohadilla",
+    "placeholder": "Ej: 1500"
+  },
+  {
+    "name": "agrega_tinta",
+    "tipo": "checkbox",
+    "label": "¿Agrega tinta?"
+  },
+  {
+    "name": "color_tinta",
+    "tipo": "text",
+    "label": "Color de la tinta *",
+    "showIf": "on",
+    "dependsOn": "agrega_tinta",
+    "placeholder": "Ej: Rojo"
+  },
+  {
+    "name": "precio_tinta",
+    "tipo": "number",
+    "label": "Precio tinta *",
+    "showIf": "on",
+    "dependsOn": "agrega_tinta",
+    "placeholder": "Ej: 1500"
+  },
+  {
+    "name": "agrega_rodillo",
+    "tipo": "checkbox",
+    "label": "¿Agrega rodillo?"
   },
   {
     "name": "enlace_archivo",
