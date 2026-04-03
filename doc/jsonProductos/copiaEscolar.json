@@ -3,7 +3,7 @@
     "name": "escuela",
     "tipo": "select",
     "label": "Escuela o institución",
-    "opciones": ["CIPA", "ESC. 42", "ESC. 710", "ESC. 750","ESC. 789", "ESC. 84", "ESC. DE LA COSTA","ESC. MUTUALISTA", "FAPE", "HIGH STREET INSTITUTE", "HOME", "IGLESIA EL ENCUENTRO", "IMI - INSTITUTO MUNICIPAL DE INGLÉS", "INGLÉS VARIOS", "INICIAL", "UNIVERSIDAD DEL CHUBUT"],
+    "opciones": ["CIPA", "ESC. 42", "ESC. 710", "ESC. 741", "ESC. 750","ESC. 789", "ESC. 84", "ESC. DE LA COSTA","ESC. MUTUALISTA", "FAPE", "HIGH STREET INSTITUTE", "HOME", "IGLESIA EL ENCUENTRO", "IMI - INSTITUTO MUNICIPAL DE INGLÉS", "INGLÉS VARIOS", "INICIAL", "UNIVERSIDAD DEL CHUBUT"],
     "required": false
   },
   {

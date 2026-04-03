@@ -40,6 +40,64 @@
     "required": true
   },
   {
+    "name": "agrega_almohadilla",
+    "tipo": "checkbox",
+    "label": "¿Agrega almohadilla?"
+  },
+  {
+    "name": "medida_almohadilla",
+    "tipo": "text",
+    "label": "Medida y/o detalles de la almohadilla *",
+    "showIf": "on",
+    "dependsOn": "agrega_almohadilla",
+    "placeholder": "Ej: 5X9 CM"
+  },
+  {
+    "name": "tinta_almohadilla",
+    "tipo": "select",
+    "label": "Tinta de almohadilla *",
+    "showIf": "on",
+    "opciones": ["CON TINTA", "SIN TINTA"],
+    "dependsOn": "agrega_almohadilla"
+  },
+  {
+    "name": "precio_almohadilla",
+    "tipo": "number",
+    "label": "Precio almohadilla *",
+    "showIf": "on",
+    "dependsOn": "agrega_almohadilla",
+    "placeholder": "Ej: 1500"
+  },
+  {
+    "name": "agrega_tinta",
+    "tipo": "checkbox",
+    "label": "¿Agrega tinta?"
+  },
+  {
+    "name": "color_tinta",
+    "tipo": "text",
+    "label": "Color de la tinta *",
+    "showIf": "on",
+    "dependsOn": "agrega_tinta",
+    "placeholder": "Ej: Rojo"
+  },
+  {
+    "name": "tipo_tinta",
+    "tipo": "select",
+    "label": "Tipo de tinta *",
+    "opciones": ["TEXTIL", "AL AGUA"],
+    "showIf": "on",
+    "dependsOn": "agrega_tinta"
+  },
+  {
+    "name": "precio_tinta",
+    "tipo": "number",
+    "label": "Precio tinta *",
+    "showIf": "on",
+    "dependsOn": "agrega_tinta",
+    "placeholder": "Ej: 1500"
+  },
+  {
     "name": "enlace_archivo",
     "tipo": "text",
     "label": "Enlace del archivo",

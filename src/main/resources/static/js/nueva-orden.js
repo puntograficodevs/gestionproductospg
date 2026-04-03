@@ -208,8 +208,7 @@ function buscarPrecioCatalogo(index) {
 
     const nombreProducto = h2Element ? h2Element.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
     const esImpresion = nombreProducto.includes("impresion");
-    const esSelloMadera = nombreProducto.includes("sellos madera");
-
+    const esSello = nombreProducto.includes("sellos madera") || nombreProducto.includes("sellos automaticos");
     let detalles = {};
 
     // Capturamos los campos dinámicos
@@ -265,7 +264,7 @@ function buscarPrecioCatalogo(index) {
             const costoHojas = precioRecibido * paginas;
             let costoAnillado = (detalles["es_anillado"] === true) ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
             precioFinal = (costoHojas + costoAnillado) * vCantFinal;
-        } else if (esSelloMadera) {
+        } else if (esSello) {
             const quiereAlmohadilla = item.querySelector('[name*="detalles[agrega_almohadilla]"]')?.checked;
             const quiereTinta = item.querySelector('[name*="detalles[agrega_tinta]"]')?.checked;
             const quiereRodillo = item.querySelector('[name*="detalles[agrega_rodillo]"]')?.checked;
