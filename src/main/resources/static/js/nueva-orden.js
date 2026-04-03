@@ -274,7 +274,7 @@ function buscarPrecioCatalogo(index) {
             const precioTinta = quiereTinta ? (parseInt(item.querySelector('[name*="precio_tinta"]')?.value) || 0) : 0;
             const precioRodillo = quiereRodillo ? 3200 : 0;
 
-            precioFinal = (precioRecibido + precioAlmohadilla + precioTinta + precioRodillo) * vCantFinal;
+            precioFinal = (precioRecibido * vCantFinal) + precioAlmohadilla + precioTinta + precioRodillo;
         } else {
             // Para sellos de madera, automáticos, etc.
             const tienePackDefinido = detalles["cantidad_producto"] && detalles["cantidad_producto"] !== "OTRA";

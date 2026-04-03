@@ -40,7 +40,7 @@
   {
     "name": "medida_almohadilla",
     "tipo": "text",
-    "label": "Medida de la almohadilla *",
+    "label": "Medida y/o detalles de la almohadilla *",
     "showIf": "on",
     "dependsOn": "agrega_almohadilla",
     "placeholder": "Ej: 5X9 CM"
@@ -73,6 +73,14 @@
     "showIf": "on",
     "dependsOn": "agrega_tinta",
     "placeholder": "Ej: Rojo"
+  },
+  {
+    "name": "tipo_tinta",
+    "tipo": "select",
+    "label": "Tipo de tinta *",
+    "opciones": ["TEXTIL", "AL AGUA"],
+    "showIf": "on",
+    "dependsOn": "agrega_tinta"
   },
   {
     "name": "precio_tinta",
