@@ -33,14 +33,59 @@
     color: var(--color-magenta);
 }
 
+#btnImprimir {
+    background: linear-gradient(to bottom, rgb(229,41,135), rgb(0,159,227));
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 6px !important;
+}
+
+#btnImprimir:hover {
+    transform: scale(1.2);
+}
+
 @media print {
-    nav {
+    body * {
+        visibility: hidden !important;
+        height: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .contenedor-orden-impresion,
+    .contenedor-orden-impresion * {
+        visibility: visible !important;
+        height: auto;
+    }
+
+    .contenedor-orden-impresion {
+        position: absolute;
+        top: 0;
+        width: 85% !important;
+        left: 7.5%;
+        margin: 0;
+        font-size: 0.8em;
+        transform-origin: top center;
+        padding: 16px !important;
+    }
+
+    #btnImprimir,
+    .btn,
+    .modal-footer,
+    .navbar,
+    button,
+    .spinner-border {
         display: none !important;
     }
 
-    body {
-        font-size: 0.8em;
-        margin: 0;
-        padding: 0;
+    .modal-backdrop {
+        display: none !important;
+    }
+
+    .modal {
+        position: relative !important;
+        overflow: visible !important;
+        display: block !important;
     }
 }
