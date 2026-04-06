@@ -72,15 +72,22 @@ public class OrdenService {
         return ordenRepository.buscarOrdenesConEstadoSegunRol(idEstado, idRol);
     }
 
-    public void cambiarEstadoOrden(Long idOrden, Long idEstado) {
+    public void cambiarEstadoOrden(Long idOrden, Long idEstado, boolean asignarEncargado, Empleado empleadoLogueado) {
         Orden orden = ordenRepository.findById(idOrden)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + idOrden));
 
         EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idEstado)
                 .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
 
+        asignarEncargadoSiCorresponde(idEstado, orden, asignarEncargado, empleadoLogueado);
         orden.setEstadoOrden(nuevoEstado);
         ordenRepository.save(orden);
+    }
+
+    private void asignarEncargadoSiCorresponde(Long idEstado, Orden orden, boolean asignarEncargado, Empleado empleadoLogueado) {
+        if (idEstado == 2 && asignarEncargado) {
+            orden.setEncargadoProduccion(empleadoLogueado);
+        }
     }
 
     public void enviarAColumnaCorreccion(Long idOrden, String motivo) {

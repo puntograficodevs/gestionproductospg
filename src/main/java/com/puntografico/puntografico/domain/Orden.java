@@ -72,6 +72,10 @@ public class Orden {
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_encargado_produccion")
+    private Empleado encargadoProduccion;
+
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrdenItem> items = new ArrayList<>();
 

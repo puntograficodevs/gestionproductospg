@@ -52,6 +52,9 @@
               <button class="btn btn-primary btn-sm ver-btn" th:onclick="'verDetalle(' + ${orden.id} + ')'">VER</button>
 
               <div class="card-body">
+                <div th:if="${orden.encargadoProduccion}">
+                  <div class="bg-warning p-1 fw-bold rounded-2 mt-2 mb-2 mx-4 text-center border border-warning-subtle" th:text="'Tomada por: ' + ${orden.encargadoProduccion.nombre}"></div>
+                </div>
                 <b>
                   <p th:if="${orden.items != null and !#lists.isEmpty(orden.items)}"
                       class="fw-bold mb-0"
@@ -132,6 +135,24 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAsignarProduccion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-white">
+        <h5 class="modal-title">Tomar orden</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="fs-5">¿Querés asignarte la orden <b id="modal-nro-orden"></b>?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" id="btn-asignar-no" class="btn btn-outline-secondary px-4">NO, SOLO CAMBIAR ESTADO</button>
+        <button type="button" id="btn-asignar-si" class="btn btn-success px-4">SÍ, ASIGNARME</button>
       </div>
     </div>
   </div>

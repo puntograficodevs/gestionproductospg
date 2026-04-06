@@ -30,11 +30,6 @@ function cambiarDeEstadoSegunClick() {
         const ordenId = botonClickeado.data('idorden');
         const accion = botonClickeado.data('accion');
         const resta = parseFloat(botonClickeado.data('resta') || 0);
-
-        if (quierenEntregarPeroFaltaAbonar(accion, resta)) {
-            let confirmar = pedirConfirmacionDeEntregaConRestante(ordenId, resta);
-            if (!confirmar) return;
-        }
         const estados = {
             'sin-hacer': 1,
             'proceso':   2,
@@ -44,11 +39,28 @@ function cambiarDeEstadoSegunClick() {
 
         const estadoId = estados[accion];
 
-        const urlFinal = `/ordenes/cambiar-estado/${ordenId}?nuevoEstado=${estadoId}`;
+        if (estadoId === 2) {
+            $('#modal-nro-orden').text('#' + ordenId);
+            const modal = new bootstrap.Modal(document.getElementById('modalAsignarProduccion'));
+            modal.show();
 
-        if (urlFinal) {
-            window.location.href = urlFinal + "&producto=" + encodeURIComponent(filtroActual);
+            // Configuramos los botones del modal (usamos .off() para no acumular eventos)
+            $('#btn-asignar-si').off().on('click', function() {
+                irAEstado(ordenId, estadoId, filtroActual, true);
+            });
+
+            $('#btn-asignar-no').off().on('click', function() {
+                irAEstado(ordenId, estadoId, filtroActual, false);
+            });
+            return; // Frenamos la ejecución acá
         }
+
+        if (quierenEntregarPeroFaltaAbonar(accion, resta)) {
+            let confirmar = pedirConfirmacionDeEntregaConRestante(ordenId, resta);
+            if (!confirmar) return;
+        }
+
+        irAEstado(ordenId, estadoId, filtroActual, false);
     });
 }
 
@@ -59,6 +71,12 @@ function quierenEntregarPeroFaltaAbonar(accion, resta) {
 function pedirConfirmacionDeEntregaConRestante(ordenId, resta) {
     return confirm(`¡Atención! La orden #${ordenId} tiene un saldo pendiente de $${resta}.\n` +
                     `¿Deseás marcarla como ENTREGADA de todas formas?`);
+}
+
+function irAEstado(id, estado, filtro, asignar) {
+    let url = `/ordenes/cambiar-estado/${id}?nuevoEstado=${estado}&producto=${encodeURIComponent(filtro)}`;
+    if (asignar) url += "&asignarEncargado=true";
+    window.location.href = url;
 }
 
 function evaluarFiltroAlRefrescarPagina() {

@@ -178,14 +178,26 @@ public class OrdenController {
     }
 
     @GetMapping("/pasar-retirada-desde-buscador/{id}")
-    public String pasarRetiradaDesdeBuscador(@PathVariable Long id) {
-        ordenService.cambiarEstadoOrden(id, 5L);
+    public String pasarRetiradaDesdeBuscador(@PathVariable Long id,
+                                             HttpSession session) {
+        Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
+
+        ordenService.cambiarEstadoOrden(id, 5L, false, empleadoLogueado);
         return "redirect:/buscador";
     }
 
     @GetMapping("/cambiar-estado/{idOrden}")
-    public String cambiarEstado(@PathVariable Long idOrden, @RequestParam(value = "producto", defaultValue="todas") String producto, @RequestParam("nuevoEstado") Long idNuevoEstado) {
-        ordenService.cambiarEstadoOrden(idOrden, idNuevoEstado);
+    public String cambiarEstado(
+            @PathVariable Long idOrden,
+            @RequestParam(value = "producto", defaultValue = "todas") String producto,
+            @RequestParam("nuevoEstado") Long idNuevoEstado,
+            @RequestParam(value = "asignarEncargado", defaultValue = "false") boolean asignarEncargado,
+            HttpSession session) {
+
+        Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
+
+        ordenService.cambiarEstadoOrden(idOrden, idNuevoEstado, asignarEncargado, empleadoLogueado);
+
         return "redirect:/listado?producto=" + producto;
     }
 
