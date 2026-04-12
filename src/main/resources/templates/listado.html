@@ -53,7 +53,10 @@
 
               <div class="card-body">
                 <div th:if="${orden.encargadoProduccion}">
-                  <div class="bg-warning p-1 fw-bold rounded-2 mt-1 mb-2 mx-5 text-center border border-warning-subtle" th:text="'Tomada por: ' + ${orden.encargadoProduccion.nombre}"></div>
+                  <div class="p-1 fw-bold rounded-2 mt-1 mb-2 mx-5 text-center text-dark border"
+                       th:text="'Tomada por: ' + ${orden.encargadoProduccion.nombre}"
+                       th:style="'background-color:' + ${orden.encargadoProduccion.colorAsignado} + '; border-color:' + ${orden.encargadoProduccion.colorAsignado}">
+                  </div>
                 </div>
                 <b>
                   <p th:if="${orden.items != null and !#lists.isEmpty(orden.items)}"

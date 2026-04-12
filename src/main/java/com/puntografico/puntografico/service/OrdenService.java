@@ -56,6 +56,7 @@ public class OrdenService {
             ordenNueva.setFechaPedido(ordenPersistida.getFechaPedido());
             ordenNueva.setEmpleado(ordenPersistida.getEmpleado());
             asignarEstadoOrdenSegunProceso(ordenPersistida, ordenNueva);
+            asignarEncargadoOrdenSiCorresponde(ordenPersistida, ordenNueva);
             asignarPagosSegunModificacionAbonado(ordenPersistida, ordenNueva, idMedioPago);
             limpiarItemsParaEvitarDuplicacion(ordenPersistida);
         }
@@ -133,6 +134,12 @@ public class OrdenService {
             ordenNueva.setIdEstadoPrevio(null);
         } else {
             ordenNueva.setEstadoOrden(ordenPersistida.getEstadoOrden());
+        }
+    }
+
+    private void asignarEncargadoOrdenSiCorresponde(Orden ordenPersistida, Orden ordenNueva) {
+        if (ordenPersistida.getEncargadoProduccion() != null) {
+            ordenNueva.setEncargadoProduccion(ordenPersistida.getEncargadoProduccion());
         }
     }
 

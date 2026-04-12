@@ -19,6 +19,8 @@ public class Empleado {
 
     private String password;
 
+    private String colorAsignado;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol")
     private Rol rol;
