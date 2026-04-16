@@ -33,7 +33,7 @@
     "tipo": "select",
     "label": "Terminación *",
     "showIf": "PVC",
-    "opciones": ["CINTA BIFAZ", "PERFORACIÓN", "TANZA", "CHUPETES DE SILICONA", "CRUCES DE PVC DISTANCIADORAS" ,"NINGUNA"],
+    "opciones": ["CINTA BIFAZ", "PERFORACIÓN", "TANZA", "CHUPETES DE SILICONA", "CRUCES DE PVC DISTANCIADORAS", "PIECITO DE CARTON", "NINGUNA"],
     "required": true,
     "dependsOn": "tipo_adicional_vinilo"
   },
