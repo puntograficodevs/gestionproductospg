@@ -64,7 +64,7 @@ public class OrdenController {
     @GetMapping("/formulario-producto/{id}")
     public String obtenerFragmento(
             @PathVariable Integer id,
-            @RequestParam(value = "index", defaultValue = "0") int index, // <--- Recibimos el índice
+            @RequestParam(value = "index", defaultValue = "0") int index,
             Model model,
             HttpSession session) {
 
@@ -183,7 +183,7 @@ public class OrdenController {
         Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
 
         ordenService.cambiarEstadoOrden(id, 5L, false, empleadoLogueado);
-        return "redirect:/buscador";
+        return "redirect:/buscador?idOrden=" + id;
     }
 
     @GetMapping("/cambiar-estado/{idOrden}")
@@ -218,7 +218,7 @@ public class OrdenController {
         pagoService.registrarPagoExtra(ordenId, importe, idMedioPago);
 
         if (desdeModal) {
-            return "redirect:/buscador";
+            return "redirect:/buscador?idOrden=" + ordenId;
         } else {
             return "redirect:/listado";
         }

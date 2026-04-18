@@ -19,8 +19,14 @@ public class BuscadorController {
     private final OrdenService ordenService;
 
     @GetMapping("/buscador")
-    public String verBuscador(Model model, HttpSession session) {
-        model.addAttribute("ordenesEncontradas", new ArrayList<Orden>());
+    public String verBuscador(@RequestParam(value = "idOrden", required = false) Long idOrden, Model model, HttpSession session) {
+        List<Orden> resultados = new ArrayList<>();
+
+        if (idOrden != null) {
+            resultados.add(ordenService.buscarPorId(idOrden));
+        }
+
+        model.addAttribute("ordenesEncontradas", resultados);
         model.addAttribute("empleado", session.getAttribute("empleadoLogueado"));
         return "buscador";
     }
