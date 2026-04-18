@@ -6,7 +6,23 @@
     "opciones": ["OBRA 80 GRS", "FOTOGRÁFICO 115 GRS", "FOTOGRÁFICO 180 GRS", "BLUEBACK"],
     "required": true
   },
-  {"name": "enlace_archivo",
+  {
+    "name": "medida",
+    "tipo": "select",
+    "label": "Medida * ",
+    "opciones": ["A2", "A1", "A0", "OTRA"],
+    "required": true
+  },
+  {
+    "name": "medida_personalizada",
+    "tipo": "text",
+    "label": "Medida personalizada",
+    "showIf": "OTRA",
+    "dependsOn": "medida",
+    "placeholder": "Ingresá otra medida aquí."
+  },
+  {
+    "name": "enlace_archivo",
     "tipo": "text",
     "label": "Enlace del archivo",
     "placeholder": "Ej: https://drive.com/archivo.pdf"
