@@ -1,5 +1,10 @@
 [
   {
+    "name": "es_offset",
+    "tipo": "checkbox",
+    "label": "¿Es offset?"
+  },
+  {
     "name": "con_plegado",
     "tipo": "checkbox",
     "label": "¿Con plegado?"
@@ -8,7 +13,7 @@
     "name": "tipo_papel",
     "tipo": "select",
     "label": "Tipo de papel * ",
-    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 115 GRS", "ILUSTRACIÓN 150 GRS"],
+    "opciones": ["OBRA 75 GRS", "ILUSTRACIÓN 90 GRS", "ILUSTRACIÓN 115 GRS", "ILUSTRACIÓN 150 GRS"],
     "required": true
   },
   {
@@ -29,7 +34,7 @@
     "name": "tamanio_hoja",
     "tipo": "select",
     "label": "Tamaño de hoja * ",
-    "opciones": ["A3" ,"A4", "A5", "OFICIO", "1/4 DE A4", "1/4 DE OFICIO", "OTRO"],
+    "opciones": ["A3" ,"A4", "A5", "OFICIO", "1/4 DE A4", "1/4 DE OFICIO", "10X15 CM", "20X15 CM", "OTRO"],
     "required": true
   },
   {
@@ -62,7 +67,7 @@
     "name": "cantidad_producto",
     "tipo": "select",
     "label": "Cantidad *",
-    "opciones": ["50", "100", "150", "200", "300", "400", "500", "1000", "OTRA"],
+    "opciones": ["50", "100", "150", "200", "300", "400", "500", "1000", "2500", "OTRA"],
     "required": true
   }
 ]
