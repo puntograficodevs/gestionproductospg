@@ -18,6 +18,7 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="contenido-pagina-listado">
+  <input type="hidden" id="rolEmpleadoId" th:value="${empleado.rol.id}">
   <div class="row contenedor-selector-producto justify-content-center align-items-center mt-3">
     <div class="col-md-4 text-end">
       <h3 class="titulo-filtro">Elegí qué órdenes quer&eacute;s ver:</h3>
