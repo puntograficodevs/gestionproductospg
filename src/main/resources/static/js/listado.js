@@ -40,18 +40,25 @@ function cambiarDeEstadoSegunClick() {
         const estadoId = estados[accion];
 
         if (estadoId === 2) {
-            $('#modal-nro-orden').text('#' + ordenId);
-            const modal = new bootstrap.Modal(document.getElementById('modalAsignarProduccion'));
-            modal.show();
+            let rolEmpleadoId = +$('#rolEmpleadoId').val();
 
-            // Configuramos los botones del modal (usamos .off() para no acumular eventos)
-            $('#btn-asignar-si').off().on('click', function() {
+            if (rolEmpleadoId === 1) {
+                $('#modal-nro-orden').text('#' + ordenId);
+                const modal = new bootstrap.Modal(document.getElementById('modalAsignarProduccion'));
+                modal.show();
+
+                // Configuramos los botones del modal (usamos .off() para no acumular eventos)
+                $('#btn-asignar-si').off().on('click', function() {
+                    irAEstado(ordenId, estadoId, filtroActual, true);
+                });
+
+                $('#btn-asignar-no').off().on('click', function() {
+                    irAEstado(ordenId, estadoId, filtroActual, false);
+                });
+            } else {
                 irAEstado(ordenId, estadoId, filtroActual, true);
-            });
+            }
 
-            $('#btn-asignar-no').off().on('click', function() {
-                irAEstado(ordenId, estadoId, filtroActual, false);
-            });
             return; // Frenamos la ejecución acá
         }
 
