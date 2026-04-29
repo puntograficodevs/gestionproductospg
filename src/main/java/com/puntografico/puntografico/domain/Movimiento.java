@@ -20,20 +20,16 @@ public class Movimiento {
     @Column(nullable = false)
     private TipoMovimiento tipoMovimiento;
 
-    private String correccionHecha;
+    private String detalle;
 
     @Column(nullable = false)
     private LocalDateTime fecha;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empleado_id", nullable = false)
     private Empleado empleado;
 
-    @ManyToOne
-    @JoinColumn(name = "pago_id")
-    private Pago pago;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "orden_id", nullable = false)
     private Orden orden;
 }

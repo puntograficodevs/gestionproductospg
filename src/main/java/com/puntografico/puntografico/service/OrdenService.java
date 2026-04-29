@@ -1,9 +1,6 @@
 package com.puntografico.puntografico.service;
 
-import com.puntografico.puntografico.domain.Empleado;
-import com.puntografico.puntografico.domain.EstadoOrden;
-import com.puntografico.puntografico.domain.Orden;
-import com.puntografico.puntografico.domain.Producto;
+import com.puntografico.puntografico.domain.*;
 import com.puntografico.puntografico.repository.EstadoOrdenRepository;
 import com.puntografico.puntografico.repository.OrdenRepository;
 import com.puntografico.puntografico.repository.ProductoRepository;
@@ -14,6 +11,7 @@ import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -45,16 +43,30 @@ public class OrdenService {
     }
 
     @Transactional
-    public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago) {
+    public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago, Empleado empleadoLogueado) {
+        Movimiento movimiento;
+
         if (esProcesoCreacion(ordenNueva.getId())) {
             ordenNueva.setFechaPedido(LocalDate.now());
             ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER).get());
-            if (ordenNueva.getAbonado() > 0) pagoService.crearPagoDesdeFormularioOrden(ordenNueva, idMedioPago);
+
+            if (ordenNueva.getAbonado() > 0) {
+                pagoService.crearPagoDesdeFormularioOrden(ordenNueva, idMedioPago);
+            }
+
             pagoService.actualizarEstadoPago(ordenNueva);
+
+            movimiento = crearMovimientoCreacion(ordenNueva, empleadoLogueado);
+
         } else {
             Orden ordenPersistida = buscarPorId(ordenNueva.getId());
+
+            movimiento = crearMovimientoEdicionOCorreccion(ordenPersistida, ordenNueva, empleadoLogueado);
+
             ordenNueva.setFechaPedido(ordenPersistida.getFechaPedido());
             ordenNueva.setEmpleado(ordenPersistida.getEmpleado());
+            ordenNueva.setMovimientos(ordenPersistida.getMovimientos());
+
             asignarEstadoOrdenSegunProceso(ordenPersistida, ordenNueva);
             asignarEncargadoOrdenSiCorresponde(ordenPersistida, ordenNueva);
             asignarPagosSegunModificacionAbonado(ordenPersistida, ordenNueva, idMedioPago);
@@ -62,7 +74,54 @@ public class OrdenService {
         }
 
         vincularItemsSiCorresponde(ordenNueva, idProducto);
+        ordenNueva.agregarMovimiento(movimiento);
+
         return ordenRepository.save(ordenNueva);
+    }
+
+    private Movimiento crearMovimientoCreacion(Orden orden, Empleado empleadoLogueado) {
+        Movimiento movimiento = new Movimiento();
+        movimiento.setTipoMovimiento(TipoMovimiento.TOMAR_PEDIDO);
+        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setEmpleado(empleadoLogueado);
+        return movimiento;
+    }
+
+    private Movimiento crearMovimientoEdicionOCorreccion(
+            Orden ordenPersistida,
+            Orden ordenNueva,
+            Empleado empleadoLogueado
+    ) {
+        Movimiento movimiento = new Movimiento();
+        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setEmpleado(empleadoLogueado);
+
+        if (esProcesoCorreccion(ordenPersistida)) {
+            movimiento.setTipoMovimiento(TipoMovimiento.CORREGIR_ORDEN);
+            agregarDetalleMovimiento(
+                    movimiento,
+                    "El pedido de corrección era: " + ordenPersistida.getCorreccion()
+            );
+        } else {
+            movimiento.setTipoMovimiento(TipoMovimiento.EDITAR_ORDEN);
+        }
+
+        if (esImporteAbonadoDistinto(ordenPersistida, ordenNueva)) {
+            agregarDetalleMovimiento(
+                    movimiento,
+                    "Se modifica abonado a: $" + ordenNueva.getAbonado()
+            );
+        }
+
+        return movimiento;
+    }
+
+    private void agregarDetalleMovimiento(Movimiento movimiento, String detalleNuevo) {
+        if (movimiento.getDetalle() == null || movimiento.getDetalle().isBlank()) {
+            movimiento.setDetalle(detalleNuevo);
+        } else {
+            movimiento.setDetalle(movimiento.getDetalle() + " | " + detalleNuevo);
+        }
     }
 
     public List<Orden> buscarPorIdNombreClienteOTelefono(@Param("dato") String dato, @Param("idRol") Long idRol) {

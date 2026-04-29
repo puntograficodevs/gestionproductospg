@@ -43,7 +43,8 @@ public class OrdenController {
     @PostMapping("/guardar-orden")
     public String guardarOrden(@ModelAttribute Orden orden,
                                @RequestParam("productoId") Integer idProducto,
-                               @RequestParam(required = false) Long idMedioPago) {
+                               @RequestParam(required = false) Long idMedioPago,
+                               HttpSession session) {
         try {
             ObjectMapper mapperDeItems = new ObjectMapper();
             orden.getItems().removeIf(item -> item.getDetalles() == null || item.getDetalles().isEmpty());
@@ -52,7 +53,8 @@ public class OrdenController {
                 item.setDetallePersonalizado(mapperDeItems.writeValueAsString(item.getDetalles()));
             }
 
-            Orden ordenGuardada = ordenService.guardar(orden, idProducto, idMedioPago);
+            Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+            Orden ordenGuardada = ordenService.guardar(orden, idProducto, idMedioPago, empleado);
 
             return "redirect:/ordenes/exito/" + ordenGuardada.getId();
         } catch (Exception e) {

@@ -84,4 +84,9 @@ public class Orden {
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Movimiento> movimientos = new ArrayList<>();
+
+    public void agregarMovimiento(Movimiento movimiento) {
+        movimientos.add(movimiento);
+        movimiento.setOrden(this);
+    }
 }
