@@ -31,6 +31,7 @@ public class OrdenController {
     private final PagoService pagoService;
     private final ProductoService productoService;
     private final ProductoCatalogoService productoCatalogoService;
+    private final MovimientoService movimientoService;
 
     @GetMapping("/nueva-orden")
     public String formulario(HttpSession session, Model model) {
@@ -199,14 +200,15 @@ public class OrdenController {
         Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
 
         ordenService.cambiarEstadoOrden(idOrden, idNuevoEstado, asignarEncargado, empleadoLogueado);
-
         return "redirect:/listado?producto=" + producto;
     }
 
     @PostMapping("/enviar-a-corregir")
     public String enviarACorregir(@RequestParam("id") Long idOrden,
-                                  @RequestParam("motivo") String motivo) {
-        ordenService.enviarAColumnaCorreccion(idOrden, motivo);
+                                  @RequestParam("motivo") String motivo,
+                                  HttpSession session) {
+        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+        ordenService.enviarAColumnaCorreccion(idOrden, motivo, empleado);
 
         return "redirect:/listado";
     }
@@ -215,9 +217,10 @@ public class OrdenController {
     public String registrarPago(@RequestParam("ordenId") Long ordenId,
                                 @RequestParam("importe") Integer importe,
                                 @RequestParam("idMedioPago") Long idMedioPago,
-                                @RequestParam(value = "desdeModal", defaultValue = "false") boolean desdeModal) {
-
-        pagoService.registrarPagoExtra(ordenId, importe, idMedioPago);
+                                @RequestParam(value = "desdeModal", defaultValue = "false") boolean desdeModal,
+                                HttpSession session) {
+        Empleado empleado = (Empleado) session.getAttribute("empleadoLogueado");
+        pagoService.registrarPagoExtra(ordenId, importe, idMedioPago, empleado);
 
         if (desdeModal) {
             return "redirect:/buscador?idOrden=" + ordenId;

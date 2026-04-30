@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +26,7 @@ public class OrdenService {
     private final EstadoOrdenRepository estadoOrdenRepository;
     private final ProductoRepository productoRepository;
     private final PagoService pagoService;
+    private final MovimientoService movimientoService;
     private static final Long ID_ESTADO_SIN_HACER = 1L;
     private static final Long ID_ESTADO_CORRECCION = 4L;
 
@@ -43,84 +43,124 @@ public class OrdenService {
     }
 
     @Transactional
-    public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago, Empleado empleadoLogueado) {
-        Movimiento movimiento;
+    public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago, Empleado empleado) {
+        String detalleRecibido = null;
+        OrigenMovimiento origenMovimiento = OrigenMovimiento.FORMULARIO_CREACION;
+        Orden orden = esProcesoCreacion(ordenNueva.getId())
+                ? ordenNueva
+                : buscarPorId(ordenNueva.getId());
 
         if (esProcesoCreacion(ordenNueva.getId())) {
-            ordenNueva.setFechaPedido(LocalDate.now());
-            ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER).get());
-
-            if (ordenNueva.getAbonado() > 0) {
-                pagoService.crearPagoDesdeFormularioOrden(ordenNueva, idMedioPago);
-            }
-
-            pagoService.actualizarEstadoPago(ordenNueva);
-
-            movimiento = crearMovimientoCreacion(ordenNueva, empleadoLogueado);
-
+            orden.setFechaPedido(LocalDate.now());
+            orden.setEstadoOrden(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER).get());
+            pagoService.crearPagoDesdeFormularioOrden(orden, idMedioPago);
+            pagoService.actualizarEstadoPago(orden);
+            vincularItems(orden, idProducto);
         } else {
-            Orden ordenPersistida = buscarPorId(ordenNueva.getId());
-
-            movimiento = crearMovimientoEdicionOCorreccion(ordenPersistida, ordenNueva, empleadoLogueado);
-
-            ordenNueva.setFechaPedido(ordenPersistida.getFechaPedido());
-            ordenNueva.setEmpleado(ordenPersistida.getEmpleado());
-            ordenNueva.setMovimientos(ordenPersistida.getMovimientos());
-
-            asignarEstadoOrdenSegunProceso(ordenPersistida, ordenNueva);
-            asignarEncargadoOrdenSiCorresponde(ordenPersistida, ordenNueva);
-            asignarPagosSegunModificacionAbonado(ordenPersistida, ordenNueva, idMedioPago);
-            limpiarItemsParaEvitarDuplicacion(ordenPersistida);
+            detalleRecibido = agregarDetalleMovimiento(orden, ordenNueva);
+            origenMovimiento = modificarOrigenMovimiento(orden);
+            orden.setNombreCliente(ordenNueva.getNombreCliente());
+            orden.setTelefonoCliente(ordenNueva.getTelefonoCliente());
+            orden.setEsCuentaCorriente(ordenNueva.isEsCuentaCorriente());
+            orden.setFechaMuestra(ordenNueva.getFechaMuestra());
+            orden.setFechaEntrega(ordenNueva.getFechaEntrega());
+            orden.setHoraEntrega(ordenNueva.getHoraEntrega());
+            orden.setNecesitaFactura(ordenNueva.isNecesitaFactura());
+            modificarPagosSegunCorresponda(orden, ordenNueva, idMedioPago);
+            modificarEstadoOrdenSiCorreccion(orden);
+            reemplazarItems(orden, ordenNueva, idProducto);
         }
 
-        vincularItemsSiCorresponde(ordenNueva, idProducto);
-        ordenNueva.agregarMovimiento(movimiento);
-
-        return ordenRepository.save(ordenNueva);
+        Movimiento movimiento = movimientoService.registrar(null, empleado, detalleRecibido, origenMovimiento);
+        orden.agregarMovimiento(movimiento);
+        return ordenRepository.save(orden);
     }
 
-    private Movimiento crearMovimientoCreacion(Orden orden, Empleado empleadoLogueado) {
-        Movimiento movimiento = new Movimiento();
-        movimiento.setTipoMovimiento(TipoMovimiento.TOMAR_PEDIDO);
-        movimiento.setFecha(LocalDateTime.now());
-        movimiento.setEmpleado(empleadoLogueado);
-        return movimiento;
+    private boolean esProcesoCreacion(Long idOrden) {
+        return idOrden == null;
     }
 
-    private Movimiento crearMovimientoEdicionOCorreccion(
-            Orden ordenPersistida,
-            Orden ordenNueva,
-            Empleado empleadoLogueado
-    ) {
-        Movimiento movimiento = new Movimiento();
-        movimiento.setFecha(LocalDateTime.now());
-        movimiento.setEmpleado(empleadoLogueado);
+    private boolean esProcesoCorreccion(Orden ordenPersistida) {
+        return Objects.equals(ordenPersistida.getEstadoOrden().getId(), ID_ESTADO_CORRECCION);
+    }
 
+    private void modificarPagosSegunCorresponda(Orden ordenOriginal, Orden ordenModificada, Long idMedioPago) {
+        boolean cambioAbonado = esImporteAbonadoDistinto(ordenOriginal, ordenModificada);
+
+        ordenOriginal.setTotal(ordenModificada.getTotal());
+        ordenOriginal.setSubtotal(ordenModificada.getSubtotal());
+        ordenOriginal.setPrecioDisenio(ordenModificada.getPrecioDisenio());
+        ordenOriginal.setAbonado(ordenModificada.getAbonado());
+
+        if (cambioAbonado) {
+            pagoService.eliminarPagosAsociados(ordenOriginal.getId());
+            pagoService.crearPagoDesdeFormularioOrden(ordenOriginal, idMedioPago);
+        }
+
+        pagoService.actualizarEstadoPago(ordenOriginal);
+    }
+
+    private boolean esImporteAbonadoDistinto(Orden ordenPersistida, Orden ordenNueva) {
+        return ordenPersistida.getAbonado() != ordenNueva.getAbonado();
+    }
+
+    private void modificarEstadoOrdenSiCorreccion(Orden ordenPersistida) {
         if (esProcesoCorreccion(ordenPersistida)) {
-            movimiento.setTipoMovimiento(TipoMovimiento.CORREGIR_ORDEN);
-            agregarDetalleMovimiento(
-                    movimiento,
-                    "El pedido de corrección era: " + ordenPersistida.getCorreccion()
-            );
-        } else {
-            movimiento.setTipoMovimiento(TipoMovimiento.EDITAR_ORDEN);
+            Long idEstadoOrdenPrevio = (ordenPersistida.getIdEstadoPrevio() != null) ? ordenPersistida.getIdEstadoPrevio() : ID_ESTADO_SIN_HACER;
+            ordenPersistida.setEstadoOrden(estadoOrdenRepository.findById(idEstadoOrdenPrevio).get());
+            ordenPersistida.setCorreccion(null);
+            ordenPersistida.setIdEstadoPrevio(null);
         }
-
-        if (esImporteAbonadoDistinto(ordenPersistida, ordenNueva)) {
-            agregarDetalleMovimiento(
-                    movimiento,
-                    "Se modifica abonado a: $" + ordenNueva.getAbonado()
-            );
-        }
-
-        return movimiento;
     }
 
-    private void agregarDetalleMovimiento(Movimiento movimiento, String detalleNuevo) {
-        if (movimiento.getDetalle() == null || movimiento.getDetalle().isBlank()) {
-            movimiento.setDetalle(detalleNuevo);
-        } else {
-            movimiento.setDetalle(movimiento.getDetalle() + " | " + detalleNuevo);
+    private String agregarDetalleMovimiento(Orden ordenPersistida, Orden ordenModificada) {
+        String detalle = esProcesoCorreccion(ordenPersistida)
+                ? "El pedido de corrección era: " + ordenPersistida.getCorreccion()  + "."
+                : null;
+
+        if (esImporteAbonadoDistinto(ordenPersistida, ordenModificada)) {
+            detalle = (esCampoVacio(detalle))
+                    ? "Se modifica abonado a: $" + ordenModificada.getAbonado()
+                    : detalle + " | Se modifica abonado a: $" + ordenModificada.getAbonado();
+        }
+
+        return detalle;
+    }
+
+    private boolean esCampoVacio(String detalle) {
+        return detalle == null || detalle.isBlank();
+    }
+
+    private OrigenMovimiento modificarOrigenMovimiento(Orden ordenPersistida) {
+        return esProcesoCorreccion(ordenPersistida)
+                ? OrigenMovimiento.FORMULARIO_CORRECCION
+                : OrigenMovimiento.FORMULARIO_EDICION;
+    }
+
+    private void vincularItems(Orden orden, Integer idProducto) {
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (orden.getItems() != null) {
+            orden.getItems().forEach(item -> {
+                item.setOrden(orden);
+                item.setProducto(producto);
+            });
+        }
+    }
+
+    private void reemplazarItems(Orden orden, Orden ordenNueva, Integer idProducto) {
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        orden.getItems().clear();
+
+        if (ordenNueva.getItems() != null) {
+            ordenNueva.getItems().forEach(item -> {
+                item.setOrden(orden);
+                item.setProducto(producto);
+                orden.getItems().add(item);
+            });
         }
     }
 
@@ -132,30 +172,33 @@ public class OrdenService {
         return ordenRepository.buscarOrdenesConEstadoSegunRol(idEstado, idRol);
     }
 
-    public void cambiarEstadoOrden(Long idOrden, Long idEstado, boolean asignarEncargado, Empleado empleadoLogueado) {
-        Orden orden = ordenRepository.findById(idOrden)
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada: " + idOrden));
+    public void cambiarEstadoOrden(Long idOrden, Long idNuevoEstado, boolean asignarEncargado, Empleado empleadoLogueado) {
+        Orden orden = buscarPorId(idOrden);
 
-        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idEstado)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
+        EstadoOrden nuevoEstado = estadoOrdenRepository.findById(idNuevoEstado)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idNuevoEstado));
 
-        asignarEncargadoSiCorresponde(idEstado, orden, asignarEncargado, empleadoLogueado);
+        asignarEncargadoSiCorresponde(idNuevoEstado, orden, asignarEncargado, empleadoLogueado);
         orden.setEstadoOrden(nuevoEstado);
+        Movimiento movimiento = movimientoService.registrar(idNuevoEstado, empleadoLogueado, null, OrigenMovimiento.CAMBIO_ESTADO);
+        orden.agregarMovimiento(movimiento);
         ordenRepository.save(orden);
     }
 
     private void asignarEncargadoSiCorresponde(Long idEstado, Orden orden, boolean asignarEncargado, Empleado empleadoLogueado) {
-        if (idEstado == 2 && asignarEncargado) {
+        if (Objects.equals(idEstado, 2L) && asignarEncargado) {
             orden.setEncargadoProduccion(empleadoLogueado);
         }
     }
 
-    public void enviarAColumnaCorreccion(Long idOrden, String motivo) {
+    public void enviarAColumnaCorreccion(Long idOrden, String motivo, Empleado empleado) {
         Orden orden = buscarPorId(idOrden);
         orden.setIdEstadoPrevio(orden.getEstadoOrden().getId().intValue());
         EstadoOrden estadoCorregir = estadoOrdenRepository.findById(ID_ESTADO_CORRECCION).get();
         orden.setEstadoOrden(estadoCorregir);
         orden.setCorreccion(motivo);
+        Movimiento movimiento = movimientoService.registrar(ID_ESTADO_CORRECCION, empleado, motivo, OrigenMovimiento.PEDIDO_CORRECCION);
+        orden.agregarMovimiento(movimiento);
         ordenRepository.save(orden);
     }
 
@@ -163,63 +206,6 @@ public class OrdenService {
         LocalDate domingo = lunes.plusDays(6);
         List<Orden> ordenesPorSemanaOrdenadas = ordenRepository.buscarPorSemanaYTipo(lunes, domingo, tipo, empleado.getRol().getId());
         return ordenarYFormatear(ordenesPorSemanaOrdenadas, empleado);
-    }
-
-    private void asignarPagosSegunModificacionAbonado(Orden ordenPersistida, Orden ordenNueva, Long idMedioPago) {
-        if (esImporteAbonadoDistinto(ordenPersistida, ordenNueva)) {
-            pagoService.eliminarPagosAsociados(ordenNueva.getId());
-            pagoService.crearPagoDesdeFormularioOrden(ordenNueva, idMedioPago);
-        } else {
-            ordenNueva.setPagos(ordenPersistida.getPagos());
-        }
-
-        pagoService.actualizarEstadoPago(ordenNueva);
-    }
-
-    private boolean esImporteAbonadoDistinto(Orden ordenPersistida, Orden ordenNueva) {
-        return ordenPersistida.getAbonado() != ordenNueva.getAbonado();
-    }
-
-    private void limpiarItemsParaEvitarDuplicacion(Orden ordenPersistida) {
-        ordenPersistida.getItems().clear();
-        ordenRepository.saveAndFlush(ordenPersistida);
-    }
-
-    private void asignarEstadoOrdenSegunProceso(Orden ordenPersistida, Orden ordenNueva) {
-        if (esProcesoCorreccion(ordenPersistida)) {
-            Long idEstadoOrdenPrevio = (ordenPersistida.getIdEstadoPrevio() != null) ? ordenPersistida.getIdEstadoPrevio() : ID_ESTADO_SIN_HACER;
-            ordenNueva.setEstadoOrden(estadoOrdenRepository.findById(idEstadoOrdenPrevio).get());
-            ordenNueva.setCorreccion(null);
-            ordenNueva.setIdEstadoPrevio(null);
-        } else {
-            ordenNueva.setEstadoOrden(ordenPersistida.getEstadoOrden());
-        }
-    }
-
-    private void asignarEncargadoOrdenSiCorresponde(Orden ordenPersistida, Orden ordenNueva) {
-        if (ordenPersistida.getEncargadoProduccion() != null) {
-            ordenNueva.setEncargadoProduccion(ordenPersistida.getEncargadoProduccion());
-        }
-    }
-
-    private boolean esProcesoCreacion(Long idOrden) {
-        return idOrden == null;
-    }
-
-    private boolean esProcesoCorreccion(Orden ordenPersistida) {
-        return Objects.equals(ordenPersistida.getEstadoOrden().getId(), ID_ESTADO_CORRECCION);
-    }
-
-    private void vincularItemsSiCorresponde(Orden orden, Integer idProducto) {
-        Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        if (orden.getItems() != null) {
-            orden.getItems().forEach(item -> {
-                item.setOrden(orden);
-                item.setProducto(producto);
-            });
-        }
     }
 
     public List<Orden> ordenarYFormatear(List<Orden> ordenes, Empleado empleado) {

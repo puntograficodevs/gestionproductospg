@@ -20,11 +20,12 @@ public class PagoService {
     private final OrdenRepository ordenRepository;
     private final PagoRepository pagoRepository;
     private final MedioPagoService medioPagoService;
+    private final MovimientoService movimientoService;
     private static final Long ID_ESTADO_SIN_PAGAR = 1L;
     private static final Long ID_ESTADO_SENIADO = 2L;
     private static final Long ID_ESTADO_PAGADO = 3L;
 
-    public void registrarPagoExtra(Long idOrden, Integer montoAbonado, Long idMedioPago) {
+    public void registrarPagoExtra(Long idOrden, Integer montoAbonado, Long idMedioPago, Empleado empleado) {
         Orden orden = ordenRepository.findById(idOrden).get();
         MedioPago medioPago = medioPagoService.buscarPorId(idMedioPago);
         Pago pago = new Pago();
@@ -38,6 +39,8 @@ public class PagoService {
         pagoRepository.flush();
         orden.setAbonado(calcularTotalAbonado(orden));
         actualizarEstadoPago(orden);
+        Movimiento movimiento = movimientoService.registrar(null, empleado, String.valueOf(montoAbonado), OrigenMovimiento.REGISTRO_PAGO);
+        orden.agregarMovimiento(movimiento);
         ordenRepository.save(orden);
     }
 
