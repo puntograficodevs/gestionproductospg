@@ -1,0 +1,33 @@
+<div th:fragment="historialMovimientos">
+  <div class="modal-header">
+    <h5 class="modal-title">Historial de movimientos - Orden #<span th:text="${idOrden}"></span></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+  </div>
+
+  <div class="modal-body">
+    <div th:if="${#lists.isEmpty(movimientos)}" class="alert alert-info mb-0">
+      Esta orden todavía no tiene movimientos registrados.
+    </div>
+
+    <div th:if="${!#lists.isEmpty(movimientos)}" class="table-responsive">
+      <table class="table table-sm table-hover table-bordered align-middle">
+        <thead class="table-primary justify-content-center align-items-center">
+        <tr>
+          <th scope="col">Fecha</th>
+          <th scope="col">Movimiento</th>
+          <th scope="col">Empleado</th>
+          <th scope="col">Detalle</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="movimiento : ${movimientos}">
+          <td th:text="${#temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+          <td th:text="${#strings.replace(movimiento.tipoMovimiento, '_', ' ')}"></td>
+          <td th:text="${movimiento.empleado.nombre}"></td>
+          <td th:text="${movimiento.detalle != null ? movimiento.detalle : '-'}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

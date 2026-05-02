@@ -1,17 +1,21 @@
 package com.puntografico.puntografico.service;
 
 import com.puntografico.puntografico.domain.*;
+import com.puntografico.puntografico.repository.MovimientoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class MovimientoService {
+
+    private final MovimientoRepository movimientoRepository;
 
     public Movimiento registrar(Long nuevoEstadoId, Empleado empleado, String detalleRecibido, OrigenMovimiento origen) {
         TipoMovimiento tipoMovimiento = obtenerTipoMovimiento(nuevoEstadoId, origen);
@@ -64,5 +68,9 @@ public class MovimientoService {
             return "Se pidió una corrección: " + detalleRecibido;
         }
         return detalleRecibido;
+    }
+
+    public List<Movimiento> buscarPorOrden(Long idOrden) {
+        return movimientoRepository.findByOrdenIdOrderByFechaDesc(idOrden);
     }
 }

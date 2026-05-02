@@ -83,3 +83,12 @@ window.confirmarEliminar = function(ordenId) {
         window.location.href = `/ordenes/eliminar/${ordenId}`;
     }
 }
+
+$(document).on('click', '.btn-ver-historial', function() {
+    const ordenId = $(this).data('idorden');
+
+    $('#contenidoModalHistorial').load(`/ordenes/${ordenId}/historial`, function() {
+        const modal = new bootstrap.Modal(document.getElementById('modalHistorialMovimientos'));
+        modal.show();
+    });
+});
