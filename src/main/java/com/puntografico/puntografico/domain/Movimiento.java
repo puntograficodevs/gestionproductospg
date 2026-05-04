@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "movimiento")
@@ -23,7 +24,7 @@ public class Movimiento {
     private String detalle;
 
     @Column(nullable = false)
-    private LocalDateTime fecha;
+    private ZonedDateTime fecha;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empleado_id", nullable = false)

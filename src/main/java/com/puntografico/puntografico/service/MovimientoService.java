@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +25,7 @@ public class MovimientoService {
         movimiento.setTipoMovimiento(tipoMovimiento);
         movimiento.setDetalle(obtenerDetalleSegunMovimiento(tipoMovimiento, detalleRecibido));
         movimiento.setEmpleado(empleado);
-        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setFecha(ZonedDateTime.now(ZoneId.of("America/Argentina/Buenos_Aires")));
         return movimiento;
     }
 
