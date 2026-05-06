@@ -24,7 +24,7 @@ public class Movimiento {
     private String detalle;
 
     @Column(nullable = false)
-    private ZonedDateTime fecha;
+    private LocalDateTime fecha;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empleado_id", nullable = false)
