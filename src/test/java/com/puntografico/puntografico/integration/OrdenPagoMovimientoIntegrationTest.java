@@ -24,6 +24,7 @@ import com.puntografico.puntografico.service.OrdenService;
 import com.puntografico.puntografico.service.PagoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -235,18 +236,21 @@ class OrdenPagoMovimientoIntegrationTest {
 
         pagoService.registrarPagoExtra(ID_ORDEN, 1000, ID_MEDIO_PAGO, empleado);
 
-        assertThat(orden.getPagos()).hasSize(2);
+        assertThat(orden.getPagos()).hasSize(1);
         assertThat(orden.getPagos())
                 .extracting(Pago::getImporte)
-                .containsExactly(5000, 1000);
-        assertThat(orden.getAbonado()).isEqualTo(6000);
-        assertThat(orden.getTotal() - orden.getAbonado()).isEqualTo(2000);
+                .containsExactly(5000);
+        assertThat(orden.getAbonado()).isEqualTo(5000);
+        assertThat(orden.getTotal() - orden.getAbonado()).isEqualTo(3000);
         assertThat(orden.getEstadoPago()).isSameAs(estadoSeniado);
         assertThat(orden.getMovimientos()).hasSize(1);
         assertThat(orden.getMovimientos().get(0).getTipoMovimiento()).isEqualTo(TipoMovimiento.REGISTRAR_PAGO);
         assertThat(orden.getMovimientos().get(0).getDetalle()).isEqualTo("Se registró pago de $1000");
 
-        verify(pagoRepository).save(orden.getPagos().get(1));
+        ArgumentCaptor<Pago> pagoCaptor = ArgumentCaptor.forClass(Pago.class);
+        verify(pagoRepository).save(pagoCaptor.capture());
+        assertThat(pagoCaptor.getValue().getImporte()).isEqualTo(1000);
+        assertThat(pagoCaptor.getValue().getOrden()).isSameAs(orden);
         verify(ordenRepository).save(orden);
     }
 

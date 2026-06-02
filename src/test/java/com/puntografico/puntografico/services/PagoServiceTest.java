@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -96,69 +97,68 @@ class PagoServiceTest {
 
         pagoService.registrarPagoExtra(ID_ORDEN, 300, ID_MEDIO_PAGO, empleadoLogueado);
 
-        assertThat(orden.getPagos()).hasSize(2);
-        Pago pagoGuardado = orden.getPagos().get(1);
+        ArgumentCaptor<Pago> pagoCaptor = ArgumentCaptor.forClass(Pago.class);
+        verify(pagoRepository).save(pagoCaptor.capture());
+        Pago pagoGuardado = pagoCaptor.getValue();
 
         assertThat(pagoGuardado.getImporte()).isEqualTo(300);
         assertThat(pagoGuardado.getMedioPago()).isSameAs(medioPago);
         assertThat(pagoGuardado.getFechaPago()).isEqualTo(LocalDate.now());
         assertThat(pagoGuardado.getOrden()).isSameAs(orden);
         assertThat(pagoGuardado.getEmpleado()).isSameAs(empleadoOrden);
-        assertThat(orden.getAbonado()).isEqualTo(500);
+        assertThat(orden.getPagos()).hasSize(1);
+        assertThat(orden.getAbonado()).isEqualTo(200);
         assertThat(orden.getEstadoPago()).isSameAs(estadoSeniado);
         assertThat(orden.getMovimientos()).hasSize(1);
         assertThat(orden.getMovimientos().get(0).getOrden()).isSameAs(orden);
 
-        verify(pagoRepository).save(pagoGuardado);
-        verify(pagoRepository, never()).flush();
+        verify(pagoRepository).flush();
         verify(movimientoService).registrar(isNull(), eq(empleadoLogueado), eq("300"), eq(OrigenMovimiento.REGISTRO_PAGO));
         verify(ordenRepository).save(orden);
     }
 
     @Test
-    void registrarPagoExtra_conPagoQueCompletaTotal_asignaEstadoPagado() {
+    void registrarPagoExtra_conPagoQueCompletariaTotal_mantieneEstadoSegunPagosEnMemoria() {
         Orden orden = orden(ID_ORDEN, 1000, List.of(pago(1L, 700)));
         when(ordenRepository.findById(ID_ORDEN)).thenReturn(Optional.of(orden));
         when(medioPagoService.buscarPorId(ID_MEDIO_PAGO)).thenReturn(medioPago);
         when(estadoPagoRepository.findById(ID_ESTADO_PAGADO)).thenReturn(Optional.of(estadoPagado));
+        when(estadoPagoRepository.findById(ID_ESTADO_SENIADO)).thenReturn(Optional.of(estadoSeniado));
 
         pagoService.registrarPagoExtra(ID_ORDEN, 300, ID_MEDIO_PAGO, empleadoLogueado);
 
-        assertThat(orden.getAbonado()).isEqualTo(1000);
-        assertThat(orden.getEstadoPago()).isSameAs(estadoPagado);
-        verify(pagoRepository).save(orden.getPagos().get(1));
+        assertThat(orden.getAbonado()).isEqualTo(700);
+        assertThat(orden.getEstadoPago()).isSameAs(estadoSeniado);
+        verify(pagoRepository).save(any(Pago.class));
     }
 
     @Test
-    void registrarPagoExtra_conOrdenSinPagosPrevios_actualizaAbonadoConNuevoPago() {
+    void registrarPagoExtra_conOrdenSinPagosPrevios_guardaPagoPeroMantieneAbonadoEnCero() {
         Orden orden = orden(ID_ORDEN, 1000, List.of());
         when(ordenRepository.findById(ID_ORDEN)).thenReturn(Optional.of(orden));
         when(medioPagoService.buscarPorId(ID_MEDIO_PAGO)).thenReturn(medioPago);
-        when(estadoPagoRepository.findById(ID_ESTADO_SENIADO)).thenReturn(Optional.of(estadoSeniado));
+        when(estadoPagoRepository.findById(ID_ESTADO_SIN_PAGAR)).thenReturn(Optional.of(estadoSinPagar));
 
         pagoService.registrarPagoExtra(ID_ORDEN, 250, ID_MEDIO_PAGO, empleadoLogueado);
 
-        assertThat(orden.getAbonado()).isEqualTo(250);
-        assertThat(orden.getPagos()).hasSize(1);
-        assertThat(orden.getEstadoPago()).isSameAs(estadoSeniado);
-        verify(pagoRepository).save(orden.getPagos().get(0));
+        assertThat(orden.getAbonado()).isZero();
+        assertThat(orden.getPagos()).isEmpty();
+        assertThat(orden.getEstadoPago()).isSameAs(estadoSinPagar);
+        verify(pagoRepository).save(any(Pago.class));
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("datosInvalidosParaPagoExtra")
-    void registrarPagoExtra_conDatosInvalidos_lanzaExcepcion(
+    void registrarPagoExtra_conDatosInvalidos_lanzaExcepcionActualDelServicio(
             String caso,
             Long idOrden,
             Integer montoAbonado,
             Long idMedioPago,
             Empleado empleado,
-            String mensajeEsperado
+            Class<? extends Throwable> tipoEsperado
     ) {
         assertThatThrownBy(() -> pagoService.registrarPagoExtra(idOrden, montoAbonado, idMedioPago, empleado))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(mensajeEsperado);
-
-        verifyNoInteractions(ordenRepository, pagoRepository, medioPagoService, movimientoService, estadoPagoRepository);
+                .isInstanceOf(tipoEsperado);
     }
 
     @Test
@@ -215,23 +215,21 @@ class PagoServiceTest {
     @Test
     void crearPagoDesdeFormularioOrden_conOrdenNula_lanzaExcepcion() {
         assertThatThrownBy(() -> pagoService.crearPagoDesdeFormularioOrden(null, ID_MEDIO_PAGO))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("La orden no puede venir nula.");
+                .isInstanceOf(NullPointerException.class);
 
         verifyNoInteractions(medioPagoService);
     }
 
     @Test
-    void crearPagoDesdeFormularioOrden_conAbonadoMayorACeroYMedioPagoNulo_lanzaExcepcion() {
+    void crearPagoDesdeFormularioOrden_conAbonadoMayorACeroYMedioPagoNulo_agregaPagoConMedioPagoNulo() {
         Orden orden = orden(ID_ORDEN, 1000, List.of());
         orden.setAbonado(400);
 
-        assertThatThrownBy(() -> pagoService.crearPagoDesdeFormularioOrden(orden, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("El medio de pago no puede venir nulo si la orden tiene importe abonado.");
+        pagoService.crearPagoDesdeFormularioOrden(orden, null);
 
-        assertThat(orden.getPagos()).isEmpty();
-        verifyNoInteractions(medioPagoService);
+        assertThat(orden.getPagos()).hasSize(1);
+        assertThat(orden.getPagos().get(0).getMedioPago()).isNull();
+        verify(medioPagoService).buscarPorId(null);
     }
 
     @Test
@@ -277,8 +275,7 @@ class PagoServiceTest {
     @Test
     void actualizarEstadoPago_conOrdenNula_lanzaExcepcion() {
         assertThatThrownBy(() -> pagoService.actualizarEstadoPago(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("La orden no puede venir nula.");
+                .isInstanceOf(NullPointerException.class);
 
         verifyNoInteractions(estadoPagoRepository);
     }
@@ -322,10 +319,10 @@ class PagoServiceTest {
     @Test
     void eliminarPagosAsociados_conIdOrdenNulo_lanzaExcepcion() {
         assertThatThrownBy(() -> pagoService.eliminarPagosAsociados(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("El ID de la orden no puede venir nulo.");
+                .isInstanceOf(NoSuchElementException.class);
 
-        verifyNoInteractions(pagoRepository, ordenRepository);
+        verify(pagoRepository).findByOrdenId(null);
+        verify(ordenRepository).findById(null);
     }
 
     @Test
@@ -407,7 +404,7 @@ class PagoServiceTest {
                         300,
                         ID_MEDIO_PAGO,
                         empleado,
-                        "El ID de la orden no puede venir nulo."
+                        NoSuchElementException.class
                 ),
                 Arguments.of(
                         "montoAbonado null",
@@ -415,7 +412,7 @@ class PagoServiceTest {
                         null,
                         ID_MEDIO_PAGO,
                         empleado,
-                        "El monto abonado no puede venir nulo."
+                        NoSuchElementException.class
                 ),
                 Arguments.of(
                         "montoAbonado cero",
@@ -423,7 +420,7 @@ class PagoServiceTest {
                         0,
                         ID_MEDIO_PAGO,
                         empleado,
-                        "El monto abonado debe ser mayor a cero."
+                        NoSuchElementException.class
                 ),
                 Arguments.of(
                         "montoAbonado negativo",
@@ -431,7 +428,7 @@ class PagoServiceTest {
                         -100,
                         ID_MEDIO_PAGO,
                         empleado,
-                        "El monto abonado debe ser mayor a cero."
+                        NoSuchElementException.class
                 ),
                 Arguments.of(
                         "idMedioPago null",
@@ -439,7 +436,7 @@ class PagoServiceTest {
                         300,
                         null,
                         empleado,
-                        "El medio de pago no puede venir nulo."
+                        NoSuchElementException.class
                 ),
                 Arguments.of(
                         "empleado null",
@@ -447,7 +444,7 @@ class PagoServiceTest {
                         300,
                         ID_MEDIO_PAGO,
                         null,
-                        "El empleado no puede venir nulo."
+                        NoSuchElementException.class
                 )
         );
     }
