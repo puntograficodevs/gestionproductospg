@@ -1,13 +1,13 @@
 let debounceTimer;
-let itemIndexElement = document.querySelectorAll('.item-producto');
-let indiceActual = itemIndexElement.length > 0 ? (itemIndexElement.length - 1) : 0;
+let itemsProductoIniciales = document.querySelectorAll('.item-producto');
+let indiceActualItem = itemsProductoIniciales.length > 0 ? (itemsProductoIniciales.length - 1) : 0;
 
 // --- 1. INICIALIZACIÓN Y CARGA ---
 
-function seleccionarProducto(id) {
+function seleccionarProducto(productoId) {
     const contenedor = document.getElementById('contenedor-formulario-dinamico');
 
-    fetch(`/ordenes/formulario-producto/${id}?index=0`)
+    fetch(`/ordenes/formulario-producto/${productoId}?index=0`)
         .then(response => response.text())
         .then(html => {
             contenedor.innerHTML = html;
@@ -22,8 +22,8 @@ function seleccionarProducto(id) {
         .catch(error => console.error('Error:', error));
 }
 
-function inicializarLogicaItem(index) {
-    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
+function inicializarLogicaItem(indiceItem) {
+    const item = document.querySelector(`.item-producto[data-index="${indiceItem}"]`);
     if (!item) return;
 
     // 1. Mostrar campos dependientes
@@ -39,7 +39,7 @@ function inicializarLogicaItem(index) {
         }
     });
 
-    manejarLogicaCantidadDinamica(index);
+    manejarLogicaCantidadDinamica(indiceItem);
 
     // 2. Listeners de Diseño
     const inputDisenio = item.querySelector('.input-disenio-item');
@@ -52,8 +52,8 @@ function inicializarLogicaItem(index) {
     }
 
     // 3. Listener principal de inputs
-    item.addEventListener('input', (e) => {
-        const target = e.target;
+    item.addEventListener('input', (evento) => {
+        const target = evento.target;
 
         // Si cambia un campo de "detalles" (ej: Modelo de Sello)
         if (target.classList.contains('input-dinamico')) {
@@ -63,12 +63,12 @@ function inicializarLogicaItem(index) {
                 let valorActual = target.type === 'checkbox' ? (target.checked ? "on" : "off") : target.value;
 
                 item.querySelectorAll(`[data-depends-on="${nombreCampo}"]`).forEach(bloque => {
-                    const valorReq = bloque.getAttribute('data-show-if');
-                    bloque.style.display = (String(valorActual) === String(valorReq)) ? 'block' : 'none';
+                    const valorRequerido = bloque.getAttribute('data-show-if');
+                    bloque.style.display = (String(valorActual) === String(valorRequerido)) ? 'block' : 'none';
                 });
 
-                if (nombreCampo === 'cantidad_producto') manejarLogicaCantidadDinamica(index);
-                debounceBuscarPrecio(index);
+                if (nombreCampo === 'cantidad_producto') manejarLogicaCantidadDinamica(indiceItem);
+                debounceBuscarPrecio(indiceItem);
             }
         }
 
@@ -79,7 +79,7 @@ function inicializarLogicaItem(index) {
             target.classList.contains('check-disenio-item')) {
 
             if (target.classList.contains('input-cantidad-real')) {
-                debounceBuscarPrecio(index); // Re-calcula con la nueva cantidad
+                debounceBuscarPrecio(indiceItem); // Re-calcula con la nueva cantidad
             }
             recalcular();
         }
@@ -88,12 +88,12 @@ function inicializarLogicaItem(index) {
 
 // --- 2. LÓGICA DE AGREGAR, CONFIRMAR Y ELIMINAR ---
 
-function confirmarItem(index) {
-    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
-    const inputPrecio = item.querySelector('.input-precio-item');
+function confirmarItem(indiceItem) {
+    const item = document.querySelector(`.item-producto[data-index="${indiceItem}"]`);
+    const inputPrecioProducto = item.querySelector('.input-precio-item');
     const inputProductoId = document.getElementById('currentProductoId');
 
-    if ((parseFloat(inputPrecio.value) || 0) <= 0) {
+    if ((parseFloat(inputPrecioProducto.value) || 0) <= 0) {
         alert("Cargá un precio de producto válido antes de confirmar.");
         return;
     }
@@ -105,12 +105,12 @@ function confirmarItem(index) {
     document.getElementById('btn-agregar-otro').classList.remove('d-none');
 
     // 2. Calculamos el total (Producto + Diseño)
-    const pProd = parseFloat(inputPrecio.value) || 0;
-    const pDis = parseFloat(item.querySelector('.input-disenio-item')?.value) || 0;
-    const sumaItem = Math.ceil(pProd + pDis);
+    const precioProducto = parseFloat(inputPrecioProducto.value) || 0;
+    const precioDisenio = parseFloat(item.querySelector('.input-disenio-item')?.value) || 0;
+    const precioTotalItem = Math.ceil(precioProducto + precioDisenio);
 
     // 3. Lógica para el TÍTULO DINÁMICO
-    const tit = item.querySelector('.titulo-item');
+    const tituloItem = item.querySelector('.titulo-item');
     let nombreAMostrar = "";
 
     // Si es Copias Escolares (ID 34), intentamos sacar el nombre del material
@@ -124,61 +124,61 @@ function confirmarItem(index) {
                          : "Copias Escolares";
     } else {
         // Para el resto de los productos, usamos el nombre base que ya tenía
-        if (!tit.dataset.baseText) {
-            tit.dataset.baseText = tit.innerText.split(' - $')[0];
+        if (!tituloItem.dataset.baseText) {
+            tituloItem.dataset.baseText = tituloItem.innerText.split(' - $')[0];
         }
-        nombreAMostrar = tit.dataset.baseText;
+        nombreAMostrar = tituloItem.dataset.baseText;
     }
 
     // 4. Actualizamos el HTML con el nombre y el precio (con el salto de línea)
     // Usamos innerHTML para que tome el <br>
-    tit.innerHTML = `${nombreAMostrar} - <span class="text-success">Precio: $${sumaItem}</span>`;
+    tituloItem.innerHTML = `${nombreAMostrar} - <span class="text-success">Precio: $${precioTotalItem}</span>`;
 
     recolorarTarjetaConfirmada(item); // Opcional: una pintadita para saber que está OK
     recalcular();
 }
 
 function recolorarTarjetaConfirmada(item) {
-    const header = item.querySelector('.card-header');
+    const encabezadoTarjeta = item.querySelector('.card-header');
 
     // Le quitamos las clases por defecto y le ponemos un verde sutil
-    header.classList.remove('bg-light');
-    header.style.backgroundColor = '#e8f5e9'; // Un verde muy clarito (Material Design)
-    header.style.borderBottom = '2px solid #a5d6a7'; // Una línea verde un poco más fuerte
+    encabezadoTarjeta.classList.remove('bg-light');
+    encabezadoTarjeta.style.backgroundColor = '#e8f5e9'; // Un verde muy clarito (Material Design)
+    encabezadoTarjeta.style.borderBottom = '2px solid #a5d6a7'; // Una línea verde un poco más fuerte
 
     // Cambiamos el ícono de "flechita" por un tilde de éxito (opcional)
-    const icon = header.querySelector('i');
-    if (icon) {
-        icon.classList.remove('bi-chevron-down');
-        icon.classList.add('bi-check-circle-fill', 'text-success');
+    const iconoEncabezado = encabezadoTarjeta.querySelector('i');
+    if (iconoEncabezado) {
+        iconoEncabezado.classList.remove('bi-chevron-down');
+        iconoEncabezado.classList.add('bi-check-circle-fill', 'text-success');
     }
 }
 
 function duplicarItemActual() {
-    indiceActual++;
-    const lista = document.getElementById('lista-items-productos');
-    const idProducto = document.getElementById('currentProductoId').value;
+    indiceActualItem++;
+    const listaItemsProductos = document.getElementById('lista-items-productos');
+    const productoId = document.getElementById('currentProductoId').value;
 
-    fetch(`/ordenes/formulario-producto/${idProducto}?index=${indiceActual}`)
+    fetch(`/ordenes/formulario-producto/${productoId}?index=${indiceActualItem}`)
         .then(response => response.text())
         .then(html => {
-            lista.insertAdjacentHTML('beforeend', html);
-            const nuevoItem = lista.querySelector(`.item-producto[data-index="${indiceActual}"]`);
-            const collapseDiv = nuevoItem.querySelector('.collapse');
-            if (collapseDiv) {
-                const bsCollapse = new bootstrap.Collapse(collapseDiv, { toggle: false });
-                bsCollapse.show();
+            listaItemsProductos.insertAdjacentHTML('beforeend', html);
+            const nuevoItem = listaItemsProductos.querySelector(`.item-producto[data-index="${indiceActualItem}"]`);
+            const contenedorCollapse = nuevoItem.querySelector('.collapse');
+            if (contenedorCollapse) {
+                const instanciaCollapse = new bootstrap.Collapse(contenedorCollapse, { toggle: false });
+                instanciaCollapse.show();
             }
             document.getElementById('btn-agregar-otro').classList.add('d-none');
-            inicializarLogicaItem(indiceActual);
-            buscarPrecioCatalogo(indiceActual); // Buscamos precio para el nuevo ítem
+            inicializarLogicaItem(indiceActualItem);
+            buscarPrecioCatalogo(indiceActualItem); // Buscamos precio para el nuevo ítem
             setTimeout(() => { nuevoItem.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
         })
         .catch(error => console.error('Error:', error));
 }
 
-function eliminarItem(btn) {
-    const item = btn.closest('.item-producto');
+function eliminarItem(botonEliminar) {
+    const item = botonEliminar.closest('.item-producto');
     if (document.querySelectorAll('.item-producto').length > 1) {
         if (confirm("¿Eliminar este producto de la orden?")) {
             item.remove();
@@ -192,12 +192,12 @@ function eliminarItem(btn) {
 
 // --- 3. CÁLCULOS Y CATÁLOGO ---
 
-function buscarPrecioCatalogo(index) {
-    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
+function buscarPrecioCatalogo(indiceItem) {
+    const item = document.querySelector(`.item-producto[data-index="${indiceItem}"]`);
     const inputProductoId = document.getElementById('currentProductoId');
     const inputPrecioItem = item.querySelector('.input-precio-item');
-    const inputCantReal = item.querySelector('.input-cantidad-real');
-    const h2Element = document.querySelector('h2');
+    const inputCantidadReal = item.querySelector('.input-cantidad-real');
+    const tituloPagina = document.querySelector('h2');
 
     if (inputPrecioItem.hasAttribute('data-precio-base')) {
         recalcular();
@@ -206,7 +206,7 @@ function buscarPrecioCatalogo(index) {
 
     if (!inputProductoId?.value || !inputPrecioItem) return;
 
-    const nombreProducto = h2Element ? h2Element.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
+    const nombreProducto = tituloPagina ? tituloPagina.innerText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
     const esImpresion = nombreProducto.includes("impresion");
     const esSello = nombreProducto.includes("sellos madera") || nombreProducto.includes("sellos automaticos");
     let detalles = {};
@@ -217,20 +217,20 @@ function buscarPrecioCatalogo(index) {
         if (!match) return;
 
         const nombreCampo = match[1];
-        let val = null;
+        let valorDetalle = null;
 
         if (input.type === 'checkbox') {
             // Mandamos true o false SIEMPRE para que el catálogo no falle
-            val = input.checked;
+            valorDetalle = input.checked;
         } else if (input.type === 'radio') {
-            if (input.checked) val = input.value;
+            if (input.checked) valorDetalle = input.value;
         } else {
-            val = input.value;
+            valorDetalle = input.value;
         }
 
         // Solo agregamos al JSON si el valor no es nulo
-        if (val !== null && val !== "") {
-            detalles[nombreCampo] = val;
+        if (valorDetalle !== null && valorDetalle !== "") {
+            detalles[nombreCampo] = valorDetalle;
         }
     });
 
@@ -248,7 +248,7 @@ function buscarPrecioCatalogo(index) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productoId: parseInt(inputProductoId.value), detalles: detalles })
     })
-    .then(r => r.json())
+    .then(response => response.json())
     .then(precioRecibido => {
         // Si no hay precio (0), permitimos edición manual
         if (precioRecibido === 0) {
@@ -257,13 +257,13 @@ function buscarPrecioCatalogo(index) {
         }
 
         let precioFinal;
-        const vCantFinal = parseInt(inputCantReal.value) || 1;
+        const cantidadFinal = parseInt(inputCantidadReal.value) || 1;
 
         if (esImpresion) {
             const paginas = parseInt(detalles["cantidad_paginas"]) || 1;
             const costoHojas = precioRecibido * paginas;
             let costoAnillado = (detalles["es_anillado"] === true) ? calcularLogicaAnillado(paginas, detalles["tipo_faz"]) : 0;
-            precioFinal = (costoHojas + costoAnillado) * vCantFinal;
+            precioFinal = (costoHojas + costoAnillado) * cantidadFinal;
         } else if (esSello) {
             const quiereAlmohadilla = item.querySelector('[name*="detalles[agrega_almohadilla]"]')?.checked;
             const quiereTinta = item.querySelector('[name*="detalles[agrega_tinta]"]')?.checked;
@@ -273,7 +273,7 @@ function buscarPrecioCatalogo(index) {
             const precioTinta = quiereTinta ? (parseInt(item.querySelector('[name*="precio_tinta"]')?.value) || 0) : 0;
             const precioRodillo = quiereRodillo ? 3200 : 0;
 
-            precioFinal = (precioRecibido * vCantFinal) + precioAlmohadilla + precioTinta + precioRodillo;
+            precioFinal = (precioRecibido * cantidadFinal) + precioAlmohadilla + precioTinta + precioRodillo;
         } else {
             // Para sellos de madera, automáticos, etc.
             const tienePackDefinido = detalles["cantidad_producto"] && detalles["cantidad_producto"] !== "OTRA";
@@ -283,7 +283,7 @@ function buscarPrecioCatalogo(index) {
                 precioFinal = precioRecibido;
             } else {
                 // Es precio base (ej: 1 sello), multiplicamos por la cantidad manual.
-                precioFinal = precioRecibido * vCantFinal;
+                precioFinal = precioRecibido * cantidadFinal;
             }
         }
 
@@ -291,22 +291,21 @@ function buscarPrecioCatalogo(index) {
         inputPrecioItem.readOnly = true;
         recalcular();
     })
-    .catch(err => {
-        console.error("Error en catálogo:", err);
+    .catch(error => {
+        console.error("Error en catálogo:", error);
         inputPrecioItem.readOnly = false;
     });
 }
 
 function recalcular() {
-    const pSubProdGral = document.getElementById('inputPrecioProd');
-    const pSubDisGral = document.getElementById('inputPrecioDisenio');
-    const pImp = document.getElementById('inputPrecioImpuestos');
-    const total = document.getElementById('inputTotal');
-    const abonado = document.getElementById('inputAbonado');
-    const resta = document.getElementById('inputResta');
-    const cFac = document.getElementById('checkFactura');
-    const checkCC = document.getElementById('esCC');
-    const vBaseFijaDisenio = parseFloat(document.getElementById('precioDisenioBase')?.value) || 0;
+    const inputSubtotalProductos = document.getElementById('inputPrecioProd');
+    const inputSubtotalDisenio = document.getElementById('inputPrecioDisenio');
+    const inputRecargoMedioPago = document.getElementById('inputRecargoMedioPago');
+    const inputTotal = document.getElementById('inputTotal');
+    const inputAbonado = document.getElementById('inputAbonado');
+    const inputResta = document.getElementById('inputResta');
+    const checkCuentaCorriente = document.getElementById('esCC');
+    const precioDisenioBase = parseFloat(document.getElementById('precioDisenioBase')?.value) || 0;
 
     let sumaProductos = 0;
     let sumaDisenios = 0;
@@ -314,97 +313,94 @@ function recalcular() {
     document.querySelectorAll('.item-producto').forEach(item => {
         // 1. Buscamos los elementos necesarios
         const inputPrecioItem = item.querySelector('.input-precio-item');
-        const inputCantReal = item.querySelector('.input-cantidad-real');
+        const inputCantidadReal = item.querySelector('.input-cantidad-real');
 
         // 2. LÓGICA NUEVA: Si es un libro escolar, actualizamos su precio según la cantidad
         const precioBase = parseFloat(inputPrecioItem.getAttribute('data-precio-base'));
         if (!isNaN(precioBase)) {
-            const cantidad = parseInt(inputCantReal.value) || 1;
+            const cantidad = parseInt(inputCantidadReal.value) || 1;
             inputPrecioItem.value = Math.ceil(precioBase * cantidad);
         }
 
         // 3. Tu lógica de siempre (leer el precio ya actualizado y sumar)
-        const pProd = parseFloat(inputPrecioItem.value) || 0;
-        const checkD = item.querySelector('.check-disenio-item');
-        const inputD = item.querySelector('.input-disenio-item');
+        const precioProducto = parseFloat(inputPrecioItem.value) || 0;
+        const checkDisenio = item.querySelector('.check-disenio-item');
+        const inputDisenio = item.querySelector('.input-disenio-item');
 
-        if (checkD && checkD.checked) {
-            inputD.readOnly = false;
-            if (document.activeElement !== inputD && (parseFloat(inputD.value) === 0 || !inputD.value)) {
-                inputD.value = Math.ceil(vBaseFijaDisenio);
+        if (checkDisenio && checkDisenio.checked) {
+            inputDisenio.readOnly = false;
+            if (document.activeElement !== inputDisenio && (parseFloat(inputDisenio.value) === 0 || !inputDisenio.value)) {
+                inputDisenio.value = Math.ceil(precioDisenioBase);
             }
-        } else if (inputD) {
-            inputD.value = 0;
-            inputD.readOnly = true;
+        } else if (inputDisenio) {
+            inputDisenio.value = 0;
+            inputDisenio.readOnly = true;
         }
 
-        sumaProductos += pProd;
-        sumaDisenios += parseFloat(inputD?.value) || 0;
+        sumaProductos += precioProducto;
+        sumaDisenios += parseFloat(inputDisenio?.value) || 0;
     });
 
-    if (pSubProdGral) pSubProdGral.value = Math.ceil(sumaProductos);
-    if (pSubDisGral) pSubDisGral.value = Math.ceil(sumaDisenios);
+    if (inputSubtotalProductos) inputSubtotalProductos.value = Math.ceil(sumaProductos);
+    if (inputSubtotalDisenio) inputSubtotalDisenio.value = Math.ceil(sumaDisenios);
 
     const subtotalBase = sumaProductos + sumaDisenios;
     let totalCorriendo = subtotalBase;
-    let impuestos = 0;
-
-    if (cFac?.checked) { impuestos += (subtotalBase * 0.21); totalCorriendo += (subtotalBase * 0.21); }
+    let recargoMedioPago = 0;
 
     const radioPago = document.querySelector('input[name="idMedioPago"]:checked');
     if (radioPago && parseInt(radioPago.value) === 2) {
-        const recargo = totalCorriendo * 0.10;
-        impuestos += recargo;
-        totalCorriendo += recargo;
+        recargoMedioPago = totalCorriendo * 0.10;
+        totalCorriendo += recargoMedioPago;
     }
 
-    const tFinal = Math.ceil(totalCorriendo);
-    const vAbo = parseFloat(abonado?.value) || 0;
+    const totalFinal = Math.ceil(totalCorriendo);
+    const valorAbonado = parseFloat(inputAbonado?.value) || 0;
 
-    if (pImp) pImp.value = Math.ceil(impuestos);
-    if (total) total.value = tFinal;
-    if (resta) resta.value = tFinal - vAbo;
+    if (inputRecargoMedioPago) inputRecargoMedioPago.value = Math.ceil(recargoMedioPago);
+    if (inputTotal) inputTotal.value = totalFinal;
+    if (inputResta) inputResta.value = totalFinal - valorAbonado;
 
     // Validación visual de seña
-    if (abonado && checkCC && !checkCC.checked && tFinal > 0) {
-        vAbo < (tFinal / 2) ? abonado.classList.add('border-danger', 'text-danger') : abonado.classList.remove('border-danger', 'text-danger');
+    if (inputAbonado && checkCuentaCorriente && !checkCuentaCorriente.checked && totalFinal > 0) {
+        valorAbonado < (totalFinal / 2) ? inputAbonado.classList.add('border-danger', 'text-danger') : inputAbonado.classList.remove('border-danger', 'text-danger');
     }
 }
 
 // --- 4. FUNCIONES AUXILIARES ---
 
-function debounceBuscarPrecio(index) {
+function debounceBuscarPrecio(indiceItem) {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => buscarPrecioCatalogo(index), 300);
+    debounceTimer = setTimeout(() => buscarPrecioCatalogo(indiceItem), 300);
 }
 
-function calcularLogicaAnillado(paginas, faz) {
-    let hojas = (faz === "DOBLE FAZ") ? Math.ceil(paginas / 2) : paginas;
-    if (hojas === 0) return 0;
+function calcularLogicaAnillado(paginas, tipoFaz) {
+    let cantidadHojas = (tipoFaz === "DOBLE FAZ") ? Math.ceil(paginas / 2) : paginas;
+    if (cantidadHojas === 0) return 0;
     const escalas = [
         { hasta: 20, precio: 1500 }, { hasta: 40, precio: 1700 }, { hasta: 60, precio: 1800 },
         { hasta: 100, precio: 1900 }, { hasta: 150, precio: 2200 }, { hasta: 200, precio: 2900 },
         { hasta: 300, precio: 3200 }, { hasta: 400, precio: 3800 }
     ];
-    const cantAnillados = Math.ceil(hojas / 400);
-    const escala = escalas.find(p => Math.ceil(hojas / cantAnillados) <= p.hasta) || escalas[7];
-    return escala.precio * cantAnillados;
+    const cantidadAnillados = Math.ceil(cantidadHojas / 400);
+    const escala = escalas.find(escalaAnillado => Math.ceil(cantidadHojas / cantidadAnillados) <= escalaAnillado.hasta) || escalas[7];
+    return escala.precio * cantidadAnillados;
 }
 
-function manejarLogicaCantidadDinamica(index) {
-    const item = document.querySelector(`.item-producto[data-index="${index}"]`);
-    const seleccionado = item.querySelector(`input[name="items[${index}].detalles[cantidad_producto]"]:checked`);
-    const contenedorManual = document.getElementById(`contenedor-cantidad-real-${index}`);
+function manejarLogicaCantidadDinamica(indiceItem) {
+    const item = document.querySelector(`.item-producto[data-index="${indiceItem}"]`);
+    const cantidadSeleccionada = item.querySelector(`input[name="items[${indiceItem}].detalles[cantidad_producto]"]:checked`);
+    const contenedorCantidadManual = document.getElementById(`contenedor-cantidad-real-${indiceItem}`);
     const inputManual = item.querySelector('.input-cantidad-real');
 
-    if (!seleccionado || !contenedorManual) return;
+    if (!cantidadSeleccionada || !contenedorCantidadManual) return;
 
-    if (seleccionado.value === "OTRA" || seleccionado.value.includes("-")) {
-        contenedorManual.style.display = 'block';
-        if (!isNaN(seleccionado.value)) inputManual.value = 1;
+    if (cantidadSeleccionada.value === "OTRA" || cantidadSeleccionada.value.includes("-")) {
+        contenedorCantidadManual.style.display = 'block';
+        if (!isNaN(cantidadSeleccionada.value)) inputManual.value = 1;
     } else {
-        contenedorManual.style.display = 'none';
-        inputManual.value = parseInt(seleccionado.value) || 1;
+        contenedorCantidadManual.style.display = 'none';
+        inputManual.value = parseInt(cantidadSeleccionada.value) || 1;
     }
 }
 
@@ -412,15 +408,15 @@ function manejarLogicaCantidadDinamica(index) {
 
 document.addEventListener("DOMContentLoaded", () => {
     // 1. LIMPIEZA INICIAL
-    document.querySelectorAll('.selector-material-final option').forEach(opt => {
-        if (opt.parentElement.tagName === 'SPAN') $(opt).unwrap();
-        $(opt).show().prop('disabled', false);
+    document.querySelectorAll('.selector-material-final option').forEach(opcionMaterial => {
+        if (opcionMaterial.parentElement.tagName === 'SPAN') $(opcionMaterial).unwrap();
+        $(opcionMaterial).show().prop('disabled', false);
     });
 
     // 2. INICIALIZAR ITEMS EXISTENTES
     document.querySelectorAll('.item-producto').forEach(item => {
-        const idx = item.getAttribute('data-index');
-        inicializarLogicaItem(idx);
+        const indiceItem = item.getAttribute('data-index');
+        inicializarLogicaItem(indiceItem);
         $(item).find('.filtro-escolar').first().trigger('change');
     });
 
@@ -428,22 +424,22 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         document.querySelectorAll('.item-producto').forEach(item => {
             const valorReal = item.querySelector('.input-material-guardado')?.value;
-            const select = item.querySelector('.selector-material-final');
+            const selectMaterial = item.querySelector('.selector-material-final');
 
             if (valorReal && valorReal !== "") {
                 console.log("Forzando selección de:", valorReal);
-                let opt = $(select).find(`option[value="${valorReal}"]`);
+                let opcionSeleccionada = $(selectMaterial).find(`option[value="${valorReal}"]`);
 
-                if (opt.length === 0) {
-                    opt = $(select).find(`option`).filter(function() {
+                if (opcionSeleccionada.length === 0) {
+                    opcionSeleccionada = $(selectMaterial).find(`option`).filter(function() {
                         return $(this).text().trim() === valorReal.trim();
                     });
                 }
 
-                if (opt.length > 0) {
-                    if (opt.parent().is('span')) opt.unwrap();
-                    opt.prop('disabled', false).show();
-                    $(select).val(opt.val()).trigger('change');
+                if (opcionSeleccionada.length > 0) {
+                    if (opcionSeleccionada.parent().is('span')) opcionSeleccionada.unwrap();
+                    opcionSeleccionada.prop('disabled', false).show();
+                    $(selectMaterial).val(opcionSeleccionada.val()).trigger('change');
                 }
             }
         });
@@ -455,9 +451,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const inputMuestra = document.getElementById('fechaMuestra');
 
         // 1. Seteamos el mínimo de hoy para ambas fechas al cargar
-        const hoy = new Date().toISOString().split('T')[0];
-        if (inputEntrega) inputEntrega.setAttribute('min', hoy);
-        if (inputMuestra) inputMuestra.setAttribute('min', hoy);
+        const fechaHoy = new Date().toISOString().split('T')[0];
+        if (inputEntrega) inputEntrega.setAttribute('min', fechaHoy);
+        if (inputMuestra) inputMuestra.setAttribute('min', fechaHoy);
 
         // 2. Función para que la muestra no se pase de la entrega
         function ajustarLimitesMuestra() {
@@ -484,38 +480,38 @@ document.addEventListener("DOMContentLoaded", () => {
         // --- FIN VALIDACIÓN DE FECHAS ---
 
     // 4. LISTENERS DE CAMBIOS GENERALES
-    document.addEventListener('change', (e) => {
-        if (e.target.id === 'checkMuestra') {
-            const fila = document.getElementById('filaFechaMuestra');
-            if(fila) e.target.checked ? fila.classList.remove('d-none') : fila.classList.add('d-none');
+    document.addEventListener('change', (evento) => {
+        if (evento.target.id === 'checkMuestra') {
+            const filaFechaMuestra = document.getElementById('filaFechaMuestra');
+            if(filaFechaMuestra) evento.target.checked ? filaFechaMuestra.classList.remove('d-none') : filaFechaMuestra.classList.add('d-none');
         }
-        if (['checkFactura', 'esCC'].includes(e.target.id) || e.target.name === 'idMedioPago') recalcular();
+        if (['checkFactura', 'esCC'].includes(evento.target.id) || evento.target.name === 'idMedioPago') recalcular();
     });
 
-    document.addEventListener('input', (e) => {
-        if (e.target.id === 'inputAbonado') recalcular();
+    document.addEventListener('input', (evento) => {
+        if (evento.target.id === 'inputAbonado') recalcular();
     });
 
     // 5. VALIDACIÓN ANTES DE GUARDAR
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('#btnGuardar');
-        if (btn) {
-            const inputAboElement = document.getElementById('inputAbonado');
-            if (!inputAboElement.value || isNaN(inputAboElement.value)) inputAboElement.value = 0;
+    document.addEventListener('click', (evento) => {
+        const botonGuardar = evento.target.closest('#btnGuardar');
+        if (botonGuardar) {
+            const inputAbonadoElement = document.getElementById('inputAbonado');
+            if (!inputAbonadoElement.value || isNaN(inputAbonadoElement.value)) inputAbonadoElement.value = 0;
 
-            const total = parseFloat(document.getElementById('inputTotal')?.value) || 0;
-            const abonado = parseFloat(inputAboElement.value) || 0;
-            const esCC = document.getElementById('esCC')?.checked || false;
-            const medioSeleccionado = document.querySelector('input[name="idMedioPago"]:checked');
+            const totalOrden = parseFloat(document.getElementById('inputTotal')?.value) || 0;
+            const valorAbonado = parseFloat(inputAbonadoElement.value) || 0;
+            const esCuentaCorriente = document.getElementById('esCC')?.checked || false;
+            const medioPagoSeleccionado = document.querySelector('input[name="idMedioPago"]:checked');
 
-            if (!esCC && total > 0 && abonado < (total / 2)) {
-                e.preventDefault();
-                alert(`Falta seña. El mínimo es $${total / 2} (50%).`);
+            if (!esCuentaCorriente && totalOrden > 0 && valorAbonado < (totalOrden / 2)) {
+                evento.preventDefault();
+                alert(`Falta seña. El mínimo es $${totalOrden / 2} (50%).`);
                 return;
             }
 
-            if (abonado > 0 && !medioSeleccionado) {
-                e.preventDefault();
+            if (valorAbonado > 0 && !medioPagoSeleccionado) {
+                evento.preventDefault();
                 alert("Si el cliente abonó, tenés que elegir el Medio de Pago.");
             }
 
@@ -524,11 +520,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const inputMuestra = document.getElementById('fechaMuestra');
 
             if (inputEntrega && inputMuestra && inputMuestra.value) {
-                const fEntrega = new Date(inputEntrega.value);
-                const fMuestra = new Date(inputMuestra.value);
+                const fechaEntrega = new Date(inputEntrega.value);
+                const fechaMuestra = new Date(inputMuestra.value);
 
-                if (fMuestra > fEntrega) {
-                    e.preventDefault();
+                if (fechaMuestra > fechaEntrega) {
+                    evento.preventDefault();
                     // Le damos foco y pintamos de rojo para que se note el error
                     inputMuestra.classList.add('is-invalid', 'border-danger');
                     alert("La fecha de MUESTRA no puede ser después de la fecha de ENTREGA.");
@@ -543,9 +539,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 $(document).on('change', '.filtro-escolar', function() {
-    const card = $(this).closest('.item-producto');
-    const todosLosSelectsFiltro = card.find('.filtro-escolar');
-    const selectMaterial = card.find('.selector-material-final');
+    const tarjetaItem = $(this).closest('.item-producto');
+    const todosLosSelectsFiltro = tarjetaItem.find('.filtro-escolar');
+    const selectMaterial = tarjetaItem.find('.selector-material-final');
 
     // 1. Capturamos qué filtros eligió el usuario hasta ahora
     const filtrosActivos = {};
@@ -568,19 +564,19 @@ $(document).on('change', '.filtro-escolar', function() {
 
     selectMaterial.find('option').each(function() {
         if ($(this).val() === "") return;
-        let det = {};
-        try { det = JSON.parse($(this).attr('data-detalles')); } catch (e) { return; }
+        let detallesMaterial = {};
+        try { detallesMaterial = JSON.parse($(this).attr('data-detalles')); } catch (error) { return; }
 
         let cumpleConFiltros = true;
         for (let campo in filtrosActivos) {
-            let valFiltro = String(filtrosActivos[campo]).trim().toUpperCase();
-            let valCatalogo = String(det[campo] || "").trim().toUpperCase();
-            if (valFiltro !== valCatalogo) { cumpleConFiltros = false; break; }
+            let valorFiltro = String(filtrosActivos[campo]).trim().toUpperCase();
+            let valorCatalogo = String(detallesMaterial[campo] || "").trim().toUpperCase();
+            if (valorFiltro !== valorCatalogo) { cumpleConFiltros = false; break; }
         }
 
         if (cumpleConFiltros) {
             Object.keys(opcionesValidas).forEach(key => {
-                if (det[key]) opcionesValidas[key].add(String(det[key]).trim().toUpperCase());
+                if (detallesMaterial[key]) opcionesValidas[key].add(String(detallesMaterial[key]).trim().toUpperCase());
             });
         }
     });
@@ -592,52 +588,52 @@ $(document).on('change', '.filtro-escolar', function() {
         const valorSeleccionadoActual = selectActual.val();
 
         selectActual.find('option').each(function() {
-            const opt = $(this);
-            const optVal = opt.val();
-            if (optVal === "") return;
+            const opcionFiltro = $(this);
+            const valorOpcion = opcionFiltro.val();
+            if (valorOpcion === "") return;
 
-            const optValNormalizado = optVal.trim().toUpperCase();
-            if (opcionesValidas[campoActual].has(optValNormalizado) || optVal === valorSeleccionadoActual) {
-                if (opt.parent().is('span')) opt.unwrap();
-                opt.show().prop('disabled', false);
+            const valorOpcionNormalizado = valorOpcion.trim().toUpperCase();
+            if (opcionesValidas[campoActual].has(valorOpcionNormalizado) || valorOpcion === valorSeleccionadoActual) {
+                if (opcionFiltro.parent().is('span')) opcionFiltro.unwrap();
+                opcionFiltro.show().prop('disabled', false);
             } else {
-                opt.prop('disabled', true).hide();
-                if (!opt.parent().is('span')) opt.wrap('<span style="display:none;"></span>');
+                opcionFiltro.prop('disabled', true).hide();
+                if (!opcionFiltro.parent().is('span')) opcionFiltro.wrap('<span style="display:none;"></span>');
             }
         });
     });
 
     // 4. FILTRAR EL SELECT FINAL (El libro)
     selectMaterial.find('option').each(function() {
-        const opt = $(this);
-        if (opt.val() === "") return;
-        let det = {};
-        try { det = JSON.parse(opt.attr('data-detalles')); } catch(e) { return; }
+        const opcionMaterial = $(this);
+        if (opcionMaterial.val() === "") return;
+        let detallesMaterial = {};
+        try { detallesMaterial = JSON.parse(opcionMaterial.attr('data-detalles')); } catch(error) { return; }
 
         let coincide = true;
         for (let campo in filtrosActivos) {
-            if (String(det[campo] || "").trim().toUpperCase() !== String(filtrosActivos[campo]).trim().toUpperCase()) {
+            if (String(detallesMaterial[campo] || "").trim().toUpperCase() !== String(filtrosActivos[campo]).trim().toUpperCase()) {
                 coincide = false;
                 break;
             }
         }
 
-        if (coincide || opt.is(':selected')) {
-            if (opt.parent().is('span')) opt.unwrap();
-            opt.show().prop('disabled', false);
+        if (coincide || opcionMaterial.is(':selected')) {
+            if (opcionMaterial.parent().is('span')) opcionMaterial.unwrap();
+            opcionMaterial.show().prop('disabled', false);
         } else {
-            opt.prop('disabled', true).hide();
-            if (!opt.parent().is('span')) opt.wrap('<span style="display:none;"></span>');
+            opcionMaterial.prop('disabled', true).hide();
+            if (!opcionMaterial.parent().is('span')) opcionMaterial.wrap('<span style="display:none;"></span>');
         }
     });
 
     // 5. LÓGICA VISUAL: Pintar de verde lo seleccionado (FUERA DE LOS BUCLES ANTERIORES)
     todosLosSelectsFiltro.each(function() {
-        const sel = $(this);
-        if (sel.val() && sel.val() !== "") {
-            sel.addClass('is-valid bg-success-subtle').removeClass('border-secondary');
+        const selectFiltro = $(this);
+        if (selectFiltro.val() && selectFiltro.val() !== "") {
+            selectFiltro.addClass('is-valid bg-success-subtle').removeClass('border-secondary');
         } else {
-            sel.removeClass('is-valid bg-success-subtle');
+            selectFiltro.removeClass('is-valid bg-success-subtle');
         }
     });
 
@@ -651,32 +647,32 @@ $(document).on('change', '.filtro-escolar', function() {
 // 2. Al elegir el Material: Pre-cargar campos técnicos y precio
 // Cuando elegís un libro, llena el precio y los detalles técnicos de abajo
 $(document).on('change', '.selector-material-final', function() {
-    const select = $(this);
-    const opt = select.find(':selected');
-    if (opt.val() === "") return;
+    const selectMaterial = $(this);
+    const opcionSeleccionada = selectMaterial.find(':selected');
+    if (opcionSeleccionada.val() === "") return;
 
-    const card = select.closest('.item-producto');
-    const index = card.attr('data-index');
+    const tarjetaItem = selectMaterial.closest('.item-producto');
+    const indiceItem = tarjetaItem.attr('data-index');
 
     // 1. Extraemos la data del catálogo
-    const det = JSON.parse(opt.attr('data-detalles'));
-    const precioBase = parseFloat(opt.attr('data-precio'));
+    const detallesMaterial = JSON.parse(opcionSeleccionada.attr('data-detalles'));
+    const precioBase = parseFloat(opcionSeleccionada.attr('data-precio'));
 
     // 2. Limpiamos campos automáticos previos (para que no se acumulen si cambia de libro)
-    card.find('.detalle-automatico-catalogo').remove();
+    tarjetaItem.find('.detalle-automatico-catalogo').remove();
 
     // 3. Procesamos cada detalle del libro
-    Object.keys(det).forEach(key => {
-        const valor = det[key];
+    Object.keys(detallesMaterial).forEach(nombreDetalle => {
+        const valor = detallesMaterial[nombreDetalle];
 
         // Buscamos si ya existe un input en el HTML para este detalle
         // Tu HTML usa el formato: items[0].detalles[nombre]
-        let inputExistente = card.find(`[name="items[${index}].detalles[${key}]"]`);
+        let inputExistente = tarjetaItem.find(`[name="items[${indiceItem}].detalles[${nombreDetalle}]"]`);
 
         if (inputExistente.length > 0) {
             // Si ya existe (ej: tipo_faz), lo actualizamos
             if (inputExistente.attr('type') === 'radio') {
-                card.find(`[name="items[${index}].detalles[${key}]"][value="${valor}"]`).prop('checked', true);
+                tarjetaItem.find(`[name="items[${indiceItem}].detalles[${nombreDetalle}]"][value="${valor}"]`).prop('checked', true);
             } else if (inputExistente.attr('type') === 'checkbox') {
                 inputExistente.prop('checked', (valor === "on" || valor === true || valor === "true"));
             } else {
@@ -687,16 +683,16 @@ $(document).on('change', '.selector-material-final', function() {
             // Esto hace que Spring lo agregue al Map de detalles automáticamente
             $('<input>').attr({
                 type: 'hidden',
-                name: `items[${index}].detalles[${key}]`,
+                name: `items[${indiceItem}].detalles[${nombreDetalle}]`,
                 value: valor,
                 class: 'detalle-automatico-catalogo'
-            }).appendTo(card);
+            }).appendTo(tarjetaItem);
         }
     });
 
     // 4. Sincronizamos el precio
-    const inputPrecio = card.find('.input-precio-item');
-    inputPrecio.attr('data-precio-base', precioBase);
+    const inputPrecioProducto = tarjetaItem.find('.input-precio-item');
+    inputPrecioProducto.attr('data-precio-base', precioBase);
 
     // Llamamos a recalcular para que aplique Precio * Cantidad
     recalcular();
