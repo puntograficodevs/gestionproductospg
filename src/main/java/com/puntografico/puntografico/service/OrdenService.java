@@ -44,6 +44,8 @@ public class OrdenService {
 
     @Transactional
     public Orden guardar(Orden ordenNueva, Integer idProducto, Long idMedioPago, Empleado empleado) {
+        validarDatosObligatorios(ordenNueva, idProducto, empleado);
+
         String detalleRecibido = null;
         OrigenMovimiento origenMovimiento = OrigenMovimiento.FORMULARIO_CREACION;
         Orden orden = esProcesoCreacion(ordenNueva.getId())
@@ -74,6 +76,16 @@ public class OrdenService {
         Movimiento movimiento = movimientoService.registrar(null, empleado, detalleRecibido, origenMovimiento);
         orden.agregarMovimiento(movimiento);
         return ordenRepository.save(orden);
+    }
+
+    private void validarDatosObligatorios(Orden orden, Integer idProducto, Empleado empleado) {
+        Assert.notNull(orden, "La orden no puede venir nula.");
+        Assert.notNull(idProducto, "El producto no puede venir nulo.");
+        Assert.notNull(empleado, "El empleado no puede venir nulo.");
+        Assert.hasText(orden.getNombreCliente(), "El nombre del cliente no puede venir vacío.");
+        Assert.hasText(orden.getTelefonoCliente(), "El teléfono del cliente no puede venir vacío.");
+        Assert.notNull(orden.getFechaEntrega(), "La fecha de entrega no puede venir nula.");
+        Assert.hasText(orden.getHoraEntrega(), "La hora de entrega no puede venir vacía.");
     }
 
     private boolean esProcesoCreacion(Long idOrden) {
