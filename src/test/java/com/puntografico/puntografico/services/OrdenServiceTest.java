@@ -16,6 +16,9 @@ import com.puntografico.puntografico.service.OrdenService;
 import com.puntografico.puntografico.service.PagoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +27,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -83,7 +88,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void buscarPorIdDevuelveOrdenCuandoExiste() {
+    void buscarPorId_conOrdenExistente_devuelveOrden() {
         Orden orden = orden(5L, "Cliente", 1000, 0, estadoSinHacer);
         when(ordenRepository.findById(5L)).thenReturn(Optional.of(orden));
 
@@ -93,14 +98,14 @@ class OrdenServiceTest {
     }
 
     @Test
-    void buscarPorIdFallaCuandoIdEsNulo() {
+    void buscarPorId_conIdNulo_lanzaExcepcion() {
         assertThatThrownBy(() -> ordenService.buscarPorId(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("El ID de la orden no puede venir nulo.");
     }
 
     @Test
-    void buscarPorIdFallaCuandoNoExiste() {
+    void buscarPorId_conOrdenInexistente_lanzaExcepcion() {
         when(ordenRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> ordenService.buscarPorId(99L))
@@ -109,7 +114,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void eliminarBorraCuandoExiste() {
+    void eliminar_conOrdenExistente_borraOrden() {
         when(ordenRepository.existsById(7L)).thenReturn(true);
 
         ordenService.eliminar(7L);
@@ -118,7 +123,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void eliminarNoBorraCuandoNoExiste() {
+    void eliminar_conOrdenInexistente_noBorraOrden() {
         when(ordenRepository.existsById(7L)).thenReturn(false);
 
         ordenService.eliminar(7L);
@@ -127,7 +132,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarCreaOrdenNuevaConEstadoPagoItemsMovimientoYFechaPedido() {
+    void guardar_conOrdenNueva_creaOrdenConEstadoPagoItemsMovimientoYFechaPedido() {
         Orden ordenNueva = orden(null, "Cliente", 1000, 300, null);
         OrdenItem item = new OrdenItem();
         ordenNueva.getItems().add(item);
@@ -153,7 +158,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarCreaOrdenNuevaSinItemsCuandoLaListaEsNula() {
+    void guardar_conOrdenNuevaSinItems_dejaItemsNulos() {
         Orden ordenNueva = orden(null, "Cliente", 1000, 0, null);
         ordenNueva.setItems(null);
 
@@ -168,7 +173,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarFallaAlCrearCuandoProductoNoExiste() {
+    void guardar_conOrdenNuevaYProductoInexistente_lanzaExcepcion() {
         Orden ordenNueva = orden(null, "Cliente", 1000, 0, null);
 
         when(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER)).thenReturn(Optional.of(estadoSinHacer));
@@ -182,7 +187,94 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarEditaOrdenExistenteSinCambioDeAbonado() {
+    void guardar_conOrdenNula_lanzaExcepcion() {
+        assertThatThrownBy(() -> ordenService.guardar(null, ID_PRODUCTO, ID_MEDIO_PAGO, empleado))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("La orden no puede venir nula.");
+
+        verifyNoInteractions(ordenRepository, estadoOrdenRepository, productoRepository, pagoService, movimientoService);
+    }
+
+    @Test
+    void guardar_conProductoNulo_lanzaExcepcion() {
+        Orden ordenNueva = orden(null, "Cliente", 1000, 0, null);
+
+        assertThatThrownBy(() -> ordenService.guardar(ordenNueva, null, ID_MEDIO_PAGO, empleado))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("El producto no puede venir nulo.");
+
+        verifyNoInteractions(ordenRepository, estadoOrdenRepository, productoRepository, pagoService, movimientoService);
+    }
+
+    @Test
+    void guardar_conEmpleadoNulo_lanzaExcepcion() {
+        Orden ordenNueva = orden(null, "Cliente", 1000, 0, null);
+
+        assertThatThrownBy(() -> ordenService.guardar(ordenNueva, ID_PRODUCTO, ID_MEDIO_PAGO, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("El empleado no puede venir nulo.");
+
+        verifyNoInteractions(ordenRepository, estadoOrdenRepository, productoRepository, pagoService, movimientoService);
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("ordenesConCamposObligatoriosInvalidos")
+    void guardar_conCampoObligatorioVacio_lanzaExcepcion(
+            String caso,
+            Consumer<Orden> prepararOrdenInvalida,
+            String mensajeEsperado
+    ) {
+        Orden ordenNueva = orden(null, "Cliente", 1000, 0, null);
+        prepararOrdenInvalida.accept(ordenNueva);
+
+        assertThatThrownBy(() -> ordenService.guardar(ordenNueva, ID_PRODUCTO, ID_MEDIO_PAGO, empleado))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(mensajeEsperado);
+
+        verifyNoInteractions(ordenRepository, estadoOrdenRepository, productoRepository, pagoService, movimientoService);
+    }
+
+    @Test
+    void guardar_conOrdenNuevaConFacturaMarcada_noModificaImportes() {
+        Orden ordenNueva = orden(null, "Cliente", 1210, 300, null);
+        ordenNueva.setNecesitaFactura(true);
+        ordenNueva.setSubtotal(1000);
+        ordenNueva.setPrecioDisenio(210);
+
+        when(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER)).thenReturn(Optional.of(estadoSinHacer));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(ordenNueva)).thenReturn(ordenNueva);
+
+        Orden resultado = ordenService.guardar(ordenNueva, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isNecesitaFactura()).isTrue();
+        assertThat(resultado.getSubtotal()).isEqualTo(1000);
+        assertThat(resultado.getPrecioDisenio()).isEqualTo(210);
+        assertThat(resultado.getTotal()).isEqualTo(1210);
+        verify(ordenRepository).save(ordenNueva);
+    }
+
+    @Test
+    void guardar_conOrdenNuevaSinFacturaMarcada_noModificaImportes() {
+        Orden ordenNueva = orden(null, "Cliente", 1000, 300, null);
+        ordenNueva.setNecesitaFactura(false);
+        ordenNueva.setSubtotal(950);
+        ordenNueva.setPrecioDisenio(50);
+
+        when(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER)).thenReturn(Optional.of(estadoSinHacer));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(ordenNueva)).thenReturn(ordenNueva);
+
+        Orden resultado = ordenService.guardar(ordenNueva, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isNecesitaFactura()).isFalse();
+        assertThat(resultado.getSubtotal()).isEqualTo(950);
+        assertThat(resultado.getPrecioDisenio()).isEqualTo(50);
+        assertThat(resultado.getTotal()).isEqualTo(1000);
+    }
+
+    @Test
+    void guardar_conOrdenExistenteSinCambioDeAbonado_editaOrdenSinRecrearPagos() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
         OrdenItem itemAnterior = new OrdenItem();
         persistida.getItems().add(itemAnterior);
@@ -212,7 +304,81 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarEditaOrdenExistenteConCambioDeAbonado() {
+    void guardar_conOrdenExistenteMarcandoFactura_noModificaImportesNiRecreaPagos() {
+        Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
+        persistida.setNecesitaFactura(false);
+        persistida.setSubtotal(900);
+        persistida.setPrecioDisenio(100);
+        Orden modificada = orden(8L, "Cliente nuevo", 1000, 200, estadoSinHacer);
+        modificada.setNecesitaFactura(true);
+        modificada.setSubtotal(850);
+        modificada.setPrecioDisenio(150);
+
+        when(ordenRepository.findById(8L)).thenReturn(Optional.of(persistida));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(persistida)).thenReturn(persistida);
+
+        Orden resultado = ordenService.guardar(modificada, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isNecesitaFactura()).isTrue();
+        assertThat(resultado.getSubtotal()).isEqualTo(850);
+        assertThat(resultado.getPrecioDisenio()).isEqualTo(150);
+        assertThat(resultado.getTotal()).isEqualTo(1000);
+        verify(pagoService, never()).eliminarPagosAsociados(anyLong());
+        verify(pagoService, never()).crearPagoDesdeFormularioOrden(any(), any());
+        verify(pagoService).actualizarEstadoPago(persistida);
+    }
+
+    @Test
+    void guardar_conOrdenExistenteDesmarcandoFactura_noModificaImportesNiRecreaPagos() {
+        Orden persistida = orden(8L, "Cliente anterior", 1210, 200, estadoSinHacer);
+        persistida.setNecesitaFactura(true);
+        Orden modificada = orden(8L, "Cliente nuevo", 1210, 200, estadoSinHacer);
+        modificada.setNecesitaFactura(false);
+        modificada.setSubtotal(1000);
+        modificada.setPrecioDisenio(210);
+
+        when(ordenRepository.findById(8L)).thenReturn(Optional.of(persistida));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(persistida)).thenReturn(persistida);
+
+        Orden resultado = ordenService.guardar(modificada, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isNecesitaFactura()).isFalse();
+        assertThat(resultado.getSubtotal()).isEqualTo(1000);
+        assertThat(resultado.getPrecioDisenio()).isEqualTo(210);
+        assertThat(resultado.getTotal()).isEqualTo(1210);
+        verify(pagoService, never()).eliminarPagosAsociados(anyLong());
+        verify(pagoService, never()).crearPagoDesdeFormularioOrden(any(), any());
+    }
+
+    @Test
+    void guardar_conOrdenExistenteYCambioDeDatosGenerales_copiaCuentaCorrienteFechasYHora() {
+        Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
+        persistida.setEsCuentaCorriente(false);
+        persistida.setFechaMuestra(LocalDate.of(2026, 5, 2));
+        persistida.setFechaEntrega(LocalDate.of(2026, 5, 3));
+        persistida.setHoraEntrega("10:00");
+        Orden modificada = orden(8L, "Cliente nuevo", 1000, 200, estadoSinHacer);
+        modificada.setEsCuentaCorriente(true);
+        modificada.setFechaMuestra(null);
+        modificada.setFechaEntrega(LocalDate.of(2026, 6, 5));
+        modificada.setHoraEntrega("18:30");
+
+        when(ordenRepository.findById(8L)).thenReturn(Optional.of(persistida));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(persistida)).thenReturn(persistida);
+
+        ordenService.guardar(modificada, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(persistida.isEsCuentaCorriente()).isTrue();
+        assertThat(persistida.getFechaMuestra()).isNull();
+        assertThat(persistida.getFechaEntrega()).isEqualTo(LocalDate.of(2026, 6, 5));
+        assertThat(persistida.getHoraEntrega()).isEqualTo("18:30");
+    }
+
+    @Test
+    void guardar_conOrdenExistenteConCambioDeAbonado_recreaPagosYRegistraMovimiento() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
         Orden modificada = orden(8L, "Cliente nuevo", 1500, 700, estadoSinHacer);
 
@@ -235,7 +401,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarCorrigeOrdenYVuelveAlEstadoPrevio() {
+    void guardar_conOrdenEnCorreccionYEstadoPrevio_vuelveAlEstadoPrevio() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoCorreccion);
         persistida.setCorreccion("Cambiar medidas");
         persistida.setIdEstadoPrevio(2);
@@ -260,7 +426,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarCorrigeOrdenYUsaSinHacerCuandoNoTieneEstadoPrevio() {
+    void guardar_conOrdenEnCorreccionSinEstadoPrevio_vuelveASinHacer() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoCorreccion);
         persistida.setCorreccion("Cambiar texto");
         persistida.setIdEstadoPrevio(null);
@@ -283,7 +449,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarEditaOrdenExistenteSinItemsNuevosDejaListaVacia() {
+    void guardar_conOrdenExistenteSinItemsNuevos_dejaListaDeItemsVacia() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
         persistida.getItems().add(new OrdenItem());
         Orden modificada = orden(8L, "Cliente nuevo", 1000, 200, estadoSinHacer);
@@ -299,7 +465,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarFallaAlEditarCuandoOrdenNoExiste() {
+    void guardar_conOrdenExistenteInexistente_lanzaExcepcion() {
         Orden modificada = orden(8L, "Cliente", 1000, 200, estadoSinHacer);
         when(ordenRepository.findById(8L)).thenReturn(Optional.empty());
 
@@ -312,7 +478,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void guardarFallaAlEditarCuandoProductoNoExiste() {
+    void guardar_conOrdenExistenteYProductoInexistente_lanzaExcepcion() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
         Orden modificada = orden(8L, "Cliente nuevo", 1000, 200, estadoSinHacer);
 
@@ -327,7 +493,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void buscarPorIdNombreClienteOTelefonoDelegaEnRepositorio() {
+    void buscarPorIdNombreClienteOTelefono_conDatoYRol_delegaEnRepositorio() {
         List<Orden> ordenes = List.of(orden(1L, "Ana", 100, 0, estadoSinHacer));
         when(ordenRepository.buscarPorIdNombreClienteOTelefono("ana", 3L)).thenReturn(ordenes);
 
@@ -337,7 +503,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void buscarOrdenesConEstadoSegunRolDelegaEnRepositorio() {
+    void buscarOrdenesConEstadoSegunRol_conEstadoYRol_delegaEnRepositorio() {
         List<Orden> ordenes = List.of(orden(1L, "Ana", 100, 0, estadoSinHacer));
         when(ordenRepository.buscarOrdenesConEstadoSegunRol(1L, 3L)).thenReturn(ordenes);
 
@@ -347,7 +513,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void cambiarEstadoOrdenAsignaEncargadoCuandoPasaAEnProcesoYSeSolicita() {
+    void cambiarEstadoOrden_conEstadoEnProcesoYAsignacionSolicitada_asignaEncargado() {
         Orden orden = orden(8L, "Cliente", 1000, 0, estadoSinHacer);
         when(ordenRepository.findById(8L)).thenReturn(Optional.of(orden));
         when(estadoOrdenRepository.findById(ID_ESTADO_EN_PROCESO)).thenReturn(Optional.of(estadoEnProceso));
@@ -362,7 +528,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void cambiarEstadoOrdenNoAsignaEncargadoCuandoNoCorresponde() {
+    void cambiarEstadoOrden_conEstadoDistintoAEnProceso_noAsignaEncargado() {
         Orden orden = orden(8L, "Cliente", 1000, 0, estadoSinHacer);
         when(ordenRepository.findById(8L)).thenReturn(Optional.of(orden));
         when(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER)).thenReturn(Optional.of(estadoSinHacer));
@@ -374,7 +540,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void cambiarEstadoOrdenNoAsignaEncargadoCuandoNoSeSolicita() {
+    void cambiarEstadoOrden_conAsignacionNoSolicitada_noAsignaEncargado() {
         Orden orden = orden(8L, "Cliente", 1000, 0, estadoSinHacer);
         when(ordenRepository.findById(8L)).thenReturn(Optional.of(orden));
         when(estadoOrdenRepository.findById(ID_ESTADO_EN_PROCESO)).thenReturn(Optional.of(estadoEnProceso));
@@ -386,7 +552,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void cambiarEstadoOrdenFallaCuandoEstadoNoExiste() {
+    void cambiarEstadoOrden_conEstadoInexistente_lanzaExcepcion() {
         Orden orden = orden(8L, "Cliente", 1000, 0, estadoSinHacer);
         when(ordenRepository.findById(8L)).thenReturn(Optional.of(orden));
         when(estadoOrdenRepository.findById(99L)).thenReturn(Optional.empty());
@@ -399,7 +565,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void enviarAColumnaCorreccionGuardaEstadoPrevioCorreccionYMovimiento() {
+    void enviarAColumnaCorreccion_conMotivoValido_guardaEstadoPrevioCorreccionYMovimiento() {
         Orden orden = orden(8L, "Cliente", 1000, 0, estadoEnProceso);
         when(ordenRepository.findById(8L)).thenReturn(Optional.of(orden));
         when(estadoOrdenRepository.findById(ID_ESTADO_CORRECCION)).thenReturn(Optional.of(estadoCorreccion));
@@ -415,7 +581,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void obtenerOrdenesPorSemanaBuscaDeLunesADomingoYOrdenaPorFechaYHora() {
+    void obtenerOrdenesPorSemana_conSemanaYTipo_buscaDeLunesADomingoYOrdenaPorFechaYHora() {
         LocalDate lunes = LocalDate.of(2026, 5, 11);
         Orden martesTarde = orden(1L, "Uno", 100, 0, estadoSinHacer);
         martesTarde.setFechaEntrega(lunes.plusDays(1));
@@ -436,7 +602,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void ordenarYFormatearOrdenaPorIdDescendenteParaMariCommunity() {
+    void ordenarYFormatear_conEmpleadoMariCommunity_ordenaPorIdDescendente() {
         Empleado mariCommunity = empleado(2L, "maricommunity", 3L);
         Orden primera = orden(1L, "Uno", 100, 0, estadoSinHacer);
         Orden tercera = orden(3L, "Tres", 100, 0, estadoSinHacer);
@@ -448,7 +614,7 @@ class OrdenServiceTest {
     }
 
     @Test
-    void ordenarYFormatearEnviaHorasInvalidasAlFinalDelMismoDia() {
+    void ordenarYFormatear_conHorasInvalidas_lasEnviaAlFinalDelMismoDia() {
         Orden horaValida = orden(1L, "Uno", 100, 0, estadoSinHacer);
         horaValida.setHoraEntrega("10:15");
         Orden horaMayorANormalizar = orden(2L, "Dos", 100, 0, estadoSinHacer);
@@ -514,5 +680,60 @@ class OrdenServiceTest {
         empleado.setNombre("Empleado " + id);
         empleado.setRol(rol);
         return empleado;
+    }
+
+    private static Stream<Arguments> ordenesConCamposObligatoriosInvalidos() {
+        return Stream.of(
+                Arguments.of(
+                        "nombreCliente null",
+                        (Consumer<Orden>) orden -> orden.setNombreCliente(null),
+                        "El nombre del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "nombreCliente vacío",
+                        (Consumer<Orden>) orden -> orden.setNombreCliente(""),
+                        "El nombre del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "nombreCliente en blanco",
+                        (Consumer<Orden>) orden -> orden.setNombreCliente("   "),
+                        "El nombre del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "telefonoCliente null",
+                        (Consumer<Orden>) orden -> orden.setTelefonoCliente(null),
+                        "El teléfono del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "telefonoCliente vacío",
+                        (Consumer<Orden>) orden -> orden.setTelefonoCliente(""),
+                        "El teléfono del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "telefonoCliente en blanco",
+                        (Consumer<Orden>) orden -> orden.setTelefonoCliente("   "),
+                        "El teléfono del cliente no puede venir vacío."
+                ),
+                Arguments.of(
+                        "fechaEntrega null",
+                        (Consumer<Orden>) orden -> orden.setFechaEntrega(null),
+                        "La fecha de entrega no puede venir nula."
+                ),
+                Arguments.of(
+                        "horaEntrega null",
+                        (Consumer<Orden>) orden -> orden.setHoraEntrega(null),
+                        "La hora de entrega no puede venir vacía."
+                ),
+                Arguments.of(
+                        "horaEntrega vacía",
+                        (Consumer<Orden>) orden -> orden.setHoraEntrega(""),
+                        "La hora de entrega no puede venir vacía."
+                ),
+                Arguments.of(
+                        "horaEntrega en blanco",
+                        (Consumer<Orden>) orden -> orden.setHoraEntrega("   "),
+                        "La hora de entrega no puede venir vacía."
+                )
+        );
     }
 }
