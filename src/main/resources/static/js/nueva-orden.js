@@ -1,6 +1,8 @@
 let debounceTimer;
 let itemsProductoIniciales = document.querySelectorAll('.item-producto');
 let indiceActualItem = itemsProductoIniciales.length > 0 ? (itemsProductoIniciales.length - 1) : 0;
+const ID_PRODUCTO_BIROMES = 25;
+const PRECIO_DISENIO_BIROMES = 6500;
 
 // --- 1. INICIALIZACIÓN Y CARGA ---
 
@@ -68,6 +70,7 @@ function inicializarLogicaItem(indiceItem) {
                 });
 
                 if (nombreCampo === 'cantidad_producto') manejarLogicaCantidadDinamica(indiceItem);
+                if (nombreCampo === 'objeto_a_sublimar') recalcular();
                 debounceBuscarPrecio(indiceItem);
             }
         }
@@ -84,6 +87,14 @@ function inicializarLogicaItem(indiceItem) {
             recalcular();
         }
     });
+}
+
+function correspondeDisenioBirome(item) {
+    const productoId = parseInt(document.getElementById('currentProductoId')?.value);
+    if (productoId !== ID_PRODUCTO_BIROMES) return false;
+
+    const objetoASublimar = item.querySelector('[name*="detalles[objeto_a_sublimar]"]:checked')?.value || "";
+    return objetoASublimar.toUpperCase() === "BIROME";
 }
 
 // --- 2. LÓGICA DE AGREGAR, CONFIRMAR Y ELIMINAR ---
@@ -327,10 +338,14 @@ function recalcular() {
         const checkDisenio = item.querySelector('.check-disenio-item');
         const inputDisenio = item.querySelector('.input-disenio-item');
 
-        if (checkDisenio && checkDisenio.checked) {
-            inputDisenio.readOnly = false;
-            if (document.activeElement !== inputDisenio && (parseFloat(inputDisenio.value) === 0 || !inputDisenio.value)) {
-                inputDisenio.value = Math.ceil(precioDisenioBase);
+        const tieneAdicionalDisenio = checkDisenio && checkDisenio.checked;
+        const esDisenioBirome = correspondeDisenioBirome(item);
+        const precioDisenioAplicable = esDisenioBirome ? PRECIO_DISENIO_BIROMES : precioDisenioBase;
+
+        if (inputDisenio && tieneAdicionalDisenio) {
+            inputDisenio.readOnly = esDisenioBirome;
+            if (document.activeElement !== inputDisenio && (esDisenioBirome || parseFloat(inputDisenio.value) === 0 || !inputDisenio.value)) {
+                inputDisenio.value = Math.ceil(precioDisenioAplicable);
             }
         } else if (inputDisenio) {
             inputDisenio.value = 0;
@@ -649,7 +664,10 @@ $(document).on('change', '.filtro-escolar', function() {
 $(document).on('change', '.selector-material-final', function() {
     const selectMaterial = $(this);
     const opcionSeleccionada = selectMaterial.find(':selected');
-    if (opcionSeleccionada.val() === "") return;
+    if (opcionSeleccionada.val() === "") {
+        recalcular();
+        return;
+    }
 
     const tarjetaItem = selectMaterial.closest('.item-producto');
     const indiceItem = tarjetaItem.attr('data-index');
