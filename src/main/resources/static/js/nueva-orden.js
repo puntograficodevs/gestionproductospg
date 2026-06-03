@@ -393,9 +393,9 @@ function calcularLogicaAnillado(paginas, tipoFaz) {
     let cantidadHojas = (tipoFaz === "DOBLE FAZ") ? Math.ceil(paginas / 2) : paginas;
     if (cantidadHojas === 0) return 0;
     const escalas = [
-        { hasta: 20, precio: 1500 }, { hasta: 40, precio: 1700 }, { hasta: 60, precio: 1800 },
-        { hasta: 100, precio: 1900 }, { hasta: 150, precio: 2200 }, { hasta: 200, precio: 2900 },
-        { hasta: 300, precio: 3200 }, { hasta: 400, precio: 3800 }
+        { hasta: 20, precio: 1700 }, { hasta: 40, precio: 1900 }, { hasta: 60, precio: 2100 },
+        { hasta: 100, precio: 2300 }, { hasta: 150, precio: 2500 }, { hasta: 200, precio: 3100 },
+        { hasta: 300, precio: 3500 }, { hasta: 400, precio: 4300 }
     ];
     const cantidadAnillados = Math.ceil(cantidadHojas / 400);
     const escala = escalas.find(escalaAnillado => Math.ceil(cantidadHojas / cantidadAnillados) <= escalaAnillado.hasta) || escalas[7];
