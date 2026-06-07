@@ -3,7 +3,7 @@
     "name": "medida",
     "tipo": "select",
     "label": "Medida * ",
-    "opciones": ["5 CM", "7 CM", "10 CM", "OTRA"],
+    "opciones": ["3 CM", "3,5 CM", "4 CM", "5 CM", "7 CM", "10 CM", "OTRA"],
     "required": true
   },
   {
@@ -18,8 +18,13 @@
     "name": "tipo_troquelado",
     "tipo": "select",
     "label": "Tipo de troquelado * ",
-    "opciones": ["CUADRADO", "CIRCULAR", "POR EL CONTORNO", "CORTE INDIVIDUAL", "SIN TROQUELAR"],
+    "opciones": ["CORTE LINEAL", "CIRCULAR", "POR EL CONTORNO", "SIN TROQUELAR"],
     "required": true
+  },
+  {
+    "name": "es_corte_individual",
+    "tipo": "checkbox",
+    "label": "¿Es corte individual?"
   },
   {"name": "enlace_archivo",
     "tipo": "text",

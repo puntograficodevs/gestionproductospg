@@ -50,8 +50,13 @@
     "name": "tipo_corte",
     "tipo": "select",
     "label": "Tipo de corte *",
-    "opciones": ["MANUAL", "TROQUELADO", "TROQUELADO CON CORTE INDIVIDUAL", "PLANCHA IMPRESA"],
+    "opciones": ["MANUAL", "TROQUELADO", "PLANCHA IMPRESA"],
     "required": true
+  },
+  {
+    "name": "es_corte_individual",
+    "tipo": "checkbox",
+    "label": "¿Es corte individual?"
   },
   {
     "name": "enlace_archivo",

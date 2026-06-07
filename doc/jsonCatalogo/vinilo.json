@@ -2,6 +2,7 @@
   {
     "tipo_adicional_vinilo": "x",
     "tipo_corte": "x",
+    "es_corte_individual": true,
     "medida": "x",
     "cantidad_producto": "x"
   }
