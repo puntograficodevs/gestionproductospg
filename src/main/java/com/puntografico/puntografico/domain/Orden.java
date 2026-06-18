@@ -44,6 +44,9 @@ public class Orden {
     @Column(nullable = false)
     private boolean necesitaFactura;
 
+    @Column(nullable = false)
+    private boolean descuentoEfectivo;
+
     private boolean facturaHecha;
 
     @Column(nullable = false)

@@ -68,6 +68,7 @@ public class OrdenService {
             orden.setFechaEntrega(ordenNueva.getFechaEntrega());
             orden.setHoraEntrega(ordenNueva.getHoraEntrega());
             orden.setNecesitaFactura(ordenNueva.isNecesitaFactura());
+            orden.setDescuentoEfectivo(ordenNueva.isDescuentoEfectivo());
             modificarPagosSegunCorresponda(orden, ordenNueva, idMedioPago);
             modificarEstadoOrdenSiCorreccion(orden);
             reemplazarItems(orden, ordenNueva, idProducto);

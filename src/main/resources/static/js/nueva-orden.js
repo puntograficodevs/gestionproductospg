@@ -97,6 +97,19 @@ function correspondeDisenioBirome(item) {
     return objetoASublimar.toUpperCase() === "BIROME";
 }
 
+function mostrarModalValidacion(mensaje) {
+    const modalElemento = document.getElementById('modalValidacionOrden');
+    const modalMensaje = document.getElementById('modalValidacionOrdenMensaje');
+
+    if (!modalElemento || !modalMensaje || typeof bootstrap === 'undefined') {
+        alert(mensaje);
+        return;
+    }
+
+    modalMensaje.textContent = mensaje;
+    bootstrap.Modal.getOrCreateInstance(modalElemento).show();
+}
+
 // --- 2. LÓGICA DE AGREGAR, CONFIRMAR Y ELIMINAR ---
 
 function confirmarItem(indiceItem) {
@@ -105,7 +118,7 @@ function confirmarItem(indiceItem) {
     const inputProductoId = document.getElementById('currentProductoId');
 
     if ((parseFloat(inputPrecioProducto.value) || 0) <= 0) {
-        alert("Cargá un precio de producto válido antes de confirmar.");
+        mostrarModalValidacion("Cargá un precio de producto válido antes de confirmar.");
         return;
     }
 
@@ -197,7 +210,7 @@ function eliminarItem(botonEliminar) {
             document.getElementById('btn-agregar-otro').classList.remove('d-none');
         }
     } else {
-        alert("La orden debe tener al menos un producto.");
+        mostrarModalValidacion("La orden debe tener al menos un producto.");
     }
 }
 
@@ -316,6 +329,7 @@ function recalcular() {
     const inputAbonado = document.getElementById('inputAbonado');
     const inputResta = document.getElementById('inputResta');
     const checkCuentaCorriente = document.getElementById('esCC');
+    const checkDescuentoEfectivo = document.getElementById('descuentoEfectivo');
     const precioDisenioBase = parseFloat(document.getElementById('precioDisenioBase')?.value) || 0;
 
     let sumaProductos = 0;
@@ -362,23 +376,47 @@ function recalcular() {
     const subtotalBase = sumaProductos + sumaDisenios;
     let totalCorriendo = subtotalBase;
     let recargoMedioPago = 0;
+    let descuentoEfectivo = 0;
+    let modificacionMedioPago = 0;
 
     const radioPago = document.querySelector('input[name="idMedioPago"]:checked');
     if (radioPago && parseInt(radioPago.value) === 2) {
         recargoMedioPago = totalCorriendo * 0.10;
         totalCorriendo += recargoMedioPago;
+        modificacionMedioPago = recargoMedioPago;
+    }
+
+    if (checkDescuentoEfectivo?.checked) {
+        descuentoEfectivo = totalCorriendo * 0.10;
+        totalCorriendo -= descuentoEfectivo;
+        modificacionMedioPago = descuentoEfectivo;
     }
 
     const totalFinal = Math.ceil(totalCorriendo);
     const valorAbonado = parseFloat(inputAbonado?.value) || 0;
 
-    if (inputRecargoMedioPago) inputRecargoMedioPago.value = Math.ceil(recargoMedioPago);
+    if (inputRecargoMedioPago) inputRecargoMedioPago.value = Math.ceil(modificacionMedioPago);
+    actualizarEstiloModificacionMedioPago(inputRecargoMedioPago, recargoMedioPago, descuentoEfectivo);
     if (inputTotal) inputTotal.value = totalFinal;
     if (inputResta) inputResta.value = totalFinal - valorAbonado;
 
     // Validación visual de seña
     if (inputAbonado && checkCuentaCorriente && !checkCuentaCorriente.checked && totalFinal > 0) {
         valorAbonado < (totalFinal / 2) ? inputAbonado.classList.add('border-danger', 'text-danger') : inputAbonado.classList.remove('border-danger', 'text-danger');
+    }
+}
+
+function actualizarEstiloModificacionMedioPago(inputRecargoMedioPago, recargoMedioPago, descuentoEfectivo) {
+    if (!inputRecargoMedioPago) return;
+
+    inputRecargoMedioPago.classList.remove('bg-danger-subtle', 'border-danger', 'text-danger', 'bg-success-subtle', 'border-success', 'text-success');
+
+    if (recargoMedioPago > 0) {
+        inputRecargoMedioPago.classList.add('bg-danger-subtle', 'border-danger', 'text-danger');
+    }
+
+    if (descuentoEfectivo > 0) {
+        inputRecargoMedioPago.classList.add('bg-success-subtle', 'border-success', 'text-success');
     }
 }
 
@@ -500,7 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const filaFechaMuestra = document.getElementById('filaFechaMuestra');
             if(filaFechaMuestra) evento.target.checked ? filaFechaMuestra.classList.remove('d-none') : filaFechaMuestra.classList.add('d-none');
         }
-        if (['checkFactura', 'esCC'].includes(evento.target.id) || evento.target.name === 'idMedioPago') recalcular();
+        if (['checkFactura', 'esCC', 'descuentoEfectivo'].includes(evento.target.id) || evento.target.name === 'idMedioPago') recalcular();
     });
 
     document.addEventListener('input', (evento) => {
@@ -518,16 +556,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const valorAbonado = parseFloat(inputAbonadoElement.value) || 0;
             const esCuentaCorriente = document.getElementById('esCC')?.checked || false;
             const medioPagoSeleccionado = document.querySelector('input[name="idMedioPago"]:checked');
+            const descuentoEfectivo = document.getElementById('descuentoEfectivo')?.checked || false;
+            const textoMedioPagoSeleccionado = medioPagoSeleccionado?.nextElementSibling?.textContent?.trim().toLowerCase() || "";
 
             if (!esCuentaCorriente && totalOrden > 0 && valorAbonado < (totalOrden / 2)) {
                 evento.preventDefault();
-                alert(`Falta seña. El mínimo es $${totalOrden / 2} (50%).`);
+                mostrarModalValidacion(`Falta seña. El mínimo es $${totalOrden / 2} (50%).`);
+                return;
+            }
+
+            if (descuentoEfectivo && textoMedioPagoSeleccionado !== "efectivo") {
+                evento.preventDefault();
+                mostrarModalValidacion("Para aplicar el descuento por efectivo, seleccioná efectivo como medio de pago.");
                 return;
             }
 
             if (valorAbonado > 0 && !medioPagoSeleccionado) {
                 evento.preventDefault();
-                alert("Si el cliente abonó, tenés que elegir el Medio de Pago.");
+                mostrarModalValidacion("Si el cliente abonó, tenés que elegir el Medio de Pago.");
             }
 
             // --- DENTRO DEL LISTENER DE 'click' DEL #btnGuardar ---
@@ -542,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     evento.preventDefault();
                     // Le damos foco y pintamos de rojo para que se note el error
                     inputMuestra.classList.add('is-invalid', 'border-danger');
-                    alert("La fecha de MUESTRA no puede ser después de la fecha de ENTREGA.");
+                    mostrarModalValidacion("La fecha de MUESTRA no puede ser después de la fecha de ENTREGA.");
                     inputMuestra.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return;
                 } else {

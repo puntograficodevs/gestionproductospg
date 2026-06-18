@@ -112,7 +112,7 @@
                            th:value="${orden.precioDisenio}" placeholder="0" readonly>
                 </div>
                 <div class="col-md-4">
-                    <label class="fw-bold form-label">Recargo medio de pago</label>
+                    <label class="fw-bold form-label">Modificación por medio de pago</label>
                     <input type="number" class="form-control" id="inputRecargoMedioPago" value="0" readonly>
                 </div>
             </div>
@@ -134,14 +134,26 @@
 
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <label class="fw-bold form-label d-block">Medio de pago *</label>
-                    <div class="d-flex flex-wrap gap-3">
-                        <div th:each="medio : ${listaMediosDePago}" class="form-check mx-3">
-                            <input type="radio" name="idMedioPago" class="form-check-input input-medio-pago"
-                                   th:id="'medio-' + ${medio.id}"
-                                   th:value="${medio.id}"
-                                   th:checked="${orden.pagos != null and !orden.pagos.isEmpty() and orden.pagos[orden.pagos.size() - 1].medioPago.id == medio.id}">
-                            <label class="fw-bold form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
+                    <div class="d-flex flex-wrap align-items-start gap-4">
+                        <div>
+                            <label class="fw-bold form-label d-block">Medio de pago *</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div th:each="medio : ${listaMediosDePago}" class="form-check mx-3">
+                                    <input type="radio" name="idMedioPago" class="form-check-input input-medio-pago"
+                                           th:id="'medio-' + ${medio.id}"
+                                           th:value="${medio.id}"
+                                           th:checked="${orden.pagos != null and !orden.pagos.isEmpty() and orden.pagos[orden.pagos.size() - 1].medioPago.id == medio.id}">
+                                    <label class="fw-bold form-check-label" th:for="'medio-' + ${medio.id}" th:text="${medio.medioDePago}"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ps-4 border-start">
+                            <label class="fw-bold form-label d-block">Descuento por efectivo</label>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" th:field="*{descuentoEfectivo}" id="descuentoEfectivo">
+                                <label class="fw-bold form-check-label" for="descuentoEfectivo">Aplicar descuento</label>
+                            </div>
                         </div>
                     </div>
                 </div>

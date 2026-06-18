@@ -44,6 +44,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalValidacionOrden" tabindex="-1" aria-labelledby="modalValidacionOrdenTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white">
+                <h5 class="modal-title" id="modalValidacionOrdenTitulo">Revisá la orden</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="modalValidacionOrdenMensaje"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-crear-odt text-white px-4 mb-0" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/nueva-orden.js}"></script>
