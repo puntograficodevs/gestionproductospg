@@ -81,9 +81,16 @@ function pedirConfirmacionDeEntregaConRestante(ordenId, resta) {
 }
 
 function irAEstado(id, estado, filtro, asignar) {
-    let url = `/ordenes/cambiar-estado/${id}?nuevoEstado=${estado}&producto=${encodeURIComponent(filtro)}`;
-    if (asignar) url += "&asignarEncargado=true";
-    window.location.href = url;
+    const parametros = new URLSearchParams({
+        nuevoEstado: estado,
+        producto: filtro || 'todas'
+    });
+
+    if (asignar) {
+        parametros.set('asignarEncargado', 'true');
+    }
+
+    window.location.href = `/ordenes/cambiar-estado/${id}?${parametros.toString()}`;
 }
 
 function evaluarFiltroAlRefrescarPagina() {

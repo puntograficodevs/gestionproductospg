@@ -369,14 +369,15 @@ class MvcIntegrationTest {
     @Test
     void cambiarEstado_conParametros_llamaServiceYRedirigeListadoConFiltro() throws Exception {
         Empleado empleado = empleado();
+        String producto = "Impresi\u00f3n con dise\u00f1o";
 
         mockMvc.perform(get("/ordenes/cambiar-estado/" + ID_ORDEN)
                         .sessionAttr("empleadoLogueado", empleado)
-                        .param("producto", "copias")
+                        .param("producto", producto)
                         .param("nuevoEstado", "2")
                         .param("asignarEncargado", "true"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/listado?producto=copias"));
+                .andExpect(redirectedUrl("/listado?producto=Impresi%C3%B3n+con+dise%C3%B1o"));
 
         verify(ordenService).cambiarEstadoOrden(ID_ORDEN, 2L, true, empleado);
     }

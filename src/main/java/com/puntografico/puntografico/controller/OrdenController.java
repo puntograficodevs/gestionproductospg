@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.time.DayOfWeek;
@@ -195,12 +196,14 @@ public class OrdenController {
             @RequestParam(value = "producto", defaultValue = "todas") String producto,
             @RequestParam("nuevoEstado") Long idNuevoEstado,
             @RequestParam(value = "asignarEncargado", defaultValue = "false") boolean asignarEncargado,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         Empleado empleadoLogueado = (Empleado) session.getAttribute("empleadoLogueado");
 
         ordenService.cambiarEstadoOrden(idOrden, idNuevoEstado, asignarEncargado, empleadoLogueado);
-        return "redirect:/listado?producto=" + producto;
+        redirectAttributes.addAttribute("producto", producto);
+        return "redirect:/listado";
     }
 
     @PostMapping("/enviar-a-corregir")
