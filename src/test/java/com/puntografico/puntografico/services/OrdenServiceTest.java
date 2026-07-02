@@ -276,6 +276,22 @@ class OrdenServiceTest {
     }
 
     @Test
+    void guardar_conOrdenNuevaAbonadoCeroYDescuentoEfectivo_mantieneDescuentoMarcado() {
+        Orden ordenNueva = orden(null, "Cliente", 9000, 0, null);
+        ordenNueva.setDescuentoEfectivo(true);
+
+        when(estadoOrdenRepository.findById(ID_ESTADO_SIN_HACER)).thenReturn(Optional.of(estadoSinHacer));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(ordenNueva)).thenReturn(ordenNueva);
+
+        Orden resultado = ordenService.guardar(ordenNueva, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isDescuentoEfectivo()).isTrue();
+        assertThat(resultado.getAbonado()).isZero();
+        assertThat(resultado.getMontoDescuentoEfectivo()).isEqualTo(1000);
+    }
+
+    @Test
     void guardar_conOrdenExistenteSinCambioDeAbonado_editaOrdenSinRecrearPagos() {
         Orden persistida = orden(8L, "Cliente anterior", 1000, 200, estadoSinHacer);
         OrdenItem itemAnterior = new OrdenItem();
@@ -303,6 +319,24 @@ class OrdenServiceTest {
         verify(pagoService, never()).crearPagoDesdeFormularioOrden(any(), any());
         verify(pagoService).actualizarEstadoPago(persistida);
         verify(movimientoService).registrar(isNull(), same(empleado), isNull(), eq(OrigenMovimiento.FORMULARIO_EDICION));
+    }
+
+    @Test
+    void guardar_conOrdenExistenteAbonadoCeroYDescuentoEfectivo_mantieneDescuentoMarcado() {
+        Orden persistida = orden(8L, "Cliente anterior", 9000, 0, estadoSinHacer);
+        persistida.setDescuentoEfectivo(false);
+        Orden modificada = orden(8L, "Cliente nuevo", 9000, 0, estadoSinHacer);
+        modificada.setDescuentoEfectivo(true);
+
+        when(ordenRepository.findById(8L)).thenReturn(Optional.of(persistida));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto));
+        when(ordenRepository.save(persistida)).thenReturn(persistida);
+
+        Orden resultado = ordenService.guardar(modificada, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.isDescuentoEfectivo()).isTrue();
+        assertThat(resultado.getAbonado()).isZero();
+        assertThat(resultado.getMontoDescuentoEfectivo()).isEqualTo(1000);
     }
 
     @Test

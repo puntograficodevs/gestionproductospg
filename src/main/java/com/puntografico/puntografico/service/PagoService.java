@@ -45,7 +45,7 @@ public class PagoService {
     }
 
     public void crearPagoDesdeFormularioOrden(Orden orden, Long idMedioPago) {
-        if (orden.getAbonado() > 0 ) {
+        if (orden.getAbonado() >= 0 && idMedioPago != null) {
             Pago pago = new Pago();
             pago.setImporte(orden.getAbonado());
             pago.setMedioPago(medioPagoService.buscarPorId(idMedioPago));

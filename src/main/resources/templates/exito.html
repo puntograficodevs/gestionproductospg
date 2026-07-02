@@ -68,8 +68,11 @@
                     <p><strong>Abonado: </strong>$<span th:text="${ordenCorrecta.abonado}"></span></p>
                     <p><strong>Medio de pago: </strong><span th:text="${ordenCorrecta.mediosPagoTexto}"></span></p>
                     <p th:if="${ordenCorrecta.descuentoEfectivo}">
-                        <strong>Descuento: </strong>
-                        <span th:text="'Sí ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
+                        <strong>Descuento en efectivo: </strong>
+                        <span th:if="${ordenCorrecta.abonado == 0}"
+                              th:text="'Se aplicará ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
+                        <span th:unless="${ordenCorrecta.abonado == 0}"
+                              th:text="'Sí ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
                     </p>
                 </div>
             </div>

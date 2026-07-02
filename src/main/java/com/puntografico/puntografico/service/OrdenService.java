@@ -99,13 +99,14 @@ public class OrdenService {
 
     private void modificarPagosSegunCorresponda(Orden ordenOriginal, Orden ordenModificada, Long idMedioPago) {
         boolean cambioAbonado = esImporteAbonadoDistinto(ordenOriginal, ordenModificada);
+        boolean cambioMedioPago = esMedioPagoFormularioDistinto(ordenOriginal, idMedioPago);
 
         ordenOriginal.setTotal(ordenModificada.getTotal());
         ordenOriginal.setSubtotal(ordenModificada.getSubtotal());
         ordenOriginal.setPrecioDisenio(ordenModificada.getPrecioDisenio());
         ordenOriginal.setAbonado(ordenModificada.getAbonado());
 
-        if (cambioAbonado) {
+        if (cambioAbonado || cambioMedioPago) {
             pagoService.eliminarPagosAsociados(ordenOriginal.getId());
             pagoService.crearPagoDesdeFormularioOrden(ordenOriginal, idMedioPago);
         }
@@ -115,6 +116,22 @@ public class OrdenService {
 
     private boolean esImporteAbonadoDistinto(Orden ordenPersistida, Orden ordenNueva) {
         return ordenPersistida.getAbonado() != ordenNueva.getAbonado();
+    }
+
+    private boolean esMedioPagoFormularioDistinto(Orden ordenPersistida, Long idMedioPago) {
+        if (idMedioPago == null) {
+            return false;
+        }
+
+        if (ordenPersistida.getPagos().isEmpty()) {
+            return ordenPersistida.getAbonado() == 0;
+        }
+
+        return ordenPersistida.getPagos().stream()
+                .map(Pago::getMedioPago)
+                .filter(Objects::nonNull)
+                .map(MedioPago::getId)
+                .noneMatch(idMedioPago::equals);
     }
 
     private void modificarEstadoOrdenSiCorreccion(Orden ordenPersistida) {

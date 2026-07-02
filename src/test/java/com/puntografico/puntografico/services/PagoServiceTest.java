@@ -191,14 +191,21 @@ class PagoServiceTest {
     }
 
     @Test
-    void crearPagoDesdeFormularioOrden_conAbonadoCero_noAgregaPago() {
+    void crearPagoDesdeFormularioOrden_conAbonadoCeroYMedioPago_agregaPagoConImporteCero() {
         Orden orden = orden(ID_ORDEN, 1000, List.of());
         orden.setAbonado(0);
+        orden.setFechaPedido(LocalDate.of(2026, 6, 2));
+        when(medioPagoService.buscarPorId(ID_MEDIO_PAGO)).thenReturn(medioPago);
 
         pagoService.crearPagoDesdeFormularioOrden(orden, ID_MEDIO_PAGO);
 
-        assertThat(orden.getPagos()).isEmpty();
-        verifyNoInteractions(medioPagoService);
+        assertThat(orden.getPagos()).hasSize(1);
+        Pago pagoCreado = orden.getPagos().get(0);
+        assertThat(pagoCreado.getImporte()).isZero();
+        assertThat(pagoCreado.getMedioPago()).isSameAs(medioPago);
+        assertThat(pagoCreado.getFechaPago()).isEqualTo(LocalDate.of(2026, 6, 2));
+        assertThat(pagoCreado.getOrden()).isSameAs(orden);
+        assertThat(pagoCreado.getEmpleado()).isSameAs(empleadoOrden);
     }
 
     @Test
@@ -221,15 +228,14 @@ class PagoServiceTest {
     }
 
     @Test
-    void crearPagoDesdeFormularioOrden_conAbonadoMayorACeroYMedioPagoNulo_agregaPagoConMedioPagoNulo() {
+    void crearPagoDesdeFormularioOrden_conAbonadoMayorACeroYMedioPagoNulo_noAgregaPago() {
         Orden orden = orden(ID_ORDEN, 1000, List.of());
         orden.setAbonado(400);
 
         pagoService.crearPagoDesdeFormularioOrden(orden, null);
 
-        assertThat(orden.getPagos()).hasSize(1);
-        assertThat(orden.getPagos().get(0).getMedioPago()).isNull();
-        verify(medioPagoService).buscarPorId(null);
+        assertThat(orden.getPagos()).isEmpty();
+        verifyNoInteractions(medioPagoService);
     }
 
     @Test

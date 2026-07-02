@@ -45,6 +45,7 @@ class OrdenPagoServiceFlowTest {
     private static final long ID_ORDEN = 10L;
     private static final int ID_PRODUCTO = 20;
     private static final long ID_MEDIO_PAGO = 30L;
+    private static final long ID_ESTADO_SIN_PAGAR = 1L;
     private static final long ID_ESTADO_SENIADO = 2L;
 
     @Autowired
@@ -76,12 +77,14 @@ class OrdenPagoServiceFlowTest {
 
     private Empleado empleado;
     private MedioPago medioPago;
+    private EstadoPago estadoSinPagar;
     private EstadoPago estadoSeniado;
 
     @BeforeEach
     void setUp() {
         empleado = empleado();
         medioPago = medioPago();
+        estadoSinPagar = estadoPago(ID_ESTADO_SIN_PAGAR, "Sin pagar");
         estadoSeniado = estadoPago(ID_ESTADO_SENIADO, "Señado");
 
         when(movimientoService.registrar(any(), any(), any(), any()))
@@ -124,6 +127,28 @@ class OrdenPagoServiceFlowTest {
         assertThat(pagoCaptor.getValue().getOrden()).isSameAs(resultado);
         verify(movimientoService).registrar(isNull(), eq(empleado), eq("Se modifica abonado a: $6000"), eq(OrigenMovimiento.FORMULARIO_EDICION));
         verify(movimientoService).registrar(isNull(), eq(empleado), eq("1000"), eq(OrigenMovimiento.REGISTRO_PAGO));
+    }
+
+    @Test
+    void guardar_conAbonadoCeroYMedioPago_agregaPagoDeImporteCeroParaMostrarMedioPago() {
+        Orden ordenPersistida = orden(ID_ORDEN, 8000, 0, List.of());
+        Orden ordenModificada = orden(ID_ORDEN, 8000, 0, List.of());
+
+        when(ordenRepository.findById(ID_ORDEN)).thenReturn(Optional.of(ordenPersistida));
+        when(productoRepository.findById(ID_PRODUCTO)).thenReturn(Optional.of(producto()));
+        when(pagoRepository.findByOrdenId(ID_ORDEN)).thenReturn(List.of());
+        when(medioPagoService.buscarPorId(ID_MEDIO_PAGO)).thenReturn(medioPago);
+        when(estadoPagoRepository.findById(ID_ESTADO_SIN_PAGAR)).thenReturn(Optional.of(estadoSinPagar));
+        when(ordenRepository.save(ordenPersistida)).thenReturn(ordenPersistida);
+
+        Orden resultado = ordenService.guardar(ordenModificada, ID_PRODUCTO, ID_MEDIO_PAGO, empleado);
+
+        assertThat(resultado.getAbonado()).isZero();
+        assertThat(resultado.getPagos()).hasSize(1);
+        assertThat(resultado.getPagos().get(0).getImporte()).isZero();
+        assertThat(resultado.getPagos().get(0).getMedioPago()).isSameAs(medioPago);
+        assertThat(resultado.getMediosPagoTexto()).isEqualTo("Efectivo");
+        assertThat(resultado.getEstadoPago()).isSameAs(estadoSinPagar);
     }
 
     private Orden orden(Long id, int total, int abonado, List<Pago> pagos) {
