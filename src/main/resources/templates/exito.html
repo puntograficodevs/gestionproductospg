@@ -56,24 +56,29 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="card mb-3 border contenedor-datos-orden-impresion h-100">
+                <div class="card mb-3 border contenedor-datos-orden-impresion h-100"
+                     th:with="montoDescuento=${ordenCorrecta.descuentoEfectivo ? ordenCorrecta.montoDescuentoEfectivo : 0}">
                     <h6>Datos del pago</h6>
                     <hr class="divider">
                     <p><strong>Fecha del pedido: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaPedido, 'dd/MM/yyyy')}"></span></p>
-                    <p th:if="${ordenCorrecta.fechaMuestra != null}"><strong>Fecha de muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
                     <p><strong>Fecha de entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
                     <p th:if="${ordenCorrecta.horaEntrega != ''}"><strong>Hora de entrega: </strong><span th:text="${ordenCorrecta.horaEntrega} + ' hs.'"></span></p>
                     <p><strong>Vendedor/a: </strong><span th:text="${ordenCorrecta.empleado.nombre}"></span></p>
-                    <p><strong>Total: </strong>$<span th:text="${ordenCorrecta.total}"></span></p>
+
+                    <hr class="divider">
+                    <p>
+                        <strong>Total: </strong>$
+                        <span th:text="${#numbers.formatInteger(ordenCorrecta.total + montoDescuento, 0)}"></span>
+                    </p>
+                    <p>
+                        <strong>Descuento en efectivo: </strong>
+                        <span th:if="${ordenCorrecta.descuentoEfectivo}"
+                              th:text="'Se aplicó ($' + ${#numbers.formatInteger(montoDescuento, 0)} + ')'"></span>
+                        <span th:unless="${ordenCorrecta.descuentoEfectivo}">No aplica</span>
+                    </p>
+                    <p><strong>Precio final: </strong>$<span th:text="${#numbers.formatInteger(ordenCorrecta.total, 0)}"></span></p>
                     <p><strong>Abonado: </strong>$<span th:text="${ordenCorrecta.abonado}"></span></p>
                     <p><strong>Medio de pago: </strong><span th:text="${ordenCorrecta.mediosPagoTexto}"></span></p>
-                    <p th:if="${ordenCorrecta.descuentoEfectivo}">
-                        <strong>Descuento en efectivo: </strong>
-                        <span th:if="${ordenCorrecta.abonado == 0}"
-                              th:text="'Se aplicará ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
-                        <span th:unless="${ordenCorrecta.abonado == 0}"
-                              th:text="'Sí ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
-                    </p>
                 </div>
             </div>
         </div>
@@ -125,24 +130,12 @@
                         </div>
                     </div>
 
-                    <hr class="divider mt-auto">
-                    <p class="mb-1" style="font-size: 0.95rem;">
-                        <strong class="text-dark">Precio del producto: </strong>
-                        <span class="fw-bold text-success"
-                              th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0), 0)}">
-                        </span>
-                    </p>
+                    <hr class="divider mt-auto" th:if="${(item.precioDisenio ?: 0) != 0}">
                     <p class="mb-1" style="font-size: 0.95rem;"
                        th:if="${(item.precioDisenio ?: 0) != 0}">
                         <strong class="text-dark">Precio del diseño: </strong>
                         <span class="fw-bold text-success"
                               th:text="'$' + ${#numbers.formatInteger((item.precioDisenio ?: 0), 0)}">
-                        </span>
-                    </p>
-                    <p class="mb-1" style="font-size: 0.95rem;">
-                        <strong class="text-dark">Precio final: </strong>
-                        <span class="fw-bold text-success"
-                              th:text="'$' + ${#numbers.formatInteger((item.precioUnitario ?: 0) + (item.precioDisenio ?: 0), 0)}">
                         </span>
                     </p>
                 </div>
