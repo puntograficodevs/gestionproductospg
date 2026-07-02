@@ -2,10 +2,12 @@ package com.puntografico.puntografico.services;
 
 import com.puntografico.puntografico.domain.Empleado;
 import com.puntografico.puntografico.domain.EstadoOrden;
+import com.puntografico.puntografico.domain.MedioPago;
 import com.puntografico.puntografico.domain.Movimiento;
 import com.puntografico.puntografico.domain.Orden;
 import com.puntografico.puntografico.domain.OrdenItem;
 import com.puntografico.puntografico.domain.OrigenMovimiento;
+import com.puntografico.puntografico.domain.Pago;
 import com.puntografico.puntografico.domain.Producto;
 import com.puntografico.puntografico.domain.Rol;
 import com.puntografico.puntografico.repository.EstadoOrdenRepository;
@@ -632,6 +634,31 @@ class OrdenServiceTest {
         assertThat(resultado).containsExactly(horaValida, horaMayorANormalizar, horaTexto, horaNula);
     }
 
+    @Test
+    void getMontoDescuentoEfectivo_conDescuentoMarcado_infiereDiezPorCientoDesdeTotalFinal() {
+        Orden orden = orden(1L, "Cliente", 16200, 0, estadoSinHacer);
+        orden.setDescuentoEfectivo(true);
+
+        assertThat(orden.getMontoDescuentoEfectivo()).isEqualTo(1800);
+    }
+
+    @Test
+    void getMediosPagoTexto_conPagosMuestraMediosSinRepetir() {
+        Orden orden = orden(1L, "Cliente", 1000, 500, estadoSinHacer);
+        orden.getPagos().add(pagoConMedio("Efectivo"));
+        orden.getPagos().add(pagoConMedio("Transferencia"));
+        orden.getPagos().add(pagoConMedio("Efectivo"));
+
+        assertThat(orden.getMediosPagoTexto()).isEqualTo("Efectivo, Transferencia");
+    }
+
+    @Test
+    void getMediosPagoTexto_sinPagosMuestraMensajePorDefecto() {
+        Orden orden = orden(1L, "Cliente", 1000, 0, estadoSinHacer);
+
+        assertThat(orden.getMediosPagoTexto()).isEqualTo("Sin pago registrado");
+    }
+
     private Orden orden(Long id, String nombreCliente, int total, int abonado, EstadoOrden estadoOrden) {
         Orden orden = new Orden();
         orden.setId(id);
@@ -680,6 +707,15 @@ class OrdenServiceTest {
         empleado.setNombre("Empleado " + id);
         empleado.setRol(rol);
         return empleado;
+    }
+
+    private Pago pagoConMedio(String nombreMedioPago) {
+        MedioPago medioPago = new MedioPago();
+        medioPago.setMedioDePago(nombreMedioPago);
+
+        Pago pago = new Pago();
+        pago.setMedioPago(medioPago);
+        return pago;
     }
 
     private static Stream<Arguments> ordenesConCamposObligatoriosInvalidos() {

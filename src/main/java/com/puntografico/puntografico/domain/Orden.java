@@ -7,7 +7,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orden")
@@ -91,5 +94,31 @@ public class Orden {
     public void agregarMovimiento(Movimiento movimiento) {
         movimientos.add(movimiento);
         movimiento.setOrden(this);
+    }
+
+    @Transient
+    public String getMediosPagoTexto() {
+        if (pagos == null || pagos.isEmpty()) {
+            return "Sin pago registrado";
+        }
+
+        Set<String> mediosPago = pagos.stream()
+                .filter(pago -> pago.getMedioPago() != null)
+                .map(pago -> pago.getMedioPago().getMedioDePago())
+                .filter(medioPago -> medioPago != null && !medioPago.isBlank())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return mediosPago.isEmpty()
+                ? "Sin pago registrado"
+                : String.join(", ", mediosPago);
+    }
+
+    @Transient
+    public int getMontoDescuentoEfectivo() {
+        if (!descuentoEfectivo) {
+            return 0;
+        }
+
+        return (int) Math.round(total / 9.0);
     }
 }

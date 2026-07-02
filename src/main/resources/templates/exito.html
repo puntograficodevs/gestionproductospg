@@ -59,13 +59,18 @@
                 <div class="card mb-3 border contenedor-datos-orden-impresion h-100">
                     <h6>Datos del pago</h6>
                     <hr class="divider">
-                    <p><strong>Pedido: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaPedido, 'dd/MM/yyyy')}"></span></p>
-                    <p><strong>Total: </strong>$<span th:text="${ordenCorrecta.total}"></span></p>
-                    <p><strong>Abonado: </strong>$<span th:text="${ordenCorrecta.abonado}"></span></p>
-                    <p><strong>Vendedor/a: </strong><span th:text="${ordenCorrecta.empleado.nombre}"></span></p>
+                    <p><strong>Fecha del pedido: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaPedido, 'dd/MM/yyyy')}"></span></p>
                     <p th:if="${ordenCorrecta.fechaMuestra != null}"><strong>Fecha de muestra: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaMuestra, 'dd/MM/yyyy')}"></span></p>
                     <p><strong>Fecha de entrega: </strong><span th:text="${#temporals.format(ordenCorrecta.fechaEntrega, 'dd/MM/yyyy')}"></span></p>
                     <p th:if="${ordenCorrecta.horaEntrega != ''}"><strong>Hora de entrega: </strong><span th:text="${ordenCorrecta.horaEntrega} + ' hs.'"></span></p>
+                    <p><strong>Vendedor/a: </strong><span th:text="${ordenCorrecta.empleado.nombre}"></span></p>
+                    <p><strong>Total: </strong>$<span th:text="${ordenCorrecta.total}"></span></p>
+                    <p><strong>Abonado: </strong>$<span th:text="${ordenCorrecta.abonado}"></span></p>
+                    <p><strong>Medio de pago: </strong><span th:text="${ordenCorrecta.mediosPagoTexto}"></span></p>
+                    <p th:if="${ordenCorrecta.descuentoEfectivo}">
+                        <strong>Descuento: </strong>
+                        <span th:text="'Sí ($' + ${#numbers.formatInteger(ordenCorrecta.montoDescuentoEfectivo, 0)} + ')'"></span>
+                    </p>
                 </div>
             </div>
         </div>
